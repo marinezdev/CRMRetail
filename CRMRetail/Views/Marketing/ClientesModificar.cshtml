@@ -1,0 +1,280 @@
+﻿@model List<CRMRetail.Modelos.MarketingClientes>
+@{
+    ViewBag.Title = "Modificar Clientes";
+}
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#IndexMarketing').addClass("nav-item active submenu");
+
+        $('#tabla01').DataTable({
+            "searching": true,
+            "paging": true,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+            },
+            "scrollX": true,
+            info: true,
+        });
+
+    });
+
+    function SeguroEliminarRegistro(idcontacto, idcampaña) {
+        swal({
+            text: "¿Está seguro de querer eliminar este cliente?",
+            type: 'warning',
+            buttons: {
+                confirm: {
+                    text: 'Si, eliminarlo!',
+                    className: 'btn btn-danger'
+                },
+                cancel: {
+                    visible: true,
+                    className: 'btn btn-warning',
+                    text: 'Cancelar'
+                }
+            }
+        }).then((Delete) => {
+            if (Delete) {
+                $.ajax({
+                    type: 'GET',
+                    url: "/Marketing/MarketingClienteEliminar/",
+                    data: {
+                        idcampaña: idcampaña,
+                        idcliente: idcontacto
+                    },
+                    contentType: "application/json",
+                    dataType: 'json',
+                    beforeSend: function () {
+                        $('#Espera').show();
+                    },
+                    success: function (data) {
+
+                        $.notify('Se eliminó el registro seleccionado.', {
+                            autohide: true, type: 'success', placement: {
+                                from: 'bottom',
+                                align: 'right'
+                            }
+                        });
+
+                        location.href = '';
+                    },
+                    complete: function () {
+                        $('#Espera').hide();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log('jqXHR:');
+                        console.log(jqXHR);
+                        console.log('textStatus:');
+                        console.log(textStatus);
+                        console.log('errorThrown:');
+                        console.log(errorThrown);
+                    },
+                });
+            }
+        });
+    }
+
+    function MostrarClientes() {
+        //Obtener los clientes que coincidan con la compra del producto seleccionado
+        $.ajax({
+            type: 'GET',
+            url: "/Clientes/ClienteSeleccionarPorIdProducto",
+            data: { idproducto: $('#Productos').val() },
+            contentType: "application/json",
+            dataType: 'json',
+            beforeSend: function () {
+
+            },
+            success: function (data) {
+                console.log(data);
+                if (data.length == 0) {
+                    $('#tabla02').empty();
+                    $('#tabla02').append('<table class=table><tr><td colspan=2><span class=text-warning>Ningún cliente ha hecho compras del producto seleccionado</span></td></tr></table>');
+                }
+                else {
+                    //Mostrar la tabla donde semuestran los clientes
+                    $('#tabla02').empty();
+                    var tabla = '<table class=table><tr><th>Id</th><th>Cliente</th></tr>'
+                    for (var i = 0; i < data.length; i++) {
+                        tabla += '<tr><td>' + data[i].Id + '</td><td>' + data[i].Nombre + '</td></tr>';
+                    }
+                    tabla += '</table>';
+                    $('#tabla02').append(tabla);
+                }
+            },
+            complete: function () {
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('jqXHR:');
+                console.log(jqXHR);
+                console.log('textStatus:');
+                console.log(textStatus);
+                console.log('errorThrown:');
+                console.log(errorThrown);
+            },
+        });
+    }
+
+    function AgregarClientes() {
+        //Agrega los clientes a la campaña
+        $.ajax({
+            type: 'GET',
+            url: "/Marketing/ClientesAgregarACampaña",
+            data: { idproducto: $('#Productos').val(), idcampaña: $('#IdCampaña').val() },
+            contentType: "application/json",
+            dataType: 'json',
+            beforeSend: function () {
+
+            },
+            success: function (data) {
+
+                $('#ModalClientesPorProducto').modal('hide');
+                //Mostrar la tabla donde se muestran los clientes
+                $('#tabla01').empty();
+                var tbody = '';
+                for (var i = 0; i < data.length; i++) {
+                    tbody += '<tr><td>' + data[i].Clientes.Nombre + '</td></tr>';
+                }
+                $('#tabla01').append(tbody);
+                location.href = '';
+            },
+            complete: function () {
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('jqXHR:');
+                console.log(jqXHR);
+                console.log('textStatus:');
+                console.log(textStatus);
+                console.log('errorThrown:');
+                console.log(errorThrown);
+            },
+        });
+    }
+
+
+</script>
+
+
+
+<script src="~/assets/js/plugin/datatables/datatables.min.js"></script>
+<script src="../assets/js/plugin/datatables/sum().js"></script>
+<script src="~/assets/js/plugin/datatables/dataTables.colReorder.min.js"></script>
+<link href="~/assets/css/colReorder.dataTables.min.css" rel="stylesheet" />
+<link href="~/assets/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+<!-- Bootstrap Notify -->
+<script src="../assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+
+<input type="hidden" id="IdCampaña" value="@Request["idcampaña"]" />
+
+<div class="page-inner">
+    <div class="page-header">
+        <h4 class="page-title">Modificar Clientes</h4>
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            @Html.Partial("_MenuMarketing")
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <a href="#" class="btn btn-default" data-toggle="modal" data-target="#ModalClientesPorProducto">Clientes Por Producto</a>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+                <table id="tabla01" class="display compact hover" style="width:100%">
+                    <thead class="header">
+                        <tr>
+                            <th>Nombre</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var items in Model)
+                        {
+                            <tr>
+                                <td>@items.Clientes.Nombre</td>
+                                <td align="center"><a href="#" onclick="SeguroEliminarRegistro(@items.Clientes.Id,@Request["idcampaña"]);"><i class='fas fa-trash text-danger'></i></a></td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="modal fade" id="ModalClientesPorProducto" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="ModalLabel">Clientes Por Producto</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="col-md-12">
+
+                    <div class="row">
+
+                        <div class="col-md-12 col-lg-12">
+
+                            <div class="form-group form-floating-label">
+                                <select class="form-control input-solid" id="Productos" style="width: 380px" onchange="MostrarClientes();">
+                                    <option value="">&nbsp;</option>
+                                    @foreach (var items in CRMRetail.Datos.Catalogos.SeleccionarProductosPorNombre())
+                                    {
+                                        <option value="@items.Id">@items.Nombre</option>
+                                    }
+                                </select>
+
+                                <label for="Productos" class="placeholder">Productos</label>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-12 col-lg-12">
+
+                            <!-- Mostrar los clientes que han comprado el producto seleccionado -->
+                            <div id="tabla02"></div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" onclick="AgregarClientes();">Agregar los Clientes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>

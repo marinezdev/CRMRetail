@@ -1,0 +1,156 @@
+﻿@model List<CRMRetail.Modelos.VentasProductos>
+@{
+    ViewBag.Title = "Ventas Por Categoria";
+}
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#IndexVentas').addClass("nav-item active submenu");
+
+        $.fn.dataTable.moment("DD/MM/YYYY");
+
+        $('#tabla01').DataTable({
+            "searching": true,
+            "paging": true,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+            },
+            "scrollX": true,
+            info: true,
+        });
+
+    });
+
+    function ObtenerVentasPorCategoria() {
+        //alert($('#Categoria').val());
+        $.ajax({
+            type: "GET",
+            url: "/Ventas/VentasProductosObtenerPorCategoria/",
+            data: { idcategoria: $('#Categoria').val() },
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+
+                $('#tabla01 tbody tr').remove();
+                $('#tabla01').append('<tbody>');
+                for (var i = 0; i < data.length; i++) {
+
+                    var fecha = new Date(parseInt(data[i].Fecha.substr(6)));
+                    var mes = (fecha.getMonth() + 1) < 10 ? '0' + (fecha.getMonth() + 1) : (fecha.getMonth() + 1);
+
+                    $('#tabla01').append(
+                        '<tr><td>' + data[i].Productos.Nombre +
+                        '</td><td align=center>' + data[i].Productos.SKU +
+                        '</td><td align=center>' + data[i].NombreCategoria +
+                        '</td><td align=right>$' + (Math.round(data[i].Precio * 100) / 100).toFixed(2) +
+                        '</td><td align=right>' + fecha.getDate() + '/' + mes + '/' + fecha.getFullYear() +
+                        '</td></tr>');
+                }
+                $('#tabla01').append('</tbody>');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('jqXHR:');
+                console.log(jqXHR);
+                console.log('textStatus:');
+                console.log(textStatus);
+                console.log('errorThrown:');
+                console.log(errorThrown);
+            }
+        });
+
+
+    }
+
+</script>
+
+<script src="~/assets/js/plugin/datatables/datatables.min.js"></script>
+<script src="../assets/js/plugin/datatables/sum().js"></script>
+<script src="~/assets/js/plugin/datatables/dataTables.colReorder.min.js"></script>
+<link href="~/assets/css/colReorder.dataTables.min.css" rel="stylesheet" />
+<link href="~/assets/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+<div class="page-inner">
+    <div class="page-header">
+        <h4 class="page-title">Ventas Por Categoría</h4>
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-12 text-right">
+
+                    <a href="/Ventas/Index">Todos las Ventas</a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <!--div class="row">
+
+                <div class="col-md-4">
+                    <div class="form-group form-floating-label">
+                        <select class="form-control input-solid" id="Categoria" name="Categoria" onchange="ObtenerVentasPorCategoria();">
+                            <option value=""></option>
+                            @foreach (var item1 in CRMRetail.Datos.Catalogos.Seleccionar("ProductosCategoria"))
+                            {
+                                <option value="@item1.Id">@item1.Nombre</option>
+                            }
+                        </select>
+                        <label for="Categoria" class="placeholder">Categoría</label>
+                    </div>
+                </div>
+
+            </div-->
+
+            <div class="row">
+
+                <div class="table-responsive">
+                    <table id="tabla01" class="display compact hover" style="width:100%">
+                        <thead class="header">
+                            <tr>
+                                 <th>Nombre</th>
+                                <th>SKU</th>
+                                <th>Categoría</th>
+                                <th>Precio</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            @foreach (var items in Model)
+                            {
+                                <tr>
+                                    <td>@items.Productos.Nombre</td>
+                                    <td align="right">@items.Productos.SKU</td>
+                                    <td>@items.NombreCategoria</td>
+                                    <td align="right">@items.Precio.ToString("c")</td>
+                                    <td align="right">@items.Fecha.ToString("dd/MM/yy")</td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+

@@ -1,0 +1,318 @@
+﻿
+@{
+    ViewBag.Title = "Agregar";
+}
+
+<link href="~/assets/js/plugin/datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+
+<div class="page-inner">
+    <div class="page-header">
+        <h4 class="page-title">Agregar Campaña</h4>
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <form method="post" action="/Marketing/Agregar">
+
+                <div class="card">
+
+                    <div class="row">
+
+                        <div class="col-md-4 col-lg-4">
+
+                            <div class="form-group form-floating-label">
+                                <input type="text" class="form-control input-solid" name="Clave" placeholder="" required tabindex="1" autocomplete="off">
+                                <label for="Clave" class="placeholder">Clave Evento</label>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4 col-lg-4"></div>
+
+                        <div class="col-md-4 col-lg-4"></div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-4 col-lg-4">
+
+                            <div class="form-group form-floating-label">
+                                <input type="text" class="form-control input-solid" name="Nombre" placeholder="" required tabindex="1" autocomplete="off" style="width: 450px">
+                                <label for="Nombre" class="placeholder">Nombre</label>
+                            </div>
+
+                        </div>
+
+
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-4 col-lg-4">
+
+                            <div class="form-group form-floating-label">
+                                <input type="text" class="form-control input-solid" id="Inicio" name="Inicio" placeholder="" maxlength="12" required autocomplete="off">
+                                <label for="Inicio" class="placeholder">Inicio</label>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4 col-lg-4">
+
+                            <div class="form-group form-floating-label">
+                                <input type="text" class="form-control input-solid" id="Fin" name="Fin" placeholder="" maxlength="12" required autocomplete="off">
+                                <label for="Fin" class="placeholder">Fin</label>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4 col-lg-4">
+
+                            <div class="form-group form-floating-label">
+                                <input type="text" class="form-control input-solid" id="Envios" name="Envios" placeholder="" maxlength="12" required autocomplete="off">
+                                <label for="Envios" class="placeholder">Envío Correo</label>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-8 col-lg-8">
+
+                            <div class="form-group form-floating-label">
+                                <textarea type="text" class="form-control input-solid" cols="192" rows="7" name="Objetivo" required></textarea>
+                                <label for="Objetivo" class="placeholder">Descripción</label>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-2 col-lg-2">
+                            <div class="form-group form-inline">
+                                <label class="col-md-2 col-form-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Medio</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-10 col-lg-10">
+
+                            <div class="form-group form-inline text-left">
+
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" name="Correo" value="1" checked>
+                                        <span class="form-check-sign">Correo</span>
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" name="Facebook" value="1">
+                                        <span class="form-check-sign">Facebook</span>
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" name="Linkedin" value="1">
+                                        <span class="form-check-sign">Linkedin</span>
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" name="Llamada" value="1">
+                                        <span class="form-check-sign">Llamada Telefónica</span>
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" name="ASAE" value="1">
+                                        <span class="form-check-sign">Página</span>
+                                    </label>
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="card">
+
+                    <div class="card-header">
+                        <h4 class="card-title">Datos para la agenda del evento</h4>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="row">
+
+                            <div class="col-md-4 col-lg-4">
+
+                                <div class="form-group form-floating-label">
+                                   <input type="text" class="form-control input-solid" id="InicioEvento" name="InicioEvento" placeholder="" maxlength="12" required autocomplete="off">
+                                    <label for="InicioEvento" class="placeholder">Fecha Inicio</label>
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-4 col-lg-4">
+
+                                <div class="form-group form-floating-label">
+                                    <input type="text" class="form-control input-solid" id="HoraInicio" name="HoraInicio" placeholder="" maxlength="12" required autocomplete="off">
+                                    <label for="HoraInicio" class="placeholder">Hora Inicio</label>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-md-4 col-lg-4">
+
+                                <div class="form-group form-floating-label">
+                                    <input type="text" class="form-control input-solid" id="FinEvento" name="FinEvento" placeholder="" maxlength="12" required autocomplete="off">
+                                    <label for="FinEvento" class="placeholder">Fecha Fin</label>
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-4 col-lg-4">
+
+                                <div class="form-group form-floating-label">
+                                    <input type="text" class="form-control input-solid" id="HoraFin" name="HoraFin" placeholder="" maxlength="12" required autocomplete="off">
+                                    <label for="HoraFin" class="placeholder">Hora Fin</label>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="row">
+
+                            <div class="col-md-8">
+
+                                <div class="form-group form-floating-label">
+                                    <input type="text" class="form-control input-solid" id="Ubicacion" name="Ubicacion" placeholder="" maxlength="50" required autocomplete="off" style="width:450px">
+                                    <label for="Ubicacion" class="placeholder">Ubicación</label>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-md-8 col-lg-8">
+
+                                <div class="form-group form-floating-label">
+                                    <input type="text" class="form-control input-solid" id="Descripcion" name="Descripcion" placeholder="" maxlength="150" required autocomplete="off" style="width:450px">
+                                    <label for="Descripcion" class="placeholder">Descripción (breve)</label>
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-8 col-lg-8">
+
+                                <div class="form-group form-inline">
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+                <div class="card-action label-align-center">
+                    <button type="submit" class="btn btn-success">Guardar y continuar con los contactos</button>
+                </div>
+
+            </form>
+
+
+
+        </div>
+
+    </div>
+
+</div>
+
+<scrip src="../assets/js/plugin/datetimepicker/moment.js"></scrip>
+<script src="../assets/js/plugin/datetimepicker/jquery.datetimepicker.full.js"></script>
+
+<script>
+
+    $.datetimepicker.setLocale('es');
+
+    $('#Inicio').datetimepicker({
+        timepicker: false,
+        format: 'd/m/Y',
+    });
+
+    $('#Fin').datetimepicker({
+        timepicker: false,
+        format: 'd/m/Y',
+        formatDate: 'Y/m/d',
+    });
+
+    $('#Envios').datetimepicker({
+        timepicker: false,
+        format: 'd/m/Y',
+        formatDate: 'Y/m/d',
+    });
+
+    $('#InicioEvento').datetimepicker({
+        timepicker: false,
+        format: 'd/m/Y',
+        formatDate: 'Y/m/d',
+    });
+
+    $('#FinEvento').datetimepicker({
+        timepicker: false,
+        format: 'd/m/Y',
+        formatDate: 'Y/m/d',
+    });
+
+    $('#HoraInicio').datetimepicker({
+        datepicker: false,
+        format: 'H:i',
+    });
+
+    $('#HoraFin').datetimepicker({
+        datepicker: false,
+        format: 'H:i',
+    });
+
+</script>

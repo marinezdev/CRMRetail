@@ -1,0 +1,644 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<style>
+    .bg-primary-gradient {
+        background: #1572E8 !important;
+        background: -webkit-linear-gradient(legacy-direction(-45deg), #06418E, #1572E8) !important;
+        background: linear-gradient( -45deg, #8e0606, #ed1d24) !important;
+    }
+
+    .circle {
+        width: 200px;
+        height: 200px;
+        background-color: #e9ecef;
+        border-radius: 50%;
+        position: relative;
+        margin: 0 auto;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .circle-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
+
+        .circle-content h1 {
+            font-size: 48px;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .circle-content p {
+            margin: 0;
+        }
+
+    .text-center {
+        text-align: center;
+    }
+</style>
+
+<script src="~/assets/js/plugin/datatables/datatables.min.js"></script>
+<div class="page-inner">
+
+    <div class="page-header">
+        <h4 class="page-title">Dashboard</h4>
+        <ul class="breadcrumbs">
+            <li class="nav-home">
+                <a href="#">
+                    <i class="flaticon-presentation"></i>
+                </a>
+            </li>
+            <li class="separator">
+                <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Dashboard de ventas mensuales </a>
+            </li>
+        </ul>
+    </div>
+    @*SUCURSALES*@
+    <div class="row">
+        <div class="col-md-8">
+            <div class="row">
+                @foreach (var item in ViewBag.ReporteVentas)
+                {
+                    <div class="col-6">
+                        <div class="card card-primary bg-primary-gradient">
+                            <div class="card-body">
+                                <h4 class="b-b1 pb-1 mb-1 fw-bold text-center">@item.Nombre</h4>
+                                <h1 class="mb-1 fw-bold text-center"><i class="flaticon-coins"></i> $ @string.Format("{0:N}", @item.VentasXMes)</h1>
+
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+
+        <div class="col-md-4 text-center card card-primary bg-primary-gradient" style="margin-bottom: 27px;">
+            <div id="tuID" class="align-items-center">
+                <h4 class="mt-2 b-b1 pb-1 mb-1 fw-bold text-center">Clientes Registrados Este Mes y Ventas Backorder</h4>
+                <br />
+                <div class="d-flex justify-content-between align-items-center">
+                    <a class="circle bg-info" style="width: 100px; height: 100px;">
+                        <div class="circle-content">
+                            <h1 style="font-size: 38px; color: white;">@ViewBag.ContClient</h1>
+                        </div>
+                    </a>
+                    <a href="#tabla02" class="circle bg-warning" style="width: 100px; height: 100px;">
+                        <div class="circle-content">
+                            <h1 style="font-size: 38px; color: white;">@ViewBag.ContBack</h1>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col">
+                        <p class="mt-2 pb-1 mb-1 fw-bold text-center"><i class="fa fa-user-plus" aria-hidden="true"></i>  Clientes Registrados</p>
+                    </div>
+                    <div class="col">
+                        <p class="mt-2 pb-1 mb-1 fw-bold text-center"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>  Ventas Backorder</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+    @*GRAFICAS*@
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header text-center">
+                    <div class="card-title"> Dashboard de ventas </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <select id="selectAnio">
+                            </select>
+
+                            @*VENTAS ANULAES*@
+                            <div class="d-flex flex-wrap justify-content-around pb-2 pt-4">
+                                <canvas id="densityChart3" width="600" height="200"></canvas>
+                            </div>
+                            @*Venta Hoy*@
+                            <div class="d-flex flex-wrap justify-content-around pb-2 pt-4">
+                                <canvas id="densityChart" width="600" height="200"></canvas>
+                            </div>
+                            @*Venta ayer*@
+                            <div class="card-category">Estadística – Ventas registras por sucursal   </div>
+
+                            <div class="d-flex flex-wrap justify-content-around pb-2 pt-4">
+                                <canvas id="densityChart2" width="600" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card card-primary bg-primary-gradient">
+                <div class="card-body">
+                    <h4 class="mt-3 b-b1 pb-2 mb-4 fw-bold">Resumen de mes, total de ventas </h4>
+                    <h1 class="mb-4 fw-bold text-center">@ViewBag.Venta_ResumenMes.Ventas</h1>
+                    <h4 class="mt-3 b-b1 pb-2 mb-5 fw-bold"> Grafica ventas por sucursal</h4>
+                    <canvas id="densityChart4" width="600" height="350"></canvas>
+                    <div id="activeUsersChart"></div>
+                    <h4 class="mt-5 pb-3 mb-0 fw-bold">Ventas por sucursal $</h4>
+                    <ul class="list-unstyled">
+                        @{
+                            foreach (var dt in ViewBag.ResumenM)
+                            {
+                                <li class="d-flex justify-content-between pb-1 pt-1"><small>@dt.Nombre</small> <span>$ @string.Format("{0:N}", dt.VentasXMes)</span></li>
+
+
+                            }
+                        }
+                    </ul>
+                    <br />
+                    <h4 class="mt-3 b-b1 pb-2 mb-5 fw-bold"> Total </h4>
+                    <h1 class="mb-4 fw-bold text-center">$ @string.Format("{0:N}", @ViewBag.Venta_ResumenMes.Total)</h1>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    @*TABLAS*@
+    <div class="row">
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header text-center">
+                            <div class="card-title">Últimas 30 ventas registradas</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <table id="tabla01" class="display compact hover table-striped table-hover text-center" style="width:100%;">
+                                        <thead class="header">
+                                            <tr>
+                                                <th>Fecha</th>
+                                                <th>Nombre </th>
+                                                <th>Monto </th>
+                                                <th>Sucursal </th>
+                                                <th>Estatus </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{
+                                                foreach (var dtCliente in ViewBag.Venta_TOP)
+                                                {
+                                                    <tr>
+                                                        <td>@dtCliente.FechaRegistro</td>
+                                                        <td>@dtCliente.Nombre</td>
+                                                        <td>$@string.Format("{0:N}", @dtCliente.Monto)</td>
+                                                        <td>@dtCliente.Sucursal</td>
+                                                        <td>@dtCliente.Estatus</td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header text-center">
+                            <div class="card-title"> Ventas Back Order  </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <table id="tabla02" class="display compact hover table-striped table-hover text-center" style="width:100%;">
+                                        <thead class="header">
+                                            <tr>
+                                                <th>Fecha</th>
+                                                <th>Nombre </th>
+                                                <th>Monto </th>
+                                                <th>Sucursal </th>
+                                                <th>Estatus </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{
+                                                foreach (var dtCliente in ViewBag.Venta_BackOrder)
+                                                {
+                                                    <tr>
+                                                        <td>@dtCliente.FechaRegistro</td>
+                                                        <td>@dtCliente.Nombre</td>
+                                                        <td>$@string.Format("{0:N}",@dtCliente.Monto)</td>
+                                                        <td>@dtCliente.Sucursal</td>
+                                                        <td>@dtCliente.Estatus</td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header text-center">
+                    <div class="card-title" style="font-size: 18px;"> Clientes que compraron este mes  </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table id="tabla03" class="display compact hover table-striped table-hover text-center" style="width:100%;">
+                                <thead class="header">
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Monto </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        foreach (var dtCliente in ViewBag.Cliente_Ganados_TOP)
+                                        {
+                                            <tr>
+                                                <td>@dtCliente.Nombre</td>
+                                                <td>$ @string.Format("{0:N}", @dtCliente.Total)</td>
+                                                
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/assets/js/plugin/chart.js/chart.min.js"></script>
+<script src="~/assets/js/plugin/Sparkline/jquery.sparkline.min.js"></script>
+<script src="~/assets/js/plugin/chart.js/chart.min.js"></script>
+
+
+
+<script>var select = document.getElementById("selectAnio");
+    var currentYear = new Date().getFullYear();
+
+    for (var i = currentYear; i >= currentYear - 5; i--) {
+        var option = document.createElement("option");
+        option.value = i;
+        option.text = i;
+        select.appendChild(option);
+    }
+
+    // Verificar si el año actual no está en el select y agregarlo al principio
+    var currentYearOption = document.createElement("option");
+    currentYearOption.value = currentYear;
+    currentYearOption.text = currentYear;
+
+    if (select.options[0].value != currentYearOption.value) {
+        select.add(currentYearOption, select.options[0]);
+    }
+</script>
+
+<script>
+
+
+     //GRAFICA PASTEL
+    function generarColores(n) {
+        var colores = [];
+        for (var i = 0; i < n; i++) {
+            var r = Math.floor(Math.random() * 256);
+            var g = Math.floor(Math.random() * 256);
+            var b = Math.floor(Math.random() * 256);
+            var color = "rgba(" + r + ", " + g + ", " + b + ", 0.9)";
+            colores.push(color);
+        }
+        return colores;
+    }
+
+    var colores = generarColores(@ViewBag.ResumenM.Count);
+    $(document).ready(function () {
+
+        var densityCanvas = document.getElementById("densityChart4");
+
+        Chart.defaults.global.defaultFontFamily = "Arial, sans-serifapple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif";
+        Chart.defaults.global.defaultFontSize = 14;
+
+
+        var densityData = {
+            label: 'Total',
+
+            options: {
+                legend: {
+                    display: true,
+                    labels: {
+                        color: 'rgb(255, 255, 255)'
+                    }
+                },
+                scales: {
+                yAxes: [{
+                    display: false,
+                    }]
+                },
+                elements: {
+                    display: false,
+                }
+            },
+
+
+           data: [
+                @foreach (var Com in ViewBag.ResumenM)
+                    {
+                    @Html.Raw(@Com.VentasXMes)
+                    @Html.Raw(",")
+                }
+
+                ],
+
+            backgroundColor: colores,
+            borderColor: colores,
+            borderWidth: 1
+
+        };
+
+        var chartOptions = {
+
+            legend: {
+                display: true,
+                position: 'top',
+                labels: {
+                  fontColor: 'White'
+                }
+              },
+            scales: {
+            yAxes: [{
+                display: false,
+                }]
+            },
+            elements: {
+                rectangle: {
+                  borderSkipped: 'left',
+                }
+              }
+
+        };
+
+        var barChart = new Chart(densityCanvas, {
+            type: 'pie',
+            data: {
+                labels: [
+                    @foreach(var d in ViewBag.NSucursal)
+                     {
+                      <text>"@d.Nombre",</text>
+
+                     }
+                ],
+                datasets: [densityData],
+            },
+            options: chartOptions
+        });
+    });
+
+
+
+    $(document).ready(function () {
+        // Obtener una referencia al elemento canvas del DOM
+        var $grafica = document.getElementById("densityChart");
+
+        // Las etiquetas son las que van en el eje X.
+        const etiquetas = [
+            @foreach(var d in ViewBag.Venta_DiaR)
+             {
+                <text>"@d.Nombre",</text>
+
+             }]
+        // Podemos tener varios conjuntos de datos. Comencemos con uno
+        const datosVentas2020 = {
+            label: "Ventas del dia",
+            data: [
+                @foreach (var Com in ViewBag.Venta_DiaR)
+                    {
+                    @Html.Raw(@Com.hoy)
+                    @Html.Raw(",")
+                }
+            ],
+            backgroundColor: 'rgba(54, 162, 235, 0.2)', // Color de fondo
+            borderColor: 'rgba(54, 162, 235, 1)', // Color del borde
+            borderWidth: 1,// Ancho del borde
+        };
+        new Chart($grafica, {
+            type: 'bar',// Tipo de gráfica
+            data: {
+                labels: etiquetas,
+                datasets: [
+                    datosVentas2020,
+                    // Aquí más datos...
+                ]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }],
+                },
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        // Obtener una referencia al elemento canvas del DOM
+            var $grafica = document.getElementById("densityChart2");
+
+        // Las etiquetas son las que van en el eje X.
+        const etiquetas = [
+            @foreach(var d in ViewBag.Venta_DiaR)
+             {
+                <text>"@d.Nombre",</text>
+
+             }]
+        // Podemos tener varios conjuntos de datos. Comencemos con uno
+        const datosVentas2020 = {
+            label: "Ventas de ayer",
+            data: [
+                @foreach (var Com in ViewBag.Venta_DiaR)
+                    {
+                    @Html.Raw(@Com.ayer)
+                    @Html.Raw(",")
+                }
+            ],
+            backgroundColor: 'rgba(255, 99, 132, 0.2)', // Color de fondo
+            borderColor: 'rgb(255, 99, 132)', // Color del borde
+            borderWidth: 1,// Ancho del borde
+        };
+        new Chart($grafica, {
+            type: 'bar',// Tipo de gráfica
+            data: {
+                labels: etiquetas,
+                datasets: [
+                    datosVentas2020,
+                    // Aquí más datos...
+                ]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }],
+                },
+            }
+        });
+    });
+
+
+
+
+    // Obtén el elemento <select> y el contexto del lienzo (canvas)
+    var selectAnio = document.getElementById('selectAnio');
+    var ctx = document.getElementById('densityChart3').getContext('2d');
+    var datosVentas = {
+        '2018': [0, 0, 0],
+        '2019': [0, 0, 0],
+        '2020': [0, 0, 0],
+        '2021': [0, 0, 0],
+        '2022': [0, 0, 0],
+        '2023': [@foreach (var Com in ViewBag.Venta_Anual_2023)
+                    {
+                    @Html.Raw(@Com.TotalS)
+                    @Html.Raw(",")
+                }],
+        '2024': [@foreach (var Com in ViewBag.Venta_Anual_2024)
+                    {
+                    @Html.Raw(@Com.TotalS)
+                    @Html.Raw(",")
+                }],
+        '2025': [0, 0, 0],
+        '2026': [0, 0, 0]
+    };
+
+    var chart; // Variable para almacenar la instancia de la gráfica
+
+    function generarColoresMeses(numMeses) {
+        var colores = [];
+        for (var i = 0; i < numMeses; i++) {
+            var colorFondo = 'rgba(' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',0.5)';
+            var colorBorde = colorFondo.replace('0.5', '1');
+            colores.push({ fondo: colorFondo, borde: colorBorde });
+        }
+        return colores;
+    }
+
+    function actualizarGrafica(anio) {
+        var ventas = datosVentas[anio];
+        var numMeses = ventas.length;
+        var coloresMeses = generarColoresMeses(numMeses);
+
+        var data = {
+            labels: [@foreach(var d in ViewBag.Venta_DiaR)
+             {
+                <text>"@d.Nombre",</text>
+
+             }],
+            datasets: [{
+                label: 'Venta Anual',
+                data: ventas,
+                backgroundColor: coloresMeses.map(color => color.fondo),
+                borderColor: coloresMeses.map(color => color.borde),
+                borderWidth: 1
+            }]
+        };
+
+        var options = {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        };
+
+        if (chart) {
+            chart.data = data;
+            chart.options = options;
+            chart.update();
+        } else {
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: data,
+                options: options
+            });
+        }
+    }
+
+    selectAnio.addEventListener('change', function () {
+        var anioSeleccionado = selectAnio.value;
+        actualizarGrafica(anioSeleccionado);
+    });
+
+    // Inicializar la gráfica con el año seleccionado actualmente
+    actualizarGrafica(selectAnio.value);
+
+
+</script>
+<script>$(document).ready(function () {
+
+        $('#IndexHome').addClass("nav-item active submenu");
+
+
+        $('#tabla01').DataTable({
+            "searching": true,
+            "paging": true,
+            // Disable sorting on the first column
+            "ordering": false,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+            },
+            info: true,
+        });
+        $('#tabla02').DataTable({
+            "searching": true,
+            "paging": true,
+            "ordering": false,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+            },
+            info: true,
+        });
+        $('#tabla03').DataTable({
+            "searching": true,
+            "paging": true,
+            "ordering": false,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+            },
+            info: true,
+        });
+    });</script>
+

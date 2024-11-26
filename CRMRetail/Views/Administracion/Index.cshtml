@@ -1,0 +1,54 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+
+<div class="page-inner">
+    <div class="page-header">
+        <h4 class="page-title">Administración General del Sistema</h4>
+    </div>
+    <div class="row">
+
+        <div id="Espera" style="display:none; width:69px;height:90px;position:absolute;top:20%;left:50%;padding:2px;z-index:1000">
+            <img src="../assets/img/spinner.gif" width="64" height="64" /><br />Cargando...
+        </div>
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-12">
+
+                    @Html.Partial("_MenuAdmin")
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <div class="row">
+
+
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+<script>$('#IndexAdmin').addClass("nav-item active submenu");</script>

@@ -1,0 +1,103 @@
+﻿@model List<CRMRetail.Modelos.VentasGeneral>
+@{
+    ViewBag.Title = "Productos X Cliente";
+}
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#IndexVentas').addClass("nav-item active submenu");
+
+        $.fn.dataTable.moment("DD/MM/YYYY");
+
+        $('#tabla01').DataTable({
+            "searching": true,
+            "paging": true,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+            },
+            "scrollX": true,
+            info: true,
+        });
+
+    });
+
+</script>
+
+<script src="~/assets/js/plugin/datatables/datatables.min.js"></script>
+<script src="../assets/js/plugin/datatables/sum().js"></script>
+<script src="~/assets/js/plugin/datatables/dataTables.colReorder.min.js"></script>
+<link href="~/assets/css/colReorder.dataTables.min.css" rel="stylesheet" />
+<link href="~/assets/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+<div class="page-inner">
+    <div class="page-header">
+        <h4 class="page-title">Productos X Cliente</h4>
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-12 text-right">
+
+                    <a href="/Ventas/Index">Todos las Ventas</a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="table-responsive">
+                    <table id="tabla01" class="display compact hover" style="width:100%">
+                        <thead class="header">
+                            <tr>
+                                <th>Id</th>
+                                <th>Nombre</th>
+                                <th>SKU</th>
+                                <th>Fecha&nbsp;Venta</th>
+                                <th>Cliente</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @if (Model == null)
+                            {
+                                <tr><td colspan="5" align="center">Sin datos para mostrar</td></tr>
+                            }
+                            @foreach (var items in Model)
+                            {
+                                <tr>
+                                    <td>@items.Productos.Id</td>
+                                    <td>@items.Productos.Nombre</td>
+                                    <td>@items.Productos.SKU</td>
+                                    <td>@items.Ventas.Fecha.ToString("dd/MM/yy")</td>
+                                    <td>@items.Clientes.Nombre</td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+

@@ -1,0 +1,256 @@
+﻿@model CRMRetail.Modelos.MarketingRecordatorios
+@{
+    ViewBag.Title = "Modificar Recordatorio";
+}
+
+<!--link href="../assets/css/summernote.css" rel="stylesheet" /-->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#IndexMarketing').addClass("nav-item active submenu");
+
+
+        $("#Boton1").click(function () {
+            $("form").attr("action", "/Marketing/RecordatoriosModificar").addClass('is-loading').prop('disabled', true);
+        });
+
+        $("#Boton2").click(function () {
+            $("form").attr("action", "/Marketing/RecordatoriosModificar").addClass('is-loading').prop('disabled', true);
+        });
+
+    });
+
+</script>
+
+<style>
+
+    .responsiva {
+        max-width: 100%;
+        max-height: 100%;
+        height: auto
+    }
+</style>
+
+<div class="page-inner">
+    <div class="page-header">
+        <h4 class="page-title">Modificar Correo de Recordatorio</h4>
+    </div>
+    <div class="row">
+
+        <div class="col-md-12">
+
+            <div class="card">
+
+                <div class="card-body">
+
+                    <a href="/Marketing/Recordatorios?idcampaña=@Request["recordatorio"]">Regresar</a>
+
+                    <form method="post" action="/Marketing/RecordatoriosModificar">
+                        <input type="hidden" id="recordatorio" name="recordatorio" value="@Request["recordatorio"]" />
+
+                        <div class=" mail-wrapper bg-white" style="width:100%">
+                            <div class="page-content mail-content">
+                                <div class="email-head d-lg-flex d-block"></div>
+                                <div class="email-compose-fields">
+                                    <div class="form-group row">
+                                        <label for="fecha" class="col-form-label col-md-1">Enviar a</label>
+                                        <div class="col-md-10">
+                                            <div class="form-group">
+                                                <div class="form-check">
+                                                    <label class="form-radio-label">
+                                                        <input class="form-radio-input" type="radio" id="enviara1" name="enviara" value="1" checked="@(1 == Model.EnviarA)">
+                                                        <span class="form-radio-sign">Todos</span>
+                                                    </label>
+                                                    <label class="form-radio-label ml-3">
+                                                        <input class="form-radio-input" type="radio" id="enviara2" name="enviara" value="2" checked="@(2 == Model.EnviarA)">
+                                                        <span class="form-radio-sign">Confirmados</span>
+                                                    </label>
+                                                    <label class="form-radio-label ml-3">
+                                                        <input class="form-radio-input" type="radio" id="enviara3" name="enviara" value="3" checked="@(3 == Model.EnviarA)">
+                                                        <span class="form-radio-sign">No Confirmados</span>
+                                                    </label>
+                                                    <label class="form-radio-label ml-3">
+                                                        <input class="form-radio-input" type="radio" id="enviara4" name="enviara" value="4" checked="@(4 == Model.EnviarA)">
+                                                        <span class="form-radio-sign">Asistió</span>
+                                                    </label>
+                                                    <label class="form-radio-label ml-3">
+                                                        <input class="form-radio-input" type="radio" id="enviara5" name="enviara" value="5" checked="@(5 == Model.EnviarA)">
+                                                        <span class="form-radio-sign">No asistió</span>
+                                                    </label>
+
+
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-floating-label">
+                                        <input type="text" class="form-control input-solid" id="fecha" name="fecha" value="@Model.Envio" style="width: 150px">
+                                        <label for="fecha" class="placeholder">Fecha</label>
+                                    </div>
+                                    <div class="form-group form-floating-label">
+                                        <input type="text" class="form-control input-solid" name="asunto" value="@Model.Asunto">
+                                        <label for="asunto" class="placeholder">Asunto</label>
+                                    </div>
+                                </div>
+                                <div class="alert alert-info">
+                                    <a href="#" data-toggle="modal" data-target="#ModalPlantillas">Plantillas de correo</a>
+                                </div>
+                                <div class="email-editor">
+                                    <textarea name="contenido" id="editor">@Model.Cuerpo</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-action label-align-center">
+                            <button name="Boton1" value="BotonA" id="Boton1" type="submit" class="btn btn-success">Terminar</button>
+                            &nbsp;
+                            <button name="Boton2" value="BotonB" id="Boton2" type="submit" class="btn btn-primary">Guardar y Probar el Correo Creado</button>
+                        </div>
+
+
+                    </form>
+
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalPlantillas" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="ModalLabel1">Plantillas de Correo</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="col-md-12">
+
+                    @CRMRetail.Utilidades.CustomHelpers.ContenidoPlantillas()
+
+
+                </div>
+
+            </div>
+
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalVistaPrevia" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content" style="background-color: gainsboro">
+            <div class="modal-header">
+                <h3 class="modal-title" id="ModalLabel1">Vista Previa de la Plantilla</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <center>
+                    <div style="border:1px solid gray">
+
+                        <img id="imagenaver" src="" class="responsiva">
+
+                    </div>
+                </center>
+
+            </div>
+
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+<script src="../assets/js/plugin/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
+<script src="../assets/js/plugin/bootstrap-toogle/bootstrap-toggle.min.js"></script>
+
+<script src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+<script src="../assets/js/plugin/summernote/summernote-bs4.min.js"></script>
+<script src="../assets/js/plugin/summernote/summernote-es.js"></script>
+
+<!--Datetime picker -->
+<script src="../assets/js/plugin/datetimepicker/moment.js"></script>
+<script src="../assets/js/plugin/datetimepicker/datetimepicker.js"></script>
+
+
+<script>
+    $('#editor').summernote({
+        fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Helvetica', 'Times new Roman'],
+        tabsize: 2,
+        height: 300,
+        lang: 'es-ES',
+    });
+
+    $('#fecha').datetimepicker({
+        format: 'DD/MM/YYYY',
+    });
+
+    $('#ModalVistaPrevia').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Botón que dispara el modal
+        var recipient = button.data('id')   // Extrae la info de los atributos data-*
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        var modal = $(this)
+        modal.find('.modal-title').text('Vista previa de la plantilla ')
+        //modal.find('.imagenaver').src='../../assets/img/' + recipient
+        modal.find('.modal-body input').val(recipient)
+        $(".modal-body #imagenaver").attr("src", '../../assets/img/' + recipient);
+    })
+
+    function CopiarCodigo(id) {
+        $('#ModalPlantillas').modal('hide');
+        //$('#editor').html('Hola');
+        //$('#editor').summernote('code', '<h1>Bienvenido</h1><p>Hola, modifica estas líneas como lo necesites para crear tu correos</p>');
+        //alert("Se obtendrá el código de la plantilla " + id);
+
+        $.ajax({
+            url: "/Marketing/MarketingCorreoPlantilla/",
+            data: { id: id },
+            type: "GET",
+            contentType: "application/json",
+            dataType: "json",
+            beforeSend: function () {
+                $('#Espera').show();
+            },
+            success: function (data) {
+
+                $('#editor').summernote('code', data.Codigo);
+
+            },
+            complete: function () {
+                $('#Espera').hide();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('jqXHR:');
+                console.log(jqXHR);
+                console.log('textStatus:');
+                console.log(textStatus);
+                console.log('errorThrown:');
+                console.log(errorThrown);
+            }
+        });
+    }
+
+</script>

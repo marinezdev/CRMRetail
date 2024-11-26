@@ -1,0 +1,2656 @@
+﻿
+@{
+    ViewBag.Title = "Agregar";
+}
+<style>
+    .form-control {
+        font-size: 14px;
+        border-color: #c2c2c2;
+        padding: .6rem 1rem;
+        height: inherit !important;
+    }
+</style>
+
+
+<!-- jQuery Validation -->
+<script src="../assets/js/plugin/jquery.validate/jquery.validate.min.js"></script>
+
+<div class="page-inner">
+    @*<div class="page-header">
+            <h4 class="page-title">Agregar Nuevo Cliente</h4>
+        </div>*@
+    <div class="row">
+
+        <div id="Espera" style="display:none; width:69px;height:90px;position:absolute;top:20%;left:50%;padding:2px;z-index:1000">
+            <img src="../assets/img/spinner.gif" width="64" height="64" /><br />Cargando...
+        </div>
+    </div>
+
+    <div class="page-header">
+        <h4 class="page-title">Clientes</h4>
+        <ul class="breadcrumbs">
+            <li class="nav-home">
+                <a href="#">
+                    <i class="flaticon-home"></i>
+                </a>
+            </li>
+            <li class="separator">
+                <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Cliente</a>
+            </li>
+            <li class="separator">
+                <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Nuevo</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-md-12 text-right">
+                        <a class="btn btn-link" href="/Clientes/Index">
+                            <span class="btn-label">
+                                <i class="fa fa-users"></i>
+                            </span>
+                            Todos los Clientes
+                        </a>
+                    </div>
+                    <div class="card-title">Agregar nuevo cliente</div>
+                    <div class="card-category">Completa los campos marcados *</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-category">Datos </div>
+                    <div class="row">
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="defaultSelect">* Tipo de Cliente </label>
+                                <select class="form-control form-control" id="Select_Persona">
+                                    <option value="0">Seleccionar </option>
+                                    <option value="1">Persona Física </option>
+                                    <option value="2">Persona Moral </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" id="Fisica_Div1" style="display: none;">
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="largeInput">* Nombre (s)</label>
+                                <input type="text" class="form-control form-control" id="Nombre" onchange="ValidaInput('Nombre')" autocomplete="off,new-password">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="largeInput">* Apellido Paterno </label>
+                                <input type="text" class="form-control form-control" id="Apellido_Paterno" onchange="ValidaInput('Apellido_Paterno')" autocomplete="off,new-password">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="largeInput">* Apellido Materno </label>
+                                <input type="text" class="form-control form-control" id="Apellido_Materno" onchange="ValidaInput('Apellido_Materno')" autocomplete="off,new-password">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" id="Fisica_Div2" style="display: none;">
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="defaultSelect">* Sexo </label>
+                                <select class="form-control form-control" id="Select_Sexo" onchange="ValidaSelect('Select_Sexo')">
+                                    <option value="0">Seleccionar </option>
+                                    <option value="1">Masculino  </option>
+                                    <option value="2">Femenino  </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="dia_mes">Fecha de nacimiento</label>
+                                <div class="input-group">
+                                    <input type="number" autocomplete="off" class="form-control col-3" id="dia" name="dia" min="1" max="31">
+                                    <select class="form-control" id="mes">
+                                        <option value="00">Seleccione un mes</option>
+                                        <option value="01">Enero</option>
+                                        <option value="02">Febrero</option>
+                                        <option value="03">Marzo</option>
+                                        <option value="04">Abril</option>
+                                        <option value="05">Mayo</option>
+                                        <option value="06">Junio</option>
+                                        <option value="07">Julio</option>
+                                        <option value="08">Agosto</option>
+                                        <option value="09">Septiembre</option>
+                                        <option value="10">Octubre</option>
+                                        <option value="11">Noviembre</option>
+                                        <option value="12">Diciembre</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="largeInput"> RFC  </label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-default" type="button">Buscar</button>
+                                    </div>
+                                    <input type="text" class="form-control" onchange="ValidaRFC(this)" maxlength="13" autocomplete="off" placeholder="Ingrese su RFC" aria-label="" aria-describedby="basic-addon1" id="RFC" style="text-transform:uppercase" autocomplete="off,new-password">
+                                </div>
+                                <span style="color:#f44336" id="RFC_Mensaje"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" id="Fisica_Div3" style="display: none;">
+                        <div class="col-md-4 col-lg-4">
+                            @*<div class="form-group">
+                                <label for="dia_mes">Fecha de nacimiento</label>
+                                <div class="input-group">
+                                    <input type="number" autocomplete="off" class="form-control col-3" id="dia" name="dia" min="1" max="31">
+                                    <select class="form-control" id="mes">
+                                        <option value="00">Seleccione un mes</option>
+                                        <option value="01">Enero</option>
+                                        <option value="02">Febrero</option>
+                                        <option value="03">Marzo</option>
+                                        <option value="04">Abril</option>
+                                        <option value="05">Mayo</option>
+                                        <option value="06">Junio</option>
+                                        <option value="07">Julio</option>
+                                        <option value="08">Agosto</option>
+                                        <option value="09">Septiembre</option>
+                                        <option value="10">Octubre</option>
+                                        <option value="11">Noviembre</option>
+                                        <option value="12">Diciembre</option>
+                                    </select>
+                                </div>
+                            </div>*@
+                        </div>
+                    </div>
+
+
+
+                    <div class="row" id="Moral_Div1" style="display: none;">
+                        <div class="col-md-8 col-lg-8">
+                            <div class="form-group">
+                                <label for="largeInput">* Nombre </label>
+                                <input type="text" autocomplete="off,new-password" class="form-control form-control" id="Nombre_Moral" onchange="ValidaInput('Nombre_Moral')">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="largeInput">* Fecha de constitución </label>
+                                <input type="date" class="form-control form-control" id="Fecha_Constitucion">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" id="Moral_Div2" style="display: none;">
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="largeInput">* RFC  </label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-default" type="button">Buscar</button>
+                                    </div>
+                                    <input autocomplete="off,new-password" type="text" class="form-control" onchange="ValidaRFC(this)" placeholder="Ingrese su RFC" maxlength="12" autocomplete="off" aria-label="" aria-describedby="basic-addon1" id="RFC_Moral" style="text-transform:uppercase">
+                                </div>
+                                <span style="color:#f44336" id="RFC_MoralMensaje"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4">
+                            <!-- Mensaje de busqueda por RFC -->
+                        </div>
+                    </div>
+
+                    <hr />
+                    <div class="card-category">Contacto </div>
+                    <div class="row">
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="largeInput">* Correo electrónico </label>
+                                <input type="text" autocomplete="off,new-password" class="form-control form-control" id="Correo_Electronico" onchange="ValidaInput('Correo_Electronico')">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="largeInput">* Teléfono móvil </label>
+                                <input type="text" autocomplete="off,new-password" class="form-control form-control input-number" id="Telefono_Movil" maxlength="10" autocomplete="off" onchange="ValidaTelefono()">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="largeInput">Teléfono local  </label>
+                                <input type="text" autocomplete="off,new-password" class="form-control form-control input-number" id="Telefono_Local" maxlength="10" autocomplete="off" onchange="ValidaTelefonoLocal()">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="defaultSelect">* Clasificación  </label>
+                                <select class="form-control form-control" id="Clasificacion" onchange="ValidaSelect('Clasificacion')">
+                                    <option value="0">Seleccionar </option>
+                                    @foreach (var item1 in CRMRetail.Datos.Catalogos.Seleccionar("TipoCliente"))
+                                    {
+
+                                        <option value="@item1.Id">@item1.Nombre</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="defaultSelect">* Origen de Cliente </label>
+                                <select class="form-control form-control" id="Origen_Cliente" onchange="ValidaSelect('Origen_Cliente')">
+                                    <option value="0">Seleccionar </option>
+                                    @foreach (var item2 in CRMRetail.Datos.Catalogos.Seleccionar("OrigenCliente"))
+                                    {
+                                        <option value="@item2.Id">@item2.Nombre</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="defaultSelect">* Sucursal  </label>
+                                <select class="form-control form-control" id="Sucursal" onchange="ValidaSelect('Sucursal')">
+                                    <option value="0">Seleccionar </option>
+                                    @foreach (var item1 in ViewBag.Sucursales)
+                                    {
+                                        <option value="@item1.Id">@item1.Nombre</option>
+                                    }
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr />
+                    <div class="card-category">El cliente tiene una direccion de un centro de distribución  </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input autocomplete="off,new-password" class="form-check-input" type="checkbox" id="checkboxDirecciones" checked>
+                            <span class="form-check-sign">Si</span>
+                        </label>
+                    </div>
+
+                    <div id="Direcciones" style="display: none;">
+                        <hr />
+                        @*<div class="card-category">Direcciones  </div>*@
+                        <div class="card-category">Dirección fiscal  </div>
+                        <div class="row">
+                            <div class="col-md-4 col-lg-4">
+                                <div class="form-group">
+                                    <label for="defaultSelect">* Estado </label>
+                                    <select class="form-control form-control" id="Select_DEstado">
+                                        <option value="0">Seleccionar </option>
+
+                                        @foreach (var item1 in ViewBag.CatEstados)
+                                        {
+                                            <option value="@item1.Id">@item1.Nombre</option>
+                                        }
+
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-lg-4" id="Busqueda_CP">
+                                <div class="form-group">
+                                    <label for="largeInput"> Buscar por código postal   </label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-default" type="button" id="BtnBuscar">Buscar</button>
+                                        </div>
+                                        <input autocomplete="off,new-password" type="text" class="form-control input-number" placeholder="" aria-label="" maxlength="5" aria-describedby="basic-addon1" id="CP_Fiscal">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-lg-4" id="Select_DivDelegacionMunicipio" style="display: none;">
+                                <div class="form-group">
+                                    <label for="defaultSelect">* Delegación / Municipio  </label>
+                                    <select class="form-control form-control" id="Select_Delegacion_Municipio">
+                                        <option value="0">Seleccionar </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-lg-4" id="Select_DivColonia" style="display: none;">
+                                <div class="form-group">
+                                    <label for="defaultSelect">* Colonia  </label>
+                                    <select class="form-control form-control" id="Select_Colonia">
+                                        <option value="0">Seleccionar </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-lg-4" id="Select_DivCP" style="display: none;">
+                                <div class="form-group">
+                                    <label for="defaultSelect">* CP  </label>
+                                    <select class="form-control form-control" id="Select_CP">
+                                        <option value="0">Seleccionar </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 col-lg-4" id="Select_DivCalle" style="display: none;">
+                                <div class="form-group">
+                                    <label for="largeInput">* Calle  </label>
+                                    <input autocomplete="off,new-password" type="text" class="form-control form-control" id="Calle" onchange="ValidaInput('Calle')">
+                                </div>
+                            </div>
+
+                            <div class="col-md-2 col-lg-2" id="Select_DivNumExterior" style="display: none;">
+                                <div class="form-group">
+                                    <label for="largeInput">* Numero exterior  </label>
+                                    <input autocomplete="off,new-password" type="text" class="form-control input-number" id="NumeroExterior" onchange="ValidaInput('NumeroExterior')">
+                                </div>
+                            </div>
+
+                            <div class="col-md-2 col-lg-2" id="Select_DivNumInterior" style="display: none;">
+                                <div class="form-group">
+                                    <label for="largeInput"> Numero interior  </label>
+                                    <input autocomplete="off,new-password" type="text" class="form-control input-number" id="NumeroInterior" onchange="ValidaInput('NumeroInterior')">
+                                </div>
+                            </div>
+
+
+
+                            <div class="col-md-4 col-lg-4" id="Select_DivEntreCalles" style="display: none;">
+                                <div class="form-group">
+                                    <label for="largeInput"> Entre calles  </label>
+                                    <input autocomplete="off,new-password" type="text" class="form-control form-control" id="EntreCalles">
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 col-lg-4" id="Select_DivReferencias" style="display: none;">
+                                <div class="form-group">
+                                    <label for="largeInput"> Referencias  </label>
+                                    <input autocomplete="off,new-password" type="text" class="form-control form-control" id="Referencias">
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 col-lg-4" id="Btn_DivBusqueda" style="display: none;">
+                                <br /><br />
+                                <button class="btn btn-link" id="BtnBuscarCP">
+                                    <span class="btn-label">
+                                        <i class="fa fa-search-plus"></i>
+                                    </span>
+                                    Nuevo CP
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card-category">La dirección fiscal es la misma dirección de entrega  </div>
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input autocomplete="off,new-password" class="form-check-input" type="checkbox" id="checkboxEntrega" name="checkboxEntrega" value="" checked>
+                                <span class="form-check-sign">Si</span>
+                            </label>
+                        </div>
+
+                        <div id="DivDirEntre" style="display: none;">
+                            <hr />
+                            <div class="card-category">Dirección entrega  </div>
+                            <div class="row">
+                                <div class="col-md-4 col-lg-4">
+                                    <div class="form-group">
+                                        <label for="defaultSelect">* Estado </label>
+                                        <select class="form-control form-control" id="Select_DEstado2">
+                                            <option value="0">Seleccionar </option>
+
+                                            @foreach (var item1 in ViewBag.CatEstados)
+                                            {
+                                                <option value="@item1.Id">@item1.Nombre</option>
+                                            }
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-lg-4" id="Busqueda_CP2">
+                                    <div class="form-group">
+                                        <label for="largeInput"> Buscar por código postal   </label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <button class="btn btn-default" type="button" id="BtnBuscar2">Buscar</button>
+                                            </div>
+                                            <input autocomplete="off,new-password" type="text" class="form-control input-number" placeholder="" aria-label="" maxlength="5" aria-describedby="basic-addon1" id="CP_Fiscal2">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-lg-4" id="Select_DivDelegacionMunicipio2" style="display: none;">
+                                    <div class="form-group">
+                                        <label for="defaultSelect">* Delegación / Municipio  </label>
+                                        <select class="form-control form-control" id="Select_Delegacion_Municipio2">
+                                            <option value="0">Seleccionar </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-lg-4" id="Select_DivColonia2" style="display: none;">
+                                    <div class="form-group">
+                                        <label for="defaultSelect">* Colonia  </label>
+                                        <select class="form-control form-control" id="Select_Colonia2">
+                                            <option value="0">Seleccionar </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-lg-4" id="Select_DivCP2" style="display: none;">
+                                    <div class="form-group">
+                                        <label for="defaultSelect">* CP  </label>
+                                        <select class="form-control form-control" id="Select_CP2">
+                                            <option value="0">Seleccionar </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-lg-4" id="Select_DivCalle2" style="display: none;">
+                                    <div class="form-group">
+                                        <label for="largeInput">* Calle  </label>
+                                        <input autocomplete="off,new-password" type="text" class="form-control form-control" id="Calle2" onchange="ValidaInput('Calle2')">
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-lg-2" id="Select_DivNumExterior2" style="display: none;">
+                                    <div class="form-group">
+                                        <label for="largeInput">* Numero exterior  </label>
+                                        <input autocomplete="off,new-password" type="text" class="form-control input-number" id="NumeroExterior2" onchange="ValidaInput('NumeroExterior2')">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2 col-lg-2" id="Select_DivNumInterior2" style="display: none;">
+                                    <div class="form-group">
+                                        <label for="largeInput"> Numero interior  </label>
+                                        <input autocomplete="off,new-password" type="text" class="form-control input-number" id="NumeroInterior2" onchange="ValidaInput('NumeroInterior2')">
+                                    </div>
+                                </div>
+
+
+
+                                <div class="col-md-4 col-lg-4" id="Select_DivEntreCalles2" style="display: none;">
+                                    <div class="form-group">
+                                        <label for="largeInput"> Entre calles  </label>
+                                        <input type="text" class="form-control form-control" id="EntreCalles2">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 col-lg-4" id="Select_DivReferencias2" style="display: none;">
+                                    <div class="form-group">
+                                        <label for="largeInput"> Referencias  </label>
+                                        <input autocomplete="off,new-password" type="text" class="form-control form-control" id="Referencias2">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 col-lg-4" id="Btn_DivBusqueda2" style="display: none;">
+                                    <br /><br />
+                                    <button class="btn btn-link" id="BtnBuscarCP2">
+                                        <span class="btn-label">
+                                            <i class="fa fa-search-plus"></i>
+                                        </span>
+                                        Nuevo CP
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-default" id="BtnRegistrar">
+                        <span class="btn-label">
+                            <i class="fa fa-archive"></i>
+                        </span>
+                        Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
+<link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+<script src="~/assets/js/CRM.js"></script>
+
+<script>
+    function ValidaTelefonoLocal() {
+
+        if ($('#Telefono_Local').val().length > 9) {
+            $('#Telefono_Local').css("border", "1px solid #c2c2c2");
+        } else if ($('#Telefono_Local').val().length == 0) {
+            $('#Telefono_Local').css("border", "1px solid #c2c2c2");
+        }
+        else {
+            $('#Telefono_Local').css("border", "2px solid #f44336");
+        }
+    }
+    function ValidaTelefono() {
+
+        if ($('#Telefono_Movil').val().length > 9) {
+            $('#Telefono_Movil').css("border", "1px solid #c2c2c2");
+        } else {
+            $('#Telefono_Movil').css("border", "2px solid #f44336");
+        }
+    }
+
+    function ValidaInput(name) {
+        if ($('#' + name).val().length > 0) {
+            $('#' + name).css("border", "1px solid #c2c2c2");
+        } else {
+            $('#' + name).css("border", "2px solid #f44336");
+        }
+    }
+
+    function ValidaSelect(name) {
+        if ($('#'+name+' option:selected').val() > 0) {
+            $('#' + name).css("border", "1px solid #c2c2c2");
+        } else {
+            $('#' + name).css("border", "2px solid #f44336");
+        }
+    }
+
+    $('#BtnBuscar2').click(function () {
+
+        $('#CP_Fiscal2').css("border", "2px solid #f44336");
+
+        if ($('#CP_Fiscal2').val().length > 0) {
+            $('#CP_Fiscal2').css("border", "1px solid #c2c2c2");
+        }
+
+        var CP = $("#CP_Fiscal2").val();
+
+        if (CP.length > 0) {
+
+            var obj = {};
+            obj['Nombre'] = CP;
+
+            var jsonObject = {
+                "Catalogos": obj
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("CP_Busqueda", "Clientes")",
+                data: JSON.stringify(jsonObject),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: resultadoBusqueda2,
+                error: errores
+            });
+
+
+        } else {
+            $('#CP_Fiscal2').css("border", "2px solid #f44336");
+            $.notify({
+                message: "Coloca el código postal que buscas."
+            }, {
+                type: 'danger',
+                allow_dismiss: false,
+                animate: {
+                    enter: 'animated rollIn',
+                    exit: 'animated rollOut'
+                }
+            });
+        }
+    });
+
+    function resultadoBusqueda2(data) {
+        if (data.length > 0) {
+
+            console.log(data);
+
+            $('#Select_DEstado2 option[value="'+ data[0]["IdEstado"] +'"]').attr("selected", true);
+
+
+            var IdPoblacion = $("#Select_DEstado2 option:selected").val();
+
+            if (IdPoblacion > 0) {
+                $("#Busqueda_CP2").css("display", "none");
+                $("#Select_DivDelegacionMunicipio2").show();
+                $("#Select_DivColonia2").show();
+                $("#Select_DivCP2").show();
+                $("#Select_DivNumExterior2").show();
+                $("#Select_DivNumInterior2").show();
+                $("#Select_DivCalle2").show();
+                $("#Select_DivEntreCalles2").show();
+                $("#Select_DivReferencias2").show();
+                $("#Btn_DivBusqueda2").show();
+
+                var obj = {};
+                obj['Id'] = IdPoblacion;
+
+                var jsonObject = {
+                    "Catalogos": obj
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("Consulta_DelegacionMunicipio", "Clientes")",
+                    data: JSON.stringify(jsonObject),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (result) {
+
+                        $("#Select_Delegacion_Municipio2").empty();
+
+                        if (result.length > 0) {
+
+                            var option = $(document.createElement('option'));
+                            option.text("Seleccionar");
+                            option.val(0);
+
+                            $("#Select_Delegacion_Municipio2").append(option);
+
+                            $(result).each(function () {
+                                var option = $(document.createElement('option'));
+
+                                option.text(this.Nombre);
+                                option.val(this.Id);
+
+                                $("#Select_Delegacion_Municipio2").append(option);
+                            });
+                        }
+                        $('#Select_Delegacion_Municipio2 option[value="' + data[0]["IdPoblacion"] + '"]').attr("selected", true);
+
+
+                        $("#Select_Colonia2").empty();
+
+                        if (data.length > 0) {
+
+                            var option = $(document.createElement('option'));
+                            option.text("Seleccionar");
+                            option.val(0);
+
+                            $("#Select_Colonia2").append(option);
+
+                            $(data).each(function () {
+                                var option = $(document.createElement('option'));
+
+                                option.text(this.Colonia);
+                                option.val(this.IdCP);
+
+                                $("#Select_Colonia2").append(option);
+                            });
+                        }
+
+                        $('#Select_Colonia2 option[value="' + data[0]["IdCP"] + '"]').attr("selected", true);
+
+                        $("#Select_CP2").empty();
+
+                        var option = $(document.createElement('option'));
+                        option.text(data[0]["CP"]);
+                        option.val(data[0]["IdCP"]);
+
+                        $("#Select_CP2").append(option);
+
+                    }
+                });
+
+            } else {
+                $("#Busqueda_CP2").show();
+                $("#Select_DivDelegacionMunicipio2").css("display", "none");
+                $("#Select_DivColonia2").css("display", "none");
+                $("#Select_DivCP2").css("display", "none");
+                $("#Select_DivNumExterior2").css("display", "none");
+                $("#Select_DivNumInterior2").css("display", "none");
+                $("#Select_DivCalle2").css("display", "none");
+                $("#Select_DivEntreCalles2").css("display", "none");
+                $("#Select_DivReferencias2").css("display", "none");
+                $("#Btn_DivBusqueda2").css("display", "none");
+            }
+
+        } else {
+            $.notify({
+                message: "Código postal no encontrado."
+            }, {
+                type: 'danger',
+                allow_dismiss: false,
+                animate: {
+                    enter: 'animated rollIn',
+                    exit: 'animated rollOut'
+                }
+            });
+        }
+    }
+
+    $('#BtnBuscarCP2').click(function () {
+        $("#Busqueda_CP2").show();
+        $("#Select_DivDelegacionMunicipio2").css("display", "none");
+        $("#Select_DivColonia2").css("display", "none");
+        $("#Select_DivCP2").css("display", "none");
+        $("#Select_DivNumExterior2").css("display", "none");
+        $("#Select_DivNumInterior2").css("display", "none");
+        $("#Select_DivCalle2").css("display", "none");
+        $("#Select_DivEntreCalles2").css("display", "none");
+        $("#Select_DivReferencias2").css("display", "none");
+        $("#Btn_DivBusqueda2").css("display", "none");
+    });
+
+    $(document).ready(function() {
+
+        $('#checkboxEntrega').click(function() {
+            if (!$(this).is(':checked')) {
+                $("#DivDirEntre").show();
+
+            } else {
+                $("#DivDirEntre ").css("display", "none");
+            }
+        });
+        $('#checkboxDirecciones').click(function () {
+            if (!$(this).is(':checked')) {
+                $("#Direcciones").show();
+
+            } else {
+                $("#Direcciones ").css("display", "none");
+            }
+        });
+    });
+
+    $(document).on('change', '#Select_CP2', function (event) {
+        var Id = $("#Select_CP2 option:selected").val();
+        if (Id > 0) {
+
+            $('#Select_CP2').css("border", "1px solid #c2c2c2");
+        }
+    });
+
+    $(document).on('change', '#Select_Colonia2', function (event) {
+        var IdColonia = $("#Select_Colonia2 option:selected").val();
+
+        if (IdColonia > 0) {
+
+            $('#Select_Colonia2').css("border", "1px solid #c2c2c2");
+
+            var obj = {};
+            obj['Id'] = IdColonia;
+
+            var jsonObject = {
+                "Catalogos": obj
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Consulta_CP", "Clientes")",
+                data: JSON.stringify(jsonObject),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: resultadoEntrega3,
+                error: errores
+            });
+        }
+    });
+
+    function resultadoEntrega3(data) {
+        console.log(data);
+
+        $("#Select_CP2").empty();
+
+        if (data.length > 0) {
+
+            var option = $(document.createElement('option'));
+            option.text("Seleccionar");
+            option.val(0);
+
+            $("#Select_CP2").append(option);
+
+            $(data).each(function () {
+                var option = $(document.createElement('option'));
+
+                option.text(this.Nombre);
+                option.val(this.Id);
+
+                $("#Select_CP2").append(option);
+            });
+        }
+    }
+
+    $(document).on('change', '#Select_Delegacion_Municipio2', function (event) {
+        var IdPoblacion = $("#Select_Delegacion_Municipio2 option:selected").val();
+
+        if (IdPoblacion > 0) {
+
+            $('#Select_Delegacion_Municipio2').css("border", "1px solid #c2c2c2");
+
+            $("#Select_CP2").empty();
+
+            var option = $(document.createElement('option'));
+            option.text("Seleccionar");
+            option.val(0);
+
+            $("#Select_CP2").append(option);
+
+            var obj = {};
+            obj['Id'] = IdPoblacion;
+
+            var jsonObject = {
+                "Catalogos": obj
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Consulta_Colonias", "Clientes")",
+                data: JSON.stringify(jsonObject),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: resultadoEntrega2,
+                error: errores
+            });
+
+        }
+    });
+
+    function resultadoEntrega2(data) {
+
+        $("#Select_Colonia2").empty();
+
+        if (data.length > 0) {
+
+            var option = $(document.createElement('option'));
+            option.text("Seleccionar");
+            option.val(0);
+
+            $("#Select_Colonia2").append(option);
+
+            $(data).each(function () {
+                var option = $(document.createElement('option'));
+
+                option.text(this.Nombre);
+                option.val(this.Id);
+
+                $("#Select_Colonia2").append(option);
+            });
+        }
+    }
+
+    $(document).on('change', '#Select_DEstado2', function (event) {
+        var IdPoblacion = $("#Select_DEstado2 option:selected").val();
+
+        if (IdPoblacion > 0) {
+            $("#Busqueda_CP2").css("display", "none");
+            $("#Select_DivDelegacionMunicipio2").show();
+            $("#Select_DivColonia2").show();
+            $("#Select_DivCP2").show();
+            $("#Select_DivNumExterior2").show();
+            $("#Select_DivNumInterior2").show();
+            $("#Select_DivCalle2").show();
+            $("#Select_DivEntreCalles2").show();
+            $("#Select_DivReferencias2").show();
+            $("#Btn_DivBusqueda2").show();
+
+            $('#Select_DEstado2').css("border", "1px solid #c2c2c2");
+
+            $("#Select_Colonia2").empty();
+            $("#Select_CP2").empty();
+
+            var option = $(document.createElement('option'));
+            option.text("Seleccionar");
+            option.val(0);
+
+            var option2 = $(document.createElement('option'));
+            option2.text("Seleccionar");
+            option2.val(0);
+
+            $("#Select_Colonia2").append(option);
+            $("#Select_CP2").append(option2);
+
+
+            var obj = {};
+            obj['Id'] = IdPoblacion;
+
+            var jsonObject = {
+                "Catalogos": obj
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Consulta_DelegacionMunicipio", "Clientes")",
+                data: JSON.stringify(jsonObject),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: resultadoEntrega,
+                error: errores
+            });
+
+        } else {
+            $("#Busqueda_CP2").show();
+            $("#Select_DivDelegacionMunicipio2").css("display", "none");
+            $("#Select_DivColonia2").css("display", "none");
+            $("#Select_DivCP2").css("display", "none");
+            $("#Select_DivNumExterior2").css("display", "none");
+            $("#Select_DivNumInterior2").css("display", "none");
+            $("#Select_DivCalle2").css("display", "none");
+            $("#Select_DivEntreCalles2").css("display", "none");
+            $("#Select_DivReferencias2").css("display", "none");
+            $("#Btn_DivBusqueda2").css("display", "none");
+        }
+
+    });
+
+    function resultadoEntrega(data) {
+        console.log(data);
+
+        $("#Select_Delegacion_Municipio2").empty();
+
+        if (data.length > 0) {
+
+            var option = $(document.createElement('option'));
+            option.text("Seleccionar");
+            option.val(0);
+
+            $("#Select_Delegacion_Municipio2").append(option);
+
+            $(data).each(function () {
+                var option = $(document.createElement('option'));
+
+                option.text(this.Nombre);
+                option.val(this.Id);
+
+                $("#Select_Delegacion_Municipio2").append(option);
+            });
+        }
+    }
+
+    $('#BtnBuscarCP').click(function () {
+        $("#Busqueda_CP").show();
+        $("#Select_DivDelegacionMunicipio").css("display", "none");
+        $("#Select_DivColonia").css("display", "none");
+        $("#Select_DivCP").css("display", "none");
+        $("#Select_DivNumExterior").css("display", "none");
+        $("#Select_DivNumInterior").css("display", "none");
+        $("#Select_DivCalle").css("display", "none");
+        $("#Select_DivEntreCalles").css("display", "none");
+        $("#Select_DivReferencias").css("display", "none");
+        $("#Btn_DivBusqueda").css("display", "none");
+
+
+    });
+
+    $('#BtnBuscar').click(function () {
+
+        $('#CP_Fiscal').css("border", "2px solid #f44336");
+
+        if ($('#CP_Fiscal').val().length > 0) {
+            $('#CP_Fiscal').css("border", "1px solid #c2c2c2");
+        }
+
+        var CP = $("#CP_Fiscal").val();
+
+        if (CP.length > 0) {
+
+            var obj = {};
+            obj['Nombre'] = CP;
+
+            var jsonObject = {
+                "Catalogos": obj
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("CP_Busqueda", "Clientes")",
+                data: JSON.stringify(jsonObject),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: resultadoBusqueda,
+                error: errores
+            });
+
+
+        } else {
+            $('#CP_Fiscal').css("border", "2px solid #f44336");
+            $.notify({
+                message: "Coloca el código postal que buscas."
+            }, {
+                type: 'danger',
+                allow_dismiss: false,
+                animate: {
+                    enter: 'animated rollIn',
+                    exit: 'animated rollOut'
+                }
+            });
+        }
+    });
+
+    function resultadoBusqueda(data) {
+        if (data.length > 0) {
+
+            console.log(data);
+
+            $('#Select_DEstado option[value="'+ data[0]["IdEstado"] +'"]').attr("selected", true);
+
+
+            var IdPoblacion = $("#Select_DEstado option:selected").val();
+
+            if (IdPoblacion > 0) {
+                $("#Busqueda_CP").css("display", "none");
+                $("#Select_DivDelegacionMunicipio").show();
+                $("#Select_DivColonia").show();
+                $("#Select_DivCP").show();
+                $("#Select_DivNumExterior").show();
+                $("#Select_DivNumInterior").show();
+                $("#Select_DivCalle").show();
+                $("#Select_DivEntreCalles").show();
+                $("#Select_DivReferencias").show();
+                $("#Btn_DivBusqueda").show();
+
+                var obj = {};
+                obj['Id'] = IdPoblacion;
+
+                var jsonObject = {
+                    "Catalogos": obj
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("Consulta_DelegacionMunicipio", "Clientes")",
+                    data: JSON.stringify(jsonObject),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (result) {
+
+                        $("#Select_Delegacion_Municipio").empty();
+
+                        if (result.length > 0) {
+
+                            var option = $(document.createElement('option'));
+                            option.text("Seleccionar");
+                            option.val(0);
+
+                            $("#Select_Delegacion_Municipio").append(option);
+
+                            $(result).each(function () {
+                                var option = $(document.createElement('option'));
+
+                                option.text(this.Nombre);
+                                option.val(this.Id);
+
+                                $("#Select_Delegacion_Municipio").append(option);
+                            });
+                        }
+                        $('#Select_Delegacion_Municipio option[value="' + data[0]["IdPoblacion"] + '"]').attr("selected", true);
+
+
+                        $("#Select_Colonia").empty();
+
+                        if (data.length > 0) {
+
+                            var option = $(document.createElement('option'));
+                            option.text("Seleccionar");
+                            option.val(0);
+
+                            $("#Select_Colonia").append(option);
+
+                            $(data).each(function () {
+                                var option = $(document.createElement('option'));
+
+                                option.text(this.Colonia);
+                                option.val(this.IdCP);
+
+                                $("#Select_Colonia").append(option);
+                            });
+                        }
+
+                        $('#Select_Colonia option[value="' + data[0]["IdCP"] + '"]').attr("selected", true);
+
+                        $("#Select_CP").empty();
+
+                        var option = $(document.createElement('option'));
+                        option.text(data[0]["CP"]);
+                        option.val(data[0]["IdCP"]);
+
+                        $("#Select_CP").append(option);
+
+                    }
+                });
+
+            } else {
+                $("#Busqueda_CP").show();
+                $("#Select_DivDelegacionMunicipio").css("display", "none");
+                $("#Select_DivColonia").css("display", "none");
+                $("#Select_DivCP").css("display", "none");
+                $("#Select_DivNumExterior").css("display", "none");
+                $("#Select_DivNumInterior").css("display", "none");
+                $("#Select_DivCalle").css("display", "none");
+                $("#Select_DivEntreCalles").css("display", "none");
+                $("#Select_DivReferencias").css("display", "none");
+                $("#Btn_DivBusqueda").css("display", "none");
+            }
+
+        } else {
+            $.notify({
+                message: "Código postal no encontrado."
+            }, {
+                type: 'danger',
+                allow_dismiss: false,
+                animate: {
+                    enter: 'animated rollIn',
+                    exit: 'animated rollOut'
+                }
+            });
+        }
+    }
+
+</script>
+
+
+<script>
+    $(document).on('change', '#Select_CP', function (event) {
+        var Id = $("#Select_CP option:selected").val();
+        if (Id > 0) {
+
+            $('#Select_CP').css("border", "1px solid #c2c2c2");
+        }
+    });
+
+    $(document).on('change', '#Select_Colonia', function (event) {
+        var IdColonia = $("#Select_Colonia option:selected").val();
+
+        if (IdColonia > 0) {
+
+            $('#Select_Colonia').css("border", "1px solid #c2c2c2");
+
+            var obj = {};
+            obj['Id'] = IdColonia;
+
+            var jsonObject = {
+                "Catalogos": obj
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Consulta_CP", "Clientes")",
+                data: JSON.stringify(jsonObject),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: resultado3,
+                error: errores
+            });
+        }
+    });
+
+    function resultado3(data) {
+        console.log(data);
+
+        $("#Select_CP").empty();
+
+        if (data.length > 0) {
+
+            var option = $(document.createElement('option'));
+            option.text("Seleccionar");
+            option.val(0);
+
+            $("#Select_CP").append(option);
+
+            $(data).each(function () {
+                var option = $(document.createElement('option'));
+
+                option.text(this.Nombre);
+                option.val(this.Id);
+
+                $("#Select_CP").append(option);
+            });
+        }
+    }
+
+    $(document).on('change', '#Select_Delegacion_Municipio', function (event) {
+        var IdPoblacion = $("#Select_Delegacion_Municipio option:selected").val();
+
+        if (IdPoblacion > 0) {
+
+            $('#Select_Delegacion_Municipio').css("border", "1px solid #c2c2c2");
+
+            $("#Select_CP").empty();
+
+            var option = $(document.createElement('option'));
+            option.text("Seleccionar");
+            option.val(0);
+
+            $("#Select_CP").append(option);
+
+
+
+            var obj = {};
+            obj['Id'] = IdPoblacion;
+
+            var jsonObject = {
+                "Catalogos": obj
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Consulta_Colonias", "Clientes")",
+                data: JSON.stringify(jsonObject),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: resultado2,
+                error: errores
+            });
+
+        }
+    });
+
+    function resultado2(data) {
+
+        $("#Select_Colonia").empty();
+
+        if (data.length > 0) {
+
+            var option = $(document.createElement('option'));
+            option.text("Seleccionar");
+            option.val(0);
+
+            $("#Select_Colonia").append(option);
+
+            $(data).each(function () {
+                var option = $(document.createElement('option'));
+
+                option.text(this.Nombre);
+                option.val(this.Id);
+
+                $("#Select_Colonia").append(option);
+            });
+        }
+    }
+
+    $(document).on('change', '#Select_DEstado', function (event) {
+        var IdPoblacion = $("#Select_DEstado option:selected").val();
+
+        if (IdPoblacion > 0) {
+            $("#Busqueda_CP").css("display", "none");
+            $("#Select_DivDelegacionMunicipio").show();
+            $("#Select_DivColonia").show();
+            $("#Select_DivCP").show();
+            $("#Select_DivNumExterior").show();
+            $("#Select_DivNumInterior").show();
+            $("#Select_DivCalle").show();
+            $("#Select_DivEntreCalles").show();
+            $("#Select_DivReferencias").show();
+            $("#Btn_DivBusqueda").show();
+
+            $('#Select_DEstado').css("border", "1px solid #c2c2c2");
+
+            $("#Select_Colonia").empty();
+            $("#Select_CP").empty();
+
+            var option = $(document.createElement('option'));
+            option.text("Seleccionar");
+            option.val(0);
+
+            var option2 = $(document.createElement('option'));
+            option2.text("Seleccionar");
+            option2.val(0);
+
+            $("#Select_Colonia").append(option);
+            $("#Select_CP").append(option2);
+
+
+            var obj = {};
+            obj['Id'] = IdPoblacion;
+
+            var jsonObject = {
+                "Catalogos": obj
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Consulta_DelegacionMunicipio", "Clientes")",
+                data: JSON.stringify(jsonObject),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: resultado,
+                error: errores
+            });
+
+        } else {
+            $("#Busqueda_CP").show();
+            $("#Select_DivDelegacionMunicipio").css("display", "none");
+            $("#Select_DivColonia").css("display", "none");
+            $("#Select_DivCP").css("display", "none");
+            $("#Select_DivNumExterior").css("display", "none");
+            $("#Select_DivNumInterior").css("display", "none");
+            $("#Select_DivCalle").css("display", "none");
+            $("#Select_DivEntreCalles").css("display", "none");
+            $("#Select_DivReferencias").css("display", "none");
+            $("#Btn_DivBusqueda").css("display", "none");
+        }
+
+    });
+
+    function resultado(data) {
+        console.log(data);
+
+        $("#Select_Delegacion_Municipio").empty();
+
+        if (data.length > 0) {
+
+            var option = $(document.createElement('option'));
+            option.text("Seleccionar");
+            option.val(0);
+
+            $("#Select_Delegacion_Municipio").append(option);
+
+            $(data).each(function () {
+                var option = $(document.createElement('option'));
+
+                option.text(this.Nombre);
+                option.val(this.Id);
+
+                $("#Select_Delegacion_Municipio").append(option);
+            });
+        }
+    }
+
+    function errores(data) {
+       $.notify({
+        title: 'Se ha presentado un problema #18595',
+        },{
+        type: 'danger',
+            time: 1000,
+        });
+    }
+
+
+</script>
+
+<script>
+
+    $(document).on('change', '#Select_Persona', function (event) {
+        var persona = $("#Select_Persona option:selected").val();
+
+        if (persona == 1) {
+            $("#Fisica_Div1").show();
+            $("#Fisica_Div2").show();
+            $("#Fisica_Div3").show();
+
+            $("#Moral_Div1").css("display", "none");
+            $("#Moral_Div2").css("display", "none");
+
+        } else if (persona == 2) {
+            $("#Fisica_Div1").css("display", "none");
+            $("#Fisica_Div2").css("display", "none");
+            $("#Fisica_Div3").css("display", "none");
+            $("#Moral_Div1").show();
+            $("#Moral_Div2").show();
+
+        } else {
+            $("#Fisica_Div1").css("display", "none");
+            $("#Fisica_Div2").css("display", "none");
+            $("#Fisica_Div3").css("display", "none");
+
+            $("#Moral_Div1").css("display", "none");
+            $("#Moral_Div2").css("display", "none");
+        }
+        if ($("#Select_Persona option:selected").val() > 0) {
+            $('#Select_Persona').css("border", "1px solid #c2c2c2");
+        }
+    });
+
+    $("#datepicker").datepicker({
+        uiLibrary: 'bootstrap4',
+        format: 'yyyy-mm-dd',
+
+    });
+
+    $('#datepicker2').datepicker({
+        uiLibrary: 'bootstrap4',
+        format: 'yyyy-mm-dd',
+    });
+
+</script>
+
+<script>
+    //REGISTRAR INFORMACIÓN
+    $(document).ready(function () {
+        var now = new Date();
+        var day = ("0" + now.getDate()).slice(-2);
+        var month = ("0" + (now.getMonth() + 1)).slice(-2);
+
+        var today = now.getFullYear() + "-" + (month) + "-" + (day);
+        $("#Fecha_Constitucion").val(today);
+        $("#Fecha_Nacimiento").val(today);
+
+        $('#BtnRegistrar').click(function () {
+
+
+            if (ValidarFormulario()) {
+                if (ValidarEmail()) {
+                    if (ValidarTelefono()) {
+                        if (ValidarTelefonoLocal()) {
+                            //if (ValidarFormualrioRFC()) {
+
+                                $("#BtnRegistrar").prop('disabled', true);
+                                // DATOS FORMULARO
+                                var persona = $("#Select_Persona option:selected").val();
+                                var obj = {};
+                                // CONTACTO
+                                obj['Correo'] = $('#Correo_Electronico').val();
+                                obj['TelefonoMovil'] = $('#Telefono_Movil').val();
+                                obj['TelefonoLocal'] = $('#Telefono_Local').val();
+                                obj['IdTipoCliente'] = $("#Clasificacion option:selected").val();
+                                obj['IdOrigenCliente'] = $("#Origen_Cliente option:selected").val();
+                                obj['IdSucursal'] = $("#Sucursal option:selected").val();
+
+                                // PERSONA
+                                obj['TipoPersona'] = persona;
+                                if (persona == 1) {
+                                    // PERSONA FISICA
+                                    obj['Nombre'] = $('#Nombre').val();
+                                    obj['ApellidoPaterno'] = $('#Apellido_Paterno').val();
+                                    obj['ApellidoMaterno'] = $('#Apellido_Materno').val();
+                                    obj['Sexo'] = $("#Select_Sexo option:selected").val();
+                                    obj['FechaNacimiento'] = $('#Fecha_Nacimiento').val();
+                                    obj['RFC'] = $('#RFC').val();
+                                    //obj['FechaCumple'] = $('#Fecha_cumple').val();
+                                    obj['DiaCumple'] = $('#dia').val();
+                                    obj['MesCumple'] = $("#mes option:selected").val();
+
+                                    obj['FechaConstitucion'] = "";
+                                } else if (persona == 2) {
+                                    // PERSONA MORAL
+                                    obj['Nombre'] = $('#Nombre_Moral').val();
+                                    obj['FechaConstitucion'] = $('#Fecha_Constitucion').val();
+                                    obj['RFC'] = $('#RFC_Moral').val();
+
+                                    obj['ApellidoPaterno'] = "";
+                                    obj['ApellidoMaterno'] = "";
+                                    obj['Sexo'] = "";
+                                    obj['FechaNacimiento'] = "";
+                                    obj['DiaCumple'] = "";
+                                    obj['MesCumple'] = "";
+                                }
+                                // DIRECCION FISICA
+                                obj['IdEstado'] = $("#Select_DEstado option:selected").val();
+                                obj['IdPoblacion'] = $("#Select_Delegacion_Municipio option:selected").val();
+                                obj['Colonia'] = $("#Select_Colonia option:selected").text();
+                                obj['IdColonia'] = $("#Select_Colonia option:selected").val();
+                                obj['IdCP'] = $("#Select_CP option:selected").val();
+                                obj['NumExterior'] = $('#NumeroExterior').val();
+                                obj['NumInterior'] = $('#NumeroInterior').val();
+                                obj['Calle'] = $('#Calle').val();
+                                obj['EntreCalles'] = $('#EntreCalles').val();
+                                obj['Referencias'] = $('#Referencias').val();
+
+                                // DIRECCION ENTREGA
+                                if (!$('#checkboxEntrega').prop('checked')) {
+
+                                    obj['FiscalEntrega'] = 1;
+                                    obj['IdEstado2'] = $("#Select_DEstado2 option:selected").val();
+                                    obj['IdPoblacion2'] = $("#Select_Delegacion_Municipio2 option:selected").val();
+                                    obj['Colonia2'] = $("#Select_Colonia2 option:selected").text();
+                                    obj['IdColonia2'] = $("#Select_Colonia2 option:selected").val();
+                                    obj['IdCP2'] = $("#Select_CP2 option:selected").val();
+                                    obj['NumExterior2'] = $('#NumeroExterior2').val();
+                                    obj['NumInterior2'] = $('#NumeroInterior2').val();
+                                    obj['Calle2'] = $('#Calle2').val();
+                                    obj['EntreCalles2'] = $('#EntreCalles2').val();
+                                    obj['Referencias2'] = $('#Referencias2').val();
+                                }
+
+                                var jsonObject = {
+                                    "Cliente": obj
+                                };
+
+                                console.log(jsonObject);
+
+                                $.ajax({
+                                    type: "POST",
+                                    url: "@Url.Action("NuevoCliente", "Clientes")",
+                                    data: JSON.stringify(jsonObject),
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: "json",
+                                    success: ResultadoRegistro,
+                                    error: ErroresRegistro
+                                });
+
+                                $("#BtnRegistrar").prop('disabled', false);
+
+                            //}
+                        }
+                    }
+                }
+            } else {
+                $.notify({
+                    //icon: 'fa fa-paw',
+                    message: "Formulario incompleto."
+                }, {
+                    type: 'danger',
+                    allow_dismiss: false,
+                    animate: {
+                        enter: 'animated rollIn',
+                        exit: 'animated rollOut'
+                    }
+                });
+            }
+        });
+
+    });
+
+    function ResultadoRegistro(data) {
+
+        if (data.Resultado == 1) {
+            swal({
+                title: "Cliente registrado",
+                text: data.Texto +  ".",
+                icon: "success",
+                button: "Aceptar",
+            })
+            .then((value) => {
+                window.location.href = "/Ventas/purchase";
+            });
+        } else {
+            alert(1)
+            $.notify({
+                //icon: 'fa fa-paw',
+                message: data.Texto
+            }, {
+                type: 'danger',
+                allow_dismiss: false,
+                animate: {
+                    enter: 'animated rollIn',
+                    exit: 'animated rollOut'
+                }
+            });
+        }
+
+    }
+
+    function ErroresRegistro(data) {
+       $.notify({
+        title: data.Resultado,
+        },{
+        type: 'danger',
+            time: 1000,
+        });
+    }
+
+
+
+    function ValidarEmail() {
+        var respuesta = false;
+
+        if (CorreoFrom() == "ok") {
+            $('#Correo_Electronico').css("border", "1px solid #c2c2c2");
+            respuesta = true;
+        } else {
+
+            $('#Correo_Electronico').css("border", "2px solid #f44336");
+
+            $.notify({
+                //icon: 'fa fa-paw',
+                message: "Correo electrónico invalido."
+            }, {
+                type: 'danger',
+                allow_dismiss: false,
+                animate: {
+                    enter: 'animated rollIn',
+                    exit: 'animated rollOut'
+                }
+            });
+        }
+        return respuesta;
+    }
+
+    function CorreoFrom() {
+      var correoElectronico = $('#Correo_Electronico').val();
+
+      var emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+
+      if (emailRegex.test(correoElectronico)) {
+        return "ok";
+      } else {
+        return "error"; 
+      }
+    }
+
+
+
+    function ValidarTelefonoLocal()
+    {
+        var respuesta = false;
+
+        if ($('#Telefono_Local').val().length > 9) {
+            respuesta = true;
+        } else if ($('#Telefono_Local').val().length == 0) {
+            respuesta = true;
+        }
+        else {
+            $.notify({
+                message: "Teléfono local invalido."
+            }, {
+                type: 'danger',
+                allow_dismiss: false,
+                animate: {
+                    enter: 'animated rollIn',
+                    exit: 'animated rollOut'
+                }
+            });
+        }
+        return respuesta;
+
+    }
+
+    function ValidarTelefono() {
+        var respuesta = false;
+        if ($('#Telefono_Movil').val().length > 9) {
+            respuesta = true;
+        } else {
+            $('#Telefono_Movil').css("border", "2px solid #f44336");
+
+            $.notify({
+                //icon: 'fa fa-paw',
+                message: "Teléfono móvil invalido."
+            }, {
+                type: 'danger',
+                allow_dismiss: false,
+                animate: {
+                    enter: 'animated rollIn',
+                    exit: 'animated rollOut'
+                }
+            });
+
+        }
+
+        return respuesta;
+
+    }
+
+
+
+    //validacion INFORMACION REGISTRADA
+    function ValidarFormulario() {
+        var respuesta = false;
+
+
+        if (!$('#checkboxDirecciones').is(':checked')) {
+
+            // DATOS CONTACTO
+            $('#Select_Persona').css("border", "2px solid #f44336");
+            $('#Correo_Electronico').css("border", "2px solid #f44336");
+            $('#Telefono_Movil').css("border", "2px solid #f44336");
+            $('#Clasificacion').css("border", "2px solid #f44336");
+            $('#Origen_Cliente').css("border", "2px solid #f44336");
+            $('#Sucursal').css("border", "2px solid #f44336");
+            // PERSONA FISICA
+            $('#Nombre').css("border", "2px solid #f44336");
+            $('#Apellido_Paterno').css("border", "2px solid #f44336"); 
+            $('#Apellido_Materno').css("border", "2px solid #f44336");
+            $('#Select_Sexo').css("border", "2px solid #f44336");
+            //$('#Fecha_Nacimiento').css("border", "2px solid #f44336");
+            //$('#RFC').css("border", "2px solid #f44336");
+            // PERSONA MORAL
+            $('#Nombre_Moral').css("border", "2px solid #f44336");
+            $('#Fecha_Constitucion').css("border", "2px solid #f44336");
+            $('#RFC_Moral').css("border", "2px solid #f44336");
+
+            // DIRECCION FISCAL
+            $('#Select_DEstado').css("border", "2px solid #f44336");
+            $('#Select_Delegacion_Municipio').css("border", "2px solid #f44336");
+            $('#Select_Colonia').css("border", "2px solid #f44336");
+            $('#Select_CP').css("border", "2px solid #f44336");
+            $('#NumeroExterior').css("border", "2px solid #f44336");
+            //$('#NumeroInterior').css("border", "2px solid #f44336");
+            $('#Calle').css("border", "2px solid #f44336");
+             //DIRECCION ENTREGA
+            $('#Select_DEstado2').css("border", "2px solid #f44336");
+            $('#Select_Delegacion_Municipio2').css("border", "2px solid #f44336");
+            $('#Select_Colonia2').css("border", "2px solid #f44336");
+            $('#Select_CP2').css("border", "2px solid #f44336");
+            $('#NumeroExterior2').css("border", "2px solid #f44336");
+            //$('#NumeroInterior2').css("border", "2px solid #f44336");
+            $('#Calle2').css("border", "2px solid #f44336");
+
+
+
+            // CONTACTO
+            if ($("#Select_Persona option:selected").val() > 0) {
+                $('#Select_Persona').css("border", "1px solid #c2c2c2");
+            }
+
+            if ($('#Correo_Electronico').val().length > 0) {
+                $('#Correo_Electronico').css("border", "1px solid #c2c2c2");
+            }
+
+            if ($('#Telefono_Movil').val().length > 0) {
+                $('#Telefono_Movil').css("border", "1px solid #c2c2c2");
+            }
+
+            if ($("#Clasificacion option:selected").val() > 0) {
+                $('#Clasificacion').css("border", "1px solid #c2c2c2");
+            }
+
+            if ($("#Origen_Cliente option:selected").val() > 0) {
+                $('#Origen_Cliente').css("border", "1px solid #c2c2c2");
+            }
+
+            if ($("#Sucursal option:selected").val() > 0) {
+                $('#Sucursal').css("border", "1px solid #c2c2c2");
+            }
+
+            if ($('#Telefono_Movil').val().length > 9) {
+                $('#Telefono_Movil').css("border", "1px solid #c2c2c2");
+            } else {
+                $('#Telefono_Movil').css("border", "2px solid #f44336");
+            }
+
+            if ($('#Telefono_Local').val().length > 9) {
+                $('#Telefono_Local').css("border", "1px solid #c2c2c2");
+            }
+            else if ($('#Telefono_Local').val().length == 0) {
+                $('#Telefono_Local').css("border", "1px solid #c2c2c2");
+            }
+            else {
+                $('#Telefono_Local').css("border", "2px solid #f44336");
+            }
+
+            // PERSONA FISICA
+            var persona = $("#Select_Persona option:selected").val();
+
+            if (persona == 1) {
+
+                $('#Nombre_Moral').css("border", "1px solid #c2c2c2");
+                $('#Fecha_Constitucion').css("border", "1px solid #c2c2c2");
+                //$('#RFC_Moral').css("border", "1px solid #c2c2c2");
+
+                if ($('#Nombre').val().length > 0) {
+                    $('#Nombre').css("border", "1px solid #c2c2c2");
+                }
+
+                if ($('#Apellido_Paterno').val().length > 0) {
+                    $('#Apellido_Paterno').css("border", "1px solid #c2c2c2");
+                } 
+
+                if ($('#Apellido_Materno').val().length > 0) {
+                    $('#Apellido_Materno').css("border", "1px solid #c2c2c2");
+                }
+
+                if ($("#Select_Sexo option:selected").val() > 0) {
+                    $('#Select_Sexo').css("border", "1px solid #c2c2c2");
+                }
+
+                //if ($('#Fecha_Nacimiento').val().length > 0) {
+                //    $('#Fecha_Nacimiento').css("border", "1px solid #c2c2c2");
+                //}
+
+
+                if ($('#RFC').val().length > 0) {
+                    $('#RFC').css("border", "1px solid #c2c2c2");
+                }
+
+            } else if (persona == 2) {
+                $('#Nombre').css("border", "1px solid #c2c2c2");
+                $('#Apellido_Paterno').css("border", "1px solid #c2c2c2"); 
+                $('#Apellido_Materno').css("border", "1px solid #c2c2c2");
+                $('#Select_Sexo').css("border", "1px solid #c2c2c2");
+                $('#Fecha_Nacimiento').css("border", "1px solid #c2c2c2");
+                $('#RFC').css("border", "1px solid #c2c2c2");
+
+                if ($('#Nombre_Moral').val().length > 0) {
+                    $('#Nombre_Moral').css("border", "1px solid #c2c2c2");
+                }
+
+                if ($('#Fecha_Constitucion').val().length > 0) {
+                    $('#Fecha_Constitucion').css("border", "1px solid #c2c2c2");
+                }
+
+                //if ($('#RFC_Moral').val().length > 0) {
+                //    $('#RFC_Moral').css("border", "1px solid #c2c2c2");
+                //}
+
+            } else {
+                $('#Nombre').css("border", "1px solid #c2c2c2");
+                $('#Apellido_Paterno').css("border", "1px solid #c2c2c2"); 
+                $('#Apellido_Materno').css("border", "1px solid #c2c2c2");
+                $('#Select_Sexo').css("border", "1px solid #c2c2c2");
+                //$('#Fecha_Nacimiento').css("border", "1px solid #c2c2c2");
+                //$('#Fecha_cumple').css("border", "1px solid #c2c2c2");
+                $('#RFC').css("border", "1px solid #c2c2c2");
+
+                $('#Nombre_Moral').css("border", "1px solid #c2c2c2");
+                $('#Fecha_Constitucion').css("border", "1px solid #c2c2c2");
+                //$('#RFC_Moral').css("border", "1px solid #c2c2c2");
+            }
+
+            // DIRECCION FISCAL
+            if ($("#Select_DEstado option:selected").val() > 0) {
+                $('#Select_DEstado').css("border", "1px solid #c2c2c2");
+            }
+            if ($("#Select_Delegacion_Municipio option:selected").val() > 0) {
+                $('#Select_Delegacion_Municipio').css("border", "1px solid #c2c2c2");
+            }
+            if ($("#Select_Colonia option:selected").val() > 0) {
+                $('#Select_Colonia').css("border", "1px solid #c2c2c2");
+            }
+            if ($("#Select_CP option:selected").val() > 0) {
+                $('#Select_CP').css("border", "1px solid #c2c2c2");
+            }
+            if ($('#NumeroExterior').val().length > 0) {
+                $('#NumeroExterior').css("border", "1px solid #c2c2c2");
+            }
+            if ($('#NumeroInterior').val().length > 0) {
+                $('#NumeroInterior').css("border", "1px solid #c2c2c2");
+            }
+            if ($('#Calle').val().length > 0) {
+                $('#Calle').css("border", "1px solid #c2c2c2");
+            }
+            // DIRECCION ENTREGA
+            if(! $('#checkboxEntrega').prop('checked') ) {
+                if ($("#Select_DEstado2 option:selected").val() > 0) {
+                    $('#Select_DEstado2').css("border", "1px solid #c2c2c2");
+                }
+                if ($("#Select_Delegacion_Municipio2 option:selected").val() > 0) {
+                    $('#Select_Delegacion_Municipio2').css("border", "1px solid #c2c2c2");
+                }
+                if ($("#Select_Colonia2 option:selected").val() > 0) {
+                    $('#Select_Colonia2').css("border", "1px solid #c2c2c2");
+                }
+                if ($("#Select_CP2 option:selected").val() > 0) {
+                    $('#Select_CP2').css("border", "1px solid #c2c2c2");
+                }
+                if ($('#NumeroExterior2').val().length > 0) {
+                    $('#NumeroExterior2').css("border", "1px solid #c2c2c2");
+                }
+                //if ($('#NumeroInterior2').val().length > 0) {
+                //    $('#NumeroInterior2').css("border", "1px solid #c2c2c2");
+                //}
+                if ($('#Calle2').val().length > 0) {
+                    $('#Calle2').css("border", "1px solid #c2c2c2");
+                }
+            }
+
+
+            var contacto = false;
+            // CONTACTO
+            if ($("#Select_Persona option:selected").val() > 0) {
+                if ($('#Correo_Electronico').val().length > 0) {
+                    if ($('#Telefono_Movil').val().length > 0) {
+                        if ($("#Clasificacion option:selected").val() > 0) {
+                            if ($("#Origen_Cliente option:selected").val() > 0) {
+                                if ($("#Sucursal option:selected").val() > 0) {
+                                    contacto = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            var TipoPersona = false;
+            // PERSONA FISICA
+            if (persona == 1) {
+                if ($('#Nombre').val().length > 0) {
+                    if ($('#Apellido_Paterno').val().length > 0) { 
+                        if ($('#Apellido_Materno').val().length > 0) {
+                            if ($("#Select_Sexo option:selected").val() > 0) {
+                                //if ($('#Fecha_Nacimiento').val().length > 0) {
+
+                                //if ($('#RFC').val().length > 0) {
+                                TipoPersona = true;
+                                //}
+
+
+                                // }
+                            }
+                        }
+                    }
+                }
+            } else if (persona == 2) {
+                if ($('#Nombre_Moral').val().length > 0) {
+                    if ($('#Fecha_Constitucion').val().length > 0) {
+                        //if ($('#RFC_Moral').val().length > 0) {
+                            TipoPersona = true;
+                        //}
+                    }
+                }
+            }
+
+            // DIRECCION FISCAL
+            var DireccionFiscal = false;
+            if ($("#Select_DEstado option:selected").val() > 0) {
+                if ($("#Select_Delegacion_Municipio option:selected").val() > 0) {
+                    if ($("#Select_Colonia option:selected").val() > 0) {
+                        if ($("#Select_CP option:selected").val() > 0) {
+                            if ($('#NumeroExterior').val().length > 0) {
+                                //if ($('#NumeroInterior').val().length > 0) {
+                                if ($('#Calle').val().length > 0) {
+                                    DireccionFiscal = true;
+                                }
+                                //}
+                            }
+                        }
+                    }
+                }
+            }
+
+            // DIRECCION ENTREGA
+            var DireccionEntrega = false;
+            if (!$('#checkboxEntrega').prop('checked')) {
+                if ($("#Select_DEstado2 option:selected").val() > 0) {
+                    if ($("#Select_Delegacion_Municipio2 option:selected").val() > 0) {
+                        if ($("#Select_Colonia2 option:selected").val() > 0) {
+                            if ($("#Select_CP2 option:selected").val() > 0) {
+                                if ($('#NumeroExterior2').val().length > 0) {
+                                    //if ($('#NumeroInterior2').val().length > 0) {
+                                    if ($('#Calle2').val().length > 0) {
+                                        DireccionEntrega = true;
+                                    }
+                                    //}
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                DireccionEntrega = true;
+            }
+
+            if (contacto) {
+                if (TipoPersona) {
+                    if (DireccionFiscal) {
+                        if (DireccionEntrega) {
+                            respuesta = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        else {
+            // DATOS CONTACTO
+            $('#Select_Persona').css("border", "2px solid #f44336");
+            $('#Correo_Electronico').css("border", "2px solid #f44336");
+            $('#Telefono_Movil').css("border", "2px solid #f44336");
+            $('#Clasificacion').css("border", "2px solid #f44336");
+            $('#Origen_Cliente').css("border", "2px solid #f44336");
+            $('#Sucursal').css("border", "2px solid #f44336");
+            // PERSONA FISICA
+            $('#Nombre').css("border", "2px solid #f44336");
+            $('#Apellido_Paterno').css("border", "2px solid #f44336"); 
+            $('#Apellido_Materno').css("border", "2px solid #f44336");
+            $('#Select_Sexo').css("border", "2px solid #f44336");
+            //$('#Fecha_Nacimiento').css("border", "2px solid #f44336");
+            //$('#RFC').css("border", "2px solid #f44336");
+            // PERSONA MORAL
+            $('#Nombre_Moral').css("border", "2px solid #f44336");
+            $('#Fecha_Constitucion').css("border", "2px solid #f44336");
+            $('#RFC_Moral').css("border", "2px solid #f44336");
+
+            // CONTACTO
+            if ($("#Select_Persona option:selected").val() > 0) {
+                $('#Select_Persona').css("border", "1px solid #c2c2c2");
+            }
+
+            if ($('#Correo_Electronico').val().length > 0) {
+                $('#Correo_Electronico').css("border", "1px solid #c2c2c2");
+            }
+
+            if ($('#Telefono_Movil').val().length > 0) {
+                $('#Telefono_Movil').css("border", "1px solid #c2c2c2");
+            }
+
+            if ($("#Clasificacion option:selected").val() > 0) {
+                $('#Clasificacion').css("border", "1px solid #c2c2c2");
+            }
+
+            if ($("#Origen_Cliente option:selected").val() > 0) {
+                $('#Origen_Cliente').css("border", "1px solid #c2c2c2");
+            }
+
+            if ($("#Sucursal option:selected").val() > 0) {
+                $('#Sucursal').css("border", "1px solid #c2c2c2");
+            }
+
+            if ($('#Telefono_Movil').val().length > 9) {
+                $('#Telefono_Movil').css("border", "1px solid #c2c2c2");
+            } else {
+                $('#Telefono_Movil').css("border", "2px solid #f44336");
+            }
+
+            if ($('#Telefono_Local').val().length > 9) {
+                $('#Telefono_Local').css("border", "1px solid #c2c2c2");
+            }
+            else if ($('#Telefono_Local').val().length == 0) {
+                $('#Telefono_Local').css("border", "1px solid #c2c2c2");
+            }
+            else {
+                $('#Telefono_Local').css("border", "2px solid #f44336");
+            }
+
+            // PERSONA FISICA
+            var persona = $("#Select_Persona option:selected").val();
+
+            if (persona == 1) {
+
+                $('#Nombre_Moral').css("border", "1px solid #c2c2c2");
+                $('#Fecha_Constitucion').css("border", "1px solid #c2c2c2");
+                $('#RFC_Moral').css("border", "1px solid #c2c2c2");
+
+                if ($('#Nombre').val().length > 0) {
+                    $('#Nombre').css("border", "1px solid #c2c2c2");
+                }
+
+                if ($('#Apellido_Paterno').val().length > 0) {
+                    $('#Apellido_Paterno').css("border", "1px solid #c2c2c2");
+                } 
+
+                if ($('#Apellido_Materno').val().length > 0) {
+                    $('#Apellido_Materno').css("border", "1px solid #c2c2c2");
+                }
+
+                if ($("#Select_Sexo option:selected").val() > 0) {
+                    $('#Select_Sexo').css("border", "1px solid #c2c2c2");
+                }
+
+                //if ($('#Fecha_Nacimiento').val().length > 0) {
+                //    $('#Fecha_Nacimiento').css("border", "1px solid #c2c2c2");
+                //}
+                //if ($('#Fecha_cumple').val().length > 0) {
+                //    $('#Fecha_cumple').css("border", "1px solid #c2c2c2");
+                //}
+
+                //if ($('#RFC').val().length > 0) {
+                //    $('#RFC').css("border", "1px solid #c2c2c2");
+                //}
+
+            } else if (persona == 2) {
+                $('#Nombre').css("border", "1px solid #c2c2c2");
+                $('#Apellido_Paterno').css("border", "1px solid #c2c2c2"); 
+                $('#Apellido_Materno').css("border", "1px solid #c2c2c2");
+                $('#Select_Sexo').css("border", "1px solid #c2c2c2");
+                $('#Fecha_Nacimiento').css("border", "1px solid #c2c2c2");
+                //$('#RFC').css("border", "1px solid #c2c2c2");
+
+                if ($('#Nombre_Moral').val().length > 0) {
+                    $('#Nombre_Moral').css("border", "1px solid #c2c2c2");
+                }
+
+                if ($('#Fecha_Constitucion').val().length > 0) {
+                    $('#Fecha_Constitucion').css("border", "1px solid #c2c2c2");
+                }
+
+                //if ($('#RFC_Moral').val().length > 0) {
+                //    $('#RFC_Moral').css("border", "1px solid #c2c2c2");
+                //}
+
+            } else {
+                $('#Nombre').css("border", "1px solid #c2c2c2");
+                $('#Apellido_Paterno').css("border", "1px solid #c2c2c2"); 
+                $('#Apellido_Materno').css("border", "1px solid #c2c2c2");
+                $('#Select_Sexo').css("border", "1px solid #c2c2c2");
+                //$('#Fecha_Nacimiento').css("border", "1px solid #c2c2c2");
+                //$('#Fecha_cumple').css("border", "1px solid #c2c2c2");
+                $('#RFC').css("border", "1px solid #c2c2c2");
+
+                $('#Nombre_Moral').css("border", "1px solid #c2c2c2");
+                $('#Fecha_Constitucion').css("border", "1px solid #c2c2c2");
+                //$('#RFC_Moral').css("border", "1px solid #c2c2c2");
+            }
+
+
+
+
+            var contacto = false;
+            // CONTACTO
+            if ($("#Select_Persona option:selected").val() > 0) {
+                if ($('#Correo_Electronico').val().length > 0) {
+                    if ($('#Telefono_Movil').val().length > 0) {
+                        if ($("#Clasificacion option:selected").val() > 0) {
+                            if ($("#Origen_Cliente option:selected").val() > 0) {
+                                if ($("#Sucursal option:selected").val() > 0) {
+                                    contacto = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            var TipoPersona = false;
+            // PERSONA FISICA
+            if (persona == 1) {
+                if ($('#Nombre').val().length > 0) {
+                    if ($('#Apellido_Paterno').val().length > 0) { 
+                        if ($('#Apellido_Materno').val().length > 0) {
+                            if ($("#Select_Sexo option:selected").val() > 0) {
+                                //if ($('#Fecha_Nacimiento').val().length > 0) {
+
+                                //if ($('#RFC').val().length > 0) {
+                                TipoPersona = true;
+                                //}
+
+
+                                //}
+                            }
+                        }
+                    }
+                }
+            } else if (persona == 2) {
+                if ($('#Nombre_Moral').val().length > 0) {
+                    if ($('#Fecha_Constitucion').val().length > 0) {
+                        //if ($('#RFC_Moral').val().length > 0) {
+                            TipoPersona = true;
+                        //}
+                    }
+                }
+            }
+
+
+
+            if (contacto) {
+                if (TipoPersona) {
+                    respuesta = true;
+                }
+            }
+        }
+
+
+        return respuesta;
+    }
+
+
+
+    //function ValidarFormualrioRFC() {
+    //    var respuesta = false;
+    //    var persona = $("#Select_Persona option:selected").val();
+    //    if (persona == 1) {
+    //        var rfc = $('#RFC').val().trim().toUpperCase(),
+    //        var rfcCorrecto = rfcValido(rfc);
+    //        if (rfcCorrecto) {
+    //            respuesta = true;
+    //        } else {
+    //            $('#RFC').css("border", "2px solid #f44336");
+    //            $('#RFC_Mensaje').text("RFC no valido.");
+    //            $.notify({
+    //            message: "RFC no valido."
+    //                }, {
+    //                    type: 'danger',
+    //                    allow_dismiss: false,
+    //                    animate: {
+    //                        enter: 'animated rollIn',
+    //                        exit: 'animated rollOut'
+    //                    }
+    //            });
+    //        }
+    //    } else if (persona == 2) {
+    //        var rfc = $('#RFC_Moral').val().trim().toUpperCase(),
+    //        var rfcCorrecto = rfcValido(rfc);
+    //        if (rfcCorrecto) {
+    //            respuesta = true;
+    //        } else {
+    //            $('#RFC_Moral').css("border", "2px solid #f44336");
+    //            $('#RFC_MoralMensaje').text("RFC no valido.");
+    //            $.notify({
+    //            message: "RFC no valido."
+    //                }, {
+    //                    type: 'danger',
+    //                    allow_dismiss: false,
+    //                    animate: {
+    //                        enter: 'animated rollIn',
+    //                        exit: 'animated rollOut'
+    //                    }
+    //            });
+    //        }
+    //    }
+
+    //    return respuesta;
+    //}
+
+    @*function ValidarFormualrioRFC() {
+        var respuesta = false;
+        var persona = $("#Select_Persona option:selected").val();
+        if (persona == 1) {
+            var rfc = $('#RFC').val().trim().toUpperCase();
+
+            var rfcCorrecto = rfcValido(rfc);
+            if (rfcCorrecto) {
+                respuesta = true;
+            } else {
+                $('#RFC').css("border", "2px solid #f44336");
+                $('#RFC_Mensaje').text("RFC no valido.");
+                $.notify({
+                message: "RFC no valido."
+                    }, {
+                        type: 'danger',
+                        allow_dismiss: false,
+                        animate: {
+                            enter: 'animated rollIn',
+                            exit: 'animated rollOut'
+                        }
+                });
+            }
+        } else if (persona == 2) {
+            var rfc = $('#RFC_Moral').val().trim().toUpperCase();
+            var rfcCorrecto = rfcValido(rfc);
+            if (rfcCorrecto) {
+                respuesta = true;
+            } else {
+                $('#RFC_Moral').css("border", "2px solid #f44336");
+                $('#RFC_MoralMensaje').text("RFC no valido.");
+                $.notify({
+                message: "RFC no valido."
+                    }, {
+                        type: 'danger',
+                        allow_dismiss: false,
+                        animate: {
+                            enter: 'animated rollIn',
+                            exit: 'animated rollOut'
+                        }
+                });
+            }
+        }
+
+        return respuesta;
+    }
+
+    function ValidaRFC(input) {
+        var persona = $("#Select_Persona option:selected").val();
+        if (persona == 1) {
+            if (validarInput(input)) {
+                $('#RFC').css("border", "1px solid #c2c2c2");
+                $('#RFC_Mensaje').text("");
+
+                // BUSCAR RFC
+                var obj = {};
+                obj['RFC'] =  $('#RFC').val();
+
+                var jsonObject = {
+                    "Cliente": obj
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("BuscarClienteRFC", "Clientes")",
+                    data: JSON.stringify(jsonObject),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (respuesta) {
+                        if (respuesta.IdCliente > 0) {
+                            $('#RFC').css("border", "2px solid #f44336");
+                            $('#RFC_Mensaje').text("El RFC ya se encuentra registrado dentro del sistema.");
+
+                            $.notify({
+                                message: "El RFC ya se encuentra registrado dentro del sistema."
+                            }, {
+                                type: 'danger',
+                                allow_dismiss: false,
+                                animate: {
+                                    enter: 'animated rollIn',
+                                    exit: 'animated rollOut'
+                                }
+                            });
+                        } else {
+                            $('#RFC').css("border", "2px solid #31CE36");
+                        }
+	                },
+	                error: function() {
+                        $.notify({
+                        message: "RFC no buscado."
+                            }, {
+                                type: 'danger',
+                                allow_dismiss: false,
+                                animate: {
+                                    enter: 'animated rollIn',
+                                    exit: 'animated rollOut'
+                                }
+                        });
+                    }
+                });
+
+            } else {
+                $('#RFC').css("border", "2px solid #f44336");
+                $('#RFC_Mensaje').text("RFC no valido.");
+
+                $.notify({
+                message: "RFC no valido."
+                    }, {
+                        type: 'danger',
+                        allow_dismiss: false,
+                        animate: {
+                            enter: 'animated rollIn',
+                            exit: 'animated rollOut'
+                        }
+                });
+            }
+        } else if (persona == 2) {
+            if (validarInput(input)) {
+                $('#RFC_Moral').css("border", "1px solid #c2c2c2");
+                $('#RFC_MoralMensaje').text("");
+
+                // BUSCAR RFC
+                var obj = {};
+                obj['RFC'] =  $('#RFC_Moral').val();;
+
+                var jsonObject = {
+                    "Cliente": obj
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("BuscarClienteRFC", "Clientes")",
+                    data: JSON.stringify(jsonObject),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (respuesta) {
+                        if (respuesta.IdCliente > 0) {
+                            $('#RFC_Moral').css("border", "2px solid #f44336");
+                            $('#RFC_MoralMensaje').text("El RFC ya se encuentra registrado dentro del sistema.");
+
+                            $.notify({
+                                message: "El RFC ya se encuentra registrado dentro del sistema."
+                            }, {
+                                type: 'danger',
+                                allow_dismiss: false,
+                                animate: {
+                                    enter: 'animated rollIn',
+                                    exit: 'animated rollOut'
+                                }
+                            });
+                        } else {
+                            $('#RFC_Moral').css("border", "2px solid #31CE36");
+                        }
+	                },
+	                error: function() {
+                        $.notify({
+                        message: "RFC no buscado."
+                            }, {
+                                type: 'danger',
+                                allow_dismiss: false,
+                                animate: {
+                                    enter: 'animated rollIn',
+                                    exit: 'animated rollOut'
+                                }
+                        });
+                    }
+                });
+
+            } else {
+                $('#RFC_Moral').css("border", "2px solid #f44336");
+                $('#RFC_MoralMensaje').text("RFC no valido.");
+
+                $.notify({
+                message: "RFC no valido."
+                    }, {
+                        type: 'danger',
+                        allow_dismiss: false,
+                        animate: {
+                            enter: 'animated rollIn',
+                            exit: 'animated rollOut'
+                        }
+                });
+            }
+        }
+    }
+
+    ///// VALIDACION DE RFC
+
+    //Función para validar un RFC
+    // Devuelve el RFC sin espacios ni guiones si es correcto
+    // Devuelve false si es inválido
+    // (debe estar en mayúsculas, guiones y espacios intermedios opcionales)
+    function rfcValido(rfc, aceptarGenerico = true) {
+         _rfc_pattern_pm = "^(([A-ZÑ&]{3})([0-9]{2})([0][13578]|[1][02])(([0][1-9]|[12][\\d])|[3][01])([A-Z0-9]{3}))|" +
+                  "(([A-ZÑ&]{3})([0-9]{2})([0][13456789]|[1][012])(([0][1-9]|[12][\\d])|[3][0])([A-Z0-9]{3}))|" +
+                  "(([A-ZÑ&]{3})([02468][048]|[13579][26])[0][2]([0][1-9]|[12][\\d])([A-Z0-9]{3}))|" +
+                  "(([A-ZÑ&]{3})([0-9]{2})[0][2]([0][1-9]|[1][0-9]|[2][0-8])([A-Z0-9]{3}))$";
+     _rfc_pattern_pf = "^(([A-ZÑ&]{4})([0-9]{2})([0][13578]|[1][02])(([0][1-9]|[12][\\d])|[3][01])([A-Z0-9]{3}))|" +
+                       "(([A-ZÑ&]{4})([0-9]{2})([0][13456789]|[1][012])(([0][1-9]|[12][\\d])|[3][0])([A-Z0-9]{3}))|" +
+                       "(([A-ZÑ&]{4})([02468][048]|[13579][26])[0][2]([0][1-9]|[12][\\d])([A-Z0-9]{3}))|" +
+                       "(([A-ZÑ&]{4})([0-9]{2})[0][2]([0][1-9]|[1][0-9]|[2][0-8])([A-Z0-9]{3}))$";
+       return rfc.match(_rfc_pattern_pm) || rfc.match(_rfc_pattern_pf);
+    }
+
+
+    //Handler para el evento cuando cambia el input
+    // -Lleva la RFC a mayúsculas para validarlo
+    // -Elimina los espacios que pueda tener antes o después
+    function validarInput(input) {
+        var respuesta = false;
+
+        var rfc         = input.value.trim().toUpperCase(),
+            resultado   = document.getElementById("resultado"),
+            valido;
+
+        var rfcCorrecto = rfcValido(rfc);   //
+
+        if (rfcCorrecto) {
+            var respuesta = true;
+        }
+        return respuesta;
+    }*@
+
+</script>
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#IndexClientes').addClass("nav-item active submenu");
+
+        $('.input-number').on('input', function () {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+
+        $('.input-number-fecha').on('input', function () {
+            this.value = this.value.replace(/[^0-9/]/g, '');
+        });
+
+        $('input[type="text"]').each(function () {
+            if ($(this).val() != "") {
+                empty = false;
+                return false;
+            }
+        });
+
+        $("#formulario1").validate();
+       
+    });
+
+    function CargarFechaNacimiento(valor) {
+        var fisicamoral = $('input:radio[name=PersonaRadio]:checked').val()
+
+        if (valor.value === '') {
+            swal({
+                text: 'El campo no puede quedarse vacío',
+                icon: 'warning',
+                buttons: {
+                    confirm: {
+                        className: 'btn btn-warning'
+                    }
+                }
+            }).then(
+                function () {
+                    $('#RFC').focus();
+                }
+            );
+        }
+        //Recorta el RFC y obtiene la fecha de nacimiento, primero valida, claro
+        if (fisicamoral == 1) {
+            var longitudRFC = $('#RFC').val().length;
+            if (longitudRFC < 13) {
+                swal({
+                    text: 'La longitud del RFC (' + longitudRFC + ') es incorrecta, debe ser de 13 caracteres.',
+                    icon: 'warning',
+                    buttons: {
+                        confirm: {
+                            className: 'btn btn-warning'
+                        }
+                    }
+                }).then(
+                    function () {
+                        $('#RFC').focus();
+                    }
+                );
+            }
+
+            var fecha = valor.value;
+            var año = valor.value.substring(4, 6);
+            var mes = valor.value.substring(6, 8);
+            var dia = valor.value.substring(8, 10);
+
+            if (mes > 12 || dia > 31) {
+                swal({
+                    text: 'Revise y tecleé la fecha del RFC correctamente (LLLLAAMMDDAAA).',
+                    icon: 'warning',
+                    buttons: {
+                        confirm: {
+                            className: 'btn btn-warning'
+                        }
+                    }
+                }).then(
+                    function () {
+                        $('#RFC').focus();
+                    }
+                );
+            }
+
+
+            $('#FNacimiento').val(dia + '/' + mes + '/' + año);
+        }
+        else if (fisicamoral == 2) {
+            var longitudRFC = $('#RFC').val().length;
+            if (longitudRFC < 12) {
+                swal({
+                    text: 'La longitud del RFC (' + longitudRFC + ') es incorrecta, debe ser de 12 caracteres.',
+                    icon: 'warning',
+                    buttons: {
+                        confirm: {
+                            className: 'btn btn-warning'
+                        }
+                    }
+                });
+                return;
+            }
+
+            var fecha = valor.value;
+            var año = valor.value.substring(3, 5);
+            var mes = valor.value.substring(5, 7);
+            var dia = valor.value.substring(7, 9);
+
+            if (mes > 12 || dia > 31) {
+                swal({
+                    text: 'Revise y tecleé la fecha del RFC correctamente (LLLAAMMDDAAA).',
+                    icon: 'warning',
+                    buttons: {
+                        confirm: {
+                            className: 'btn btn-warning'
+                        }
+                    }
+                });
+                return;
+            }
+
+            $('#FNacimiento').val(dia + '/' + mes + '/' + año);
+        }
+    }
+
+    function BorrarFechaNacimiento() {
+        var valor = $('input:radio[name=PersonaRadio]:checked').val()
+        if (valor == 2) {
+            $('#FNacimiento').val('');
+        }
+
+    }
+
+    function CopiaDireccion() {
+        $('#DEntrega').val($('#DFiscal').val());
+    }
+
+    function NoVaciosCorreo(element) {
+
+        var arroba = element.value.lastIndexOf("@@");
+        var punto = element.value.lastIndexOf(".");
+
+        if (element.value === '') {
+            swal({
+                text: 'El correo es incorrecto, revise.',
+                buttons: {
+                    confirm: {
+                        className: 'btn btn-warning'
+                    }
+                },
+            }).then(
+                function () {
+                    $('#Correo').focus();
+                }
+            );
+        }
+        else if (arroba == -1) {
+            swal({
+                text: 'El correo es incorrecto, falta @@.',
+                buttons: {
+                    confirm: {
+                        className: 'btn btn-warning'
+                    }
+                },
+            }).then(
+                function () {
+                    $('#Correo').focus();
+                }
+            );
+        }
+        else if (punto == -1) {
+            swal({
+                text: 'El correo es incorrecto, revise.',
+                buttons: {
+                    confirm: {
+                        className: 'btn btn-warning'
+                    }
+                },
+            }).then(
+                function () {
+                    $('#Correo').focus();
+                }
+            );
+        }
+    }
+
+    function SinFechaNacimiento(element) {
+
+        var dia = element.value.substring(0, 2);
+        var mes = element.value.substring(3, 5);
+
+        if (element.value === '') {
+            swal({
+                text: 'El campo de Fecha de Nacimiento no puede quedarse vacío.',
+                buttons: {
+                    confirm: {
+                        className: 'btn btn-warning'
+                    }
+                },
+            }).then(
+                function () {
+                    $('#FNacimiento').focus();
+                }
+            );
+        }
+        else if (element.value.length > 8) {
+            swal({
+                text: 'Escriba correctamente la fecha (dd/mm/yy)',
+                buttons: {
+                    confirm: {
+                        className: 'btn btn-warning'
+                    }
+                },
+            }).then(
+                function () {
+                    $('#FNacimiento').focus();
+                }
+            );
+        }
+        else if (mes > 12 || dia > 31) {
+            swal({
+                text: 'Escriba correctamente la fecha (dd/mm/yy)',
+                icon: 'warning',
+                buttons: {
+                    confirm: {
+                        className: 'btn btn-warning'
+                    }
+                }
+            }).then(
+                function () {
+                    $('#FNacimiento').focus();
+                }
+            );
+        }
+    }
+
+</script>

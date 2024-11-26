@@ -1,0 +1,810 @@
+﻿
+@{
+    ViewBag.Title = "Agregar";
+}
+
+
+<link href="~/assets/js/plugin/datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#IndexVentas').addClass("nav-item active submenu");
+
+        var rowIdx = 0;
+
+        $('#articulos').on('click', '.remove', function () {
+            var child = $(this).closest('tr').nextAll();
+
+            // Iterando a través de todas las filas
+            // obtenidas para cambiar el índice
+            child.each(function () {
+
+                // Obteniendo <tr> id.
+                var id = $(this).attr('id');
+
+                // Obteniendo <p> dentro de la clase .row-index.
+                var idx = $(this).children('.row-index').children('p');
+
+                // Obteniendo el número de fila desde <tr> id.
+                var dig = parseInt(id.substring(1));
+
+                // Modificando el número de fila.
+                idx.html('Row ${dig - 1}');
+
+                // Modificando el id de fila.
+                $(this).attr('id', 'R${dig - 1}');
+            });
+
+            // Removiendo la fila actual.
+            $(this).closest('tr').remove();
+
+            // Decrementando el número de total de filas por 1.
+            rowIdx--;
+        });
+
+        $('#divTarjetas').hide();
+        $('#divEntrega').hide();
+        $('#divHoraEntrega').hide();
+
+        $('#btnAgregar').hide();
+
+        $('#BackOrder').hide();
+
+    });
+
+    function ClienteDetalle() {
+        $.ajax({
+            type: "GET",
+            url: "/Clientes/ClienteSeleccionarPorId/",
+            data: { id: $('#basic').val() },
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+                $('#clienteId').val(data.Id);
+                $('#clienteNombre').val(data.Nombre + ' ' + data.ApellidoPaterno + ' ' + data.ApellidoMaterno).addClass('text-primary');
+                $('#clienteRFC').val(data.RFC).addClass('text-primary');
+                $('#clienteDFiscal').val(data.DireccionFiscal).addClass('text-primary');
+                $('#clienteDEntrega').val(data.DireccionEntrega).addClass('text-primary');
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('jqXHR:');
+                console.log(jqXHR);
+                console.log('textStatus:');
+                console.log(textStatus);
+                console.log('errorThrown:');
+                console.log(errorThrown);
+            }
+        });
+
+
+    }
+
+    //Agrega uno nuevo
+    function ProductoDetalle() {
+    //alert($('#basic2').val());
+        if ($('#basic2').val() == 0) {
+            return;
+        }
+        $.ajax({
+            type: "GET",
+            url: "/Productos/ProductoSeleccionarPorId",
+            data: { id: $('#basic2').val() },
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+
+                var canti = 0;
+                var totales = 0;
+
+                var id = data.Id;
+                var nombre = data.Nombre;
+                var sku = data.SKU;
+                var cantidad = $('#cantidad').val() < 1 ? 1 : $('#cantidad').val();
+                var preciounit = data.PrecioPublico;
+                var precio = data.PrecioPublico;
+
+                canti += cantidad;
+                totales += precio * cantidad;
+
+                $('#articulos').append(
+                    '<tr id="R${++rowIdx}">' +
+                    '<td class="row-index">' + id +
+                    '</td><td>' + nombre +
+                    '</td><td>' + sku +
+                    '</td><td align="center"><input type="text" class=form-control value="' + cantidad + '" style="background-color:#FFB5AF; width: 50px" onblur=RecalcularCantidadXPrecio(' + id + ',this) />' +  
+                    '</td><td align=right><input type="text" class=form-control value="' + precio + '" style="background-color:#FFB5AF; width: 150px" onblur=RecalcularPrecioXCantidad(' + id + ',this) />' +
+                    '</td><td align=right>$' + cantidad * precio +
+                    '</td><td><i class="fas fa-trash text-danger remove" onclick=EliminarRegistro(' + id + ')></i></td></tr>');
+
+                $('#articulos').append('<tr><td></td><td></td><td>Gran Total</td><td align="center">' + canti + '</td><td></td><td align=right>$' + (Math.round(totales * 100) / 100).toFixed(2) +'</td><td></td></tr>');
+
+                $('#btnGuardar').hide();
+                $('#btnAgregar').show();
+
+                GuardarProductosAgregados();
+                
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('jqXHR:');
+                console.log(jqXHR);
+                console.log('textStatus:');
+                console.log(textStatus);
+                console.log('errorThrown:');
+                console.log(errorThrown);
+            }
+        });
+
+
+    }
+
+    //Agrega a lo que ya existe
+    function ProductoDetalle2() {
+
+        if ($('#basic2').val() == 0) {
+            return;
+        }
+        $.ajax({
+            type: "GET",
+            url: "/Productos/ProductoSeleccionarPorId/",
+            data: { id: $('#basic2').val() },
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+                
+                $('#btnAgregadoProd').hide();
+
+                GuardarProductosAgregados2();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('jqXHR:');
+                console.log(jqXHR);
+                console.log('textStatus:');
+                console.log(textStatus);
+                console.log('errorThrown:');
+                console.log(errorThrown);
+            }
+        });
+
+
+    }
+
+    function GuardarProductosAgregados() {
+
+        var compras = new Array();
+        // loop over each table row (tr)
+        $("#articulos tr").each(function () {
+            var fila = $(this);
+            var compra = {};
+            compra.Id = fila.find("TD").eq(0).html(); //El id del articulo
+            //.Nombre = fila.find("TD").eq(1).html(); //el nombre del producto
+            compra.SKU = $('#clienteId').val();        //El id del cliente al que se le hace la venta
+            compra.Descripcion = $('#Vendedor').val();         //id del vendedor
+            //Agregar la cantidad
+            compra.Categoria = $('#cantidad').val(); //fila.find("TD").eq(3).html(); //Cantidad de productos
+            compra.PrecioPublico = $('#Tipo').val();             //id de forma de pago
+            compra.PrecioDistribuidor = $('#TipoEntrega').val();      //id tipo de entrega
+            compra.Fecha = $('#Fecha').val();            //fecha de la compra
+            compra.Nombre = fila.find("TD").eq(4).html(); //Precio del producto
+            compra.TarjetaCredito = $('#TarjetasCredito').val();
+            compra.FechaEntrega = $('#FechaEntrega').val();
+            compra.HoraEntrega = $('#HoraEntrega').val();
+            compras.push(compra);
+        });        
+
+        $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            type: 'POST',
+            url: '/Ventas/VentaAgregar',
+            data: JSON.stringify(compras),
+            success: function (data) {
+
+                $('#IdVenta').val(data);
+                $('#BackOrder').show();
+            },
+            failure: function (response) {
+                $('#result').html(response);
+            }
+        });
+    }
+
+    function GuardarProductosAgregados2() {
+       
+        $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            type: 'GET',
+            url: '/Ventas/VentaAgregar2',
+            data: { idventa: $('#IdVenta').val(), idproducto: $('#basic2').val(), cantidad: $('#cantidad').val() }, 
+            success: function (data) {                
+
+                CrearDetalleProductos($('#IdVenta').val());
+                
+            },
+            failure: function (response) {
+                $('#result').html(response);
+            }
+        });
+
+
+    }
+
+    function ObtenerTarjetas() {
+        if ($('#Tipo').val() === '2') {
+            $('#divTarjetas').show();
+        }
+        else {
+            $('#divTarjetas').hide();
+        }
+    }
+
+    function AgregarFechaEntrega() {
+        if ($('#TipoEntrega').val() === '2') {
+            $('#divEntrega').show();
+            $('#divHoraEntrega').show();
+        }
+        else {
+            $('#divEntrega').hide();
+            $('#divHoraEntrega').hide();
+        }
+    }
+
+    function RecalcularCantidadXPrecio(idproducto, cantidad) {
+        //alert('Entré a RecalcularCantidadXPrecio');
+        //alert('Se recalcula de nuevo cantidad por precio: ' + idventa + ',' + idproducto + ',' + cantidad.value);
+        
+        $.ajax({
+            type: "GET",
+            url: "/Ventas/VentasProductosModificarCantidad/",
+            data: { idventa: $('#IdVenta').val(), idproducto: idproducto, cantidad: cantidad.value },
+            contentType: "application/json",
+            dataType: "json",
+            success: function data(data) {
+
+                CrearDetalleProductos($('#IdVenta').val());
+                
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('jqXHR:');
+                console.log(jqXHR);
+                console.log('textStatus:');
+                console.log(textStatus);
+                console.log('errorThrown:');
+                console.log(errorThrown);
+            }
+        });
+        
+    }
+
+    function RecalcularPrecioXCantidad(idproducto, valor) {
+        // alert('Se recalcula de nuevo cantidad por precio: ' + idventa + ',' + idproducto + ',' + valor.value);
+        $.ajax({
+            type: "GET",
+            url: "/Ventas/VentasProductosModificarPrecio/",
+            data: { idventa: $('#IdVenta').val(), idproducto: idproducto, precio: valor.value },
+            contentType: "application/json",
+            dataType: "json",
+            success: function data(data) {
+
+                CrearDetalleProductos($('#IdVenta').val());
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('jqXHR:');
+                console.log(jqXHR);
+                console.log('textStatus:');
+                console.log(textStatus);
+                console.log('errorThrown:');
+                console.log(errorThrown);
+            }
+        });
+    }
+
+    function EliminarRegistro(idproducto) {
+        $.ajax({
+            type: "GET",
+            url: "/Ventas/VentasProductosEliminarRegistro/",
+            data: { idventa: $('#IdVenta'), idproducto: idproducto },
+            contentType: "application/json",
+            dataType: "json",
+            success: function data(data) {
+
+                CrearDetalleProductos();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('jqXHR:');
+                console.log(jqXHR);
+                console.log('textStatus:');
+                console.log(textStatus);
+                console.log('errorThrown:');
+                console.log(errorThrown);
+            }
+        });
+    }
+
+    function CrearDetalleProductos(idventa) {
+        //Crea un detalle de tabla con los productos que se han agregado a la venta
+
+        $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            type: 'GET',
+            url: '/Ventas/VentaDetalle',
+            data: { idventa: idventa },
+            success: function (data) {
+
+                $('#articulos tbody tr').remove();
+
+                var canti = 0;
+                var totales = 0;
+
+                for (var i = 0; i < data.length; i++) {
+
+                    var id = data[i].IdVenta;
+                    var idprod = data[i].Productos.Id;
+                    var nombre = data[i].Productos.Nombre;
+                    var sku = data[i].Productos.SKU;
+                    var cantidad = data[i].Cantidad;
+                    var precio = data[i].Precio;
+
+                    canti += cantidad;
+                    totales += precio * cantidad;
+
+                    $('#articulos').append(
+                        '<tr><td>' + id +
+                        '</td><td>' + nombre +
+                        '</td><td>' + sku +
+                        '</td><td align=center><input type="text" class=form-control value="' + cantidad + '" style="background-color:#FFB5AF; width: 50px" onblur=RecalcularCantidadXPrecio(' + idprod + ',this) />' +
+                        '</td ><td align=right><input type="text" class=form-control value="' + precio + '" style="background-color:#FFB5AF; width: 150px" onblur=RecalcularPrecioXCantidad(' + idprod + ',this) />' +
+                        '</td ><td align=right>$' + cantidad * precio +
+                        '</td><td><i class="fas fa-trash text-danger remove" onclick=EliminarRegistro(' + idprod + ')></i></td></tr>');
+
+                }
+                $('#articulos').append('<tr><td></td><td></td><td>Totales:</td><td align=center>' + canti + '</td><td></td><td align=right>$' + (Math.round(totales * 100) / 100).toFixed(2) + '</td><td></td></tr>');
+
+            },
+            failure: function (response) {
+                $('#result').html(response);
+            }
+        });
+        
+    }
+
+    function ModificarBackOrder() {
+        //Activar si la orden sera una backorder
+        var valorActivo = 0
+        if ($('#BackOrder').is(":checked")) {
+            valorActivo = 1;
+        }
+        else {
+            valorActivo = 0;
+        }
+        $.ajax({
+            type: "GET",
+            url: "/Ventas/VentasModificarBackOrder/",
+            data: { idventa: $('#IdVenta').val(), backorder: valorActivo },
+            contentType: "application/json",
+            dataType: "json",
+            success: function data(data) {
+
+                
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('jqXHR:');
+                console.log(jqXHR);
+                console.log('textStatus:');
+                console.log(textStatus);
+                console.log('errorThrown:');
+                console.log(errorThrown);
+            }
+        });
+
+    }
+
+    function Volver() {
+
+        swal({
+            text: 'Se agregaron los datos exitosamente.',
+            buttons: {
+                confirm: {
+                    className: 'btn btn-success'
+                }
+            },
+        }).then(
+            function () {
+                location.href = '/Ventas/Index';
+            }
+        );
+
+    }
+</script>
+
+<input type="hidden" id="IdVenta" value=""/>
+
+
+<div class="page-inner">
+    <div class="page-header">
+        <h4 class="page-title">Agregar Venta</h4>
+    </div>
+    <div class="row">
+
+        <div id="Espera" style="display:none; width:69px;height:90px;position:absolute;top:20%;left:50%;padding:2px;z-index:1000">
+            <img src="../assets/img/spinner.gif" width="64" height="64" /><br />Cargando...
+        </div>
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-12 text-right">
+
+                    <a href="#" onclick="location.href = '';">Cancelar</a> | <a href="/Ventas/Index">Todos las Ventas</a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-body text-">
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="label">Agregar cliente (buscar por nombre, apellidos, rfc):</label>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+
+                    <div class="select2-input form-inline">
+
+                        <select id="basic" name="basic" onchange="ClienteDetalle();" class="form-control" style="border:1px solid black">
+                            <option></option>
+                            @foreach (var item1 in CRMRetail.Datos.Catalogos.SeleccionarClientesPorNombre())
+                            {
+                                <option value="@item1.Id">@item1.Nombre</option>
+                            }
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+
+            </div>
+
+            <hr />
+
+            <input type="hidden" id="clienteId" />
+
+            <div class="row">
+
+                <div class="col-md-4">
+
+                    <div class="form-group form-floating-label">
+                        <input id="clienteNombre" class="form-control input-solid" />
+                        <label for="clienteNombre" class="placeholder">Nombre:</label>
+                    </div>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <div class="form-group form-floating-label">
+                        <input id="clienteRFC" class="form-control input-solid" />
+                        <label for="clienteRFC" class="placeholder">RFC:</label>
+                    </div>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <div class="form-group form-floating-label">
+                        <input id="Fecha" class="form-control input-solid" required autocomplete="off" />
+                        <label for="Fecha" class="placeholder">Fecha:</label>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-12">
+
+                    <div class="form-group form-floating-label">
+                        <input id="clienteDFiscal" class="form-control input-solid" />
+                        <label for="clienteDFiscal" class="placeholder">Dirección Fiscal:</label>
+                    </div>
+
+                </div>
+
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-12">
+
+                    <div class="form-group form-floating-label">
+                        <div class="form-group form-floating-label">
+                            <input id="clienteDEntrega" class="form-control input-solid" />
+                            <label for="clienteDEntrega" class="placeholder">Dirección Entrega:</label>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-4">
+                    <div class="form-group form-floating-label">
+                        <select class="form-control input-solid" id="Vendedor" name="Vendedor">
+                            <option value=""></option>
+                            @foreach (var item1 in CRMRetail.Datos.Catalogos.SeleccionarVendedores())
+                            {
+                                <option value="@item1.Id">@item1.Nombre</option>
+                            }
+                        </select>
+                        <label for="Vendedor" class="placeholder">Vendedor</label>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group form-floating-label">
+                        <select class="form-control input-solid" id="Tipo" name="Tipo" onchange="ObtenerTarjetas();">
+                            <option value=""></option>
+                            @foreach (var item2 in CRMRetail.Datos.Catalogos.Seleccionar("TipoVenta"))
+                            {
+                                <option value="@item2.Id">@item2.Nombre</option>
+                            }
+                        </select>
+                        <label for="Tipo" class="placeholder">Forma de Pago</label>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+
+                    <div class="form-group form-floating-label">
+                        <select class="form-control input-solid" id="TipoEntrega" name="TipoEntrega" onchange="AgregarFechaEntrega();">
+                            <option value=""></option>
+                            @foreach (var item3 in CRMRetail.Datos.Catalogos.Seleccionar("TipoEntrega"))
+                            {
+                                <option value="@item3.Id">@item3.Nombre</option>
+                            }
+                        </select>
+                        <label for="Tipo" class="placeholder">Tipo de Entrega</label>
+                    </div>
+
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+
+                    <div id="divTarjetas" class="form-group form-floating-label">
+                        <select class="form-control input-solid" id="TarjetasCredito" name="TarjetasCredito">
+                            <option value=""></option>
+                            @foreach (var item4 in CRMRetail.Datos.Catalogos.Seleccionar("TarjetasCredito"))
+                            {
+                                <option value="@item4.Id">@item4.Nombre</option>
+                            }
+                        </select>
+                        <label for="Tipo" class="placeholder">Tarjetas de Crédito</label>
+                    </div>
+
+                </div>
+                <div class="col-md-4">
+
+                    <div id="divEntrega" class="form-group form-floating-label">
+                        <input id="FechaEntrega" class="form-control input-solid" />
+                        <label for="FechaEntrega" class="placeholder">Fecha Entrega:</label>
+                    </div>
+
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-4"></div>
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+
+                    <div id="divHoraEntrega" class="form-group form-floating-label">
+                        <input id="HoraEntrega" class="form-control input-solid" />
+                        <label for="HoraEntrega" class="placeholder">Hora Entrega:</label>
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-12 text-right">
+
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input id="BackOrder" name="BackOrder" class="form-check-input" type="checkbox" onclick="ModificarBackOrder();">
+                            <span class="form-check-sign">Back Order</span>
+                        </label>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="row">
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="label">Agregar un producto (buscar por nombre, sku):</label>
+                    </div>
+                </div>
+
+                <div class="col-md-8 form-inline">
+
+                    <div class="select2-input">
+
+                        <select id="basic2" name="basic2" class="form-control">
+                            <option></option>
+                            @foreach (var item1 in CRMRetail.Datos.Catalogos.SeleccionarProductosPorNombre())
+                            {
+                                <option value="@item1.Id">@item1.Nombre</option>
+                            }
+                        </select>
+                        &nbsp;
+                        Cantidad:
+                        <input type="number" id="cantidad" class="form-control" value="1" style="width:80px" />
+                        &nbsp;
+                        <button id="btnGuardar" class="btn btn-primary btn-sm" onclick="ProductoDetalle();">Agregar</button>
+                        <button id="btnAgregar" class="btn btn-success btn-sm" onclick="ProductoDetalle2();">Agregar</button>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+
+
+        </div>
+
+        <hr />
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-12">
+
+                    <table id="articulos" class="table">
+                        <thead class="header">
+                            <tr>
+                                <th></th>
+                                <th>Producto</th>
+                                <th>SKU</th>
+                                <th align="center">Cantidad</th>
+                                <th>P. Unitario</th>
+                                <th>P. Total</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody"></tbody>
+                        <tfoot>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                </div>
+
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-12 text-right">
+
+                    <a href="#" onclick="Volver();" class="btn btn-success">Guardar</a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#basic').select2({
+            theme: "bootstrap"
+        });
+
+        $('#basic2').select2({
+            theme: "bootstrap"
+        });
+
+    });
+
+
+</script>
+
+<script src="~/assets/js/plugin/select2/select2.full.min.js"></script>
+
+<script src="../assets/js/plugin/datetimepicker/jquery.datetimepicker.full.js"></script>
+
+<script>
+
+    $.datetimepicker.setLocale('es');
+
+    $('#Fecha').datetimepicker({
+        timepicker: false,
+        format: 'd/m/Y',        
+    });
+
+    $('#FechaEntrega').datetimepicker({
+        timepicker: false,
+        format: 'd/m/Y',
+    });
+
+    $('#HoraEntrega').datetimepicker({
+        datepicker: false,
+        format: 'H:i',
+    });
+
+</script>

@@ -1,0 +1,101 @@
+﻿@model List<CRMRetail.Modelos.MarketingRecordatorios>
+@{
+    ViewBag.Title = "Recordatorios";
+}
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#IndexMarketing').addClass("nav-item active submenu");
+
+    });
+
+</script>
+
+
+<div class="page-inner">
+    <div class="page-header">
+        <h4 class="page-title">Agregar correos de recordatorio a los clientes sobre la próxima campaña a realizarse o en curso</h4>
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-12">
+
+            <div class="card">
+
+                <div class="card-body">
+
+                    @Html.Partial("_MenuMarketing")
+
+                    <div class="row">
+
+                        @Html.Raw(TempData["Mensaje"])
+
+                    </div>
+
+                </div>
+
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-12">
+
+            <div class="card">
+
+                <div class="card-body">
+
+                    <button class="btn btn-default" onclick="location.href='/Marketing/RecordatoriosAgregar?IdCampaña=@Request["idcampaña"]'">Nuevo</button>
+                    
+
+                    <div class="row">
+
+
+                    </div>
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Asunto</th>
+                                <th>Envío</th>
+                                <th></th><!--Modificar-->
+                                <th></th><!--Enviar ahora-->
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @if (Model != null)
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.Envio.ToString("dd/MMM/yy")</td>
+                                        <td>@item.Asunto</td>
+                                        <td>@item.Envio</td>
+                                        <td><a href="/Marketing/RecordatoriosModificar?recordatorio=@item.Id">Modificar</a></td>
+                                        <td><a href="/Marketing/RecordatoriosEnviar?idcampaña=@Request["idcampaña"]&recordatorio=@item.Id">Enviar ahora</a></td>
+                                    </tr>
+                                }
+                            }
+
+                        </tbody>
+
+                    </table>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

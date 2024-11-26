@@ -1,0 +1,113 @@
+﻿
+@{
+    ViewBag.Title = "OrdenesPendientes";
+}
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#IndexVentas').addClass("nav-item active submenu");
+
+        $.fn.dataTable.moment("DD/MM/YYYY");
+
+        $('#tabla01').DataTable({
+            "searching": true,
+            "paging": true,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+            },
+            "scrollX": true,
+            info: true,
+        });
+
+    });
+</script>
+
+<script src="~/assets/js/plugin/datatables/datatables.min.js"></script>
+<script src="../assets/js/plugin/datatables/sum().js"></script>
+<script src="~/assets/js/plugin/datatables/dataTables.colReorder.min.js"></script>
+<link href="~/assets/css/colReorder.dataTables.min.css" rel="stylesheet" />
+<link href="~/assets/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+
+<div class="page-inner">
+    <div class="page-header">
+        <h4 class="page-title">Ordenes Pendientes</h4>
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-12 text-right">
+
+                    <a href="/Ventas/Index">Todos las Ventas</a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="table-responsive">
+                    <table id="tabla01" class="display compact hover" style="width:100%">
+                        <thead class="header">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>RFC</th>
+                                <th>Fecha&nbsp;Venta</th>
+                                <th>Tipo&nbsp;Venta</th>
+                                <th>Tipo&nbsp;Entrega</th>
+                                <th>Vendedor</th>
+                                <th>Monto</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @if (Model == null)
+                            {
+                                <tr><td colspan="7" align="center">Sin datos para mostrar</td></tr>
+                            }
+                            @foreach (var items in Model)
+                            {
+
+                                <tr>
+                                    <td>@items.Clientes.Nombre @items.Clientes.ApellidoPaterno @items.Clientes.ApellidoMaterno</td>
+                                    <td>@items.Clientes.RFC</td>
+                                    <td>@items.Fecha.ToString("dd/MM/yy")</td>
+                                    <td>@CRMRetail.Datos.Catalogos.SeleccionarNombrePorId(items.Tipo.ToString(), "TipoVenta")</td>
+                                    <td>@CRMRetail.Datos.Catalogos.SeleccionarNombrePorId(items.TipoEntrega.ToString(), "TipoEntrega")</td>
+                                    <td>@CRMRetail.Datos.Catalogos.SeleccionarNombrePorId(items.Usuarios.Id.ToString(), "Usuarios")</td>
+                                    <td align="right"><a href="#" onclick="ModalDetalle(@items.Id);">@items.Monto.ToString("c")</a></td>
+                                    <td align="center"><a href="/Ventas/Modificar?id=@items.Id"><i class="fas fa-pencil-alt"></i></a></td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+

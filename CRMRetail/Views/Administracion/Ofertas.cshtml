@@ -1,0 +1,268 @@
+﻿<style>
+    table.dataTable thead tr {
+        background-color: #1a2035;
+        color: white
+    }
+
+    .header th {
+        height: 25px;
+        line-height: 2px;
+    }
+</style>
+
+<div class="page-inner">
+    <div class="page-header">
+        <h4 class="page-title">Ofertas</h4>
+    </div>
+    <div class="row">
+
+        <div id="Espera" style="display:none; width:69px;height:90px;position:absolute;top:20%;left:50%;padding:2px;z-index:1000">
+            <img src="../assets/img/spinner.gif" width="64" height="64" /><br />Cargando...
+        </div>
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-12">
+                    @Html.Partial("_MenuAdmin")
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+           
+            <div class="row">
+
+
+                <div class="table-responsive">
+                    <table id="tabla01" class="display compact hover table-striped table-hover text-center" style="width:100%;">
+                        <thead class="header">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>SKU</th>
+                                <th>Categoría </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                            foreach (var dtProducto in ViewBag.Poductos)
+                            {
+                            <tr>
+                                <td>@dtProducto.Nombre</td>
+                                <td>@dtProducto.SKU</td>
+                                <td>@dtProducto.Categoria</td>
+                                <td>
+                                    <button type="button" class="btn btn-icon btn-link" onclick="AgregarOferta(@dtProducto.Id)">
+                                        <i class="fa fa-plus-square"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<div class="modal fade" id="ModalNuevo" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="ModalLabel"></h3>
+                <input type="text" id="Id" style="display:none">
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+
+
+                <div class="row">
+                    <div class="col-md-6 col-lg-6">
+
+                        <div class="form-group">
+                            <label for="nNombre" class="col-md-3 col-form-label fc-left">Precio:</label>
+                            
+                                <input type="text" class="form-control form-control" name="nNombre" id="precioPublico" placeholder="" required tabindex="1">
+                            
+                        </div>
+
+                    </div>
+                    <div class="col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="nRol" class="col-md-3 col-form-label">% descuento:</label>
+                                <select class="form-control form-control" id="nRol" name="nRol" required tabindex="7" onchange="Operar(this.value)">
+                                    <option value="0">Seleccionar</option>
+                                    @foreach (var item in ViewBag.porcentual)
+                                    {
+                                    <option value="@item.Precio">@item.Nombre</option>
+                                    }
+                                </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="largeInput">* Fecha Inicio  </label>
+                            <input type="date" class="form-control form-control" id="Fecha_Inicio" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="largeInput">* Fecha Fin  </label>
+                            <input type="date" class="form-control form-control" id="Fecha_Fin" required>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-lg-12" style="display:none" id="preciohidden">
+
+                        <div class="form-group form-inline">
+                            <label for="nNombre" class="col-md-3 col-form-label fc-left">Precio Final:</label>
+                            <div class="col-md-9 p-0">
+                                <input type="text" class="form-control form-control" name="nNombre" id="precioDescuento" placeholder="" required tabindex="1">
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success" data-dismiss="modal" onclick="GuardarPromo();">Guardar</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/assets/js/plugin/datatables/datatables.min.js"></script>
+<link href="~/assets/css/jquery.dataTables.min.css" rel="stylesheet" />
+<script>
+    $(document).ready(function () {
+
+        $('#IndexAdmin').addClass("nav-item active submenu");
+        $('#o6').addClass('active show');
+
+        $('#tabla01').DataTable({
+            "searching": true,
+            "paging": true,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+            },
+            info: false,
+        });
+
+    });
+
+    function AgregarOferta(id) {
+        document.getElementById("nRol").value = 0;
+        let miInput = document.getElementById("preciohidden");
+        miInput.style.display = "none";
+
+        var obj = {};
+        obj['Id'] = id;
+
+        var jsonObject = {
+            "producto": obj
+        };
+
+        $.ajax({
+            url: "@Url.Action("Producto_Seleccionar_Id", "Productos")",
+            data: JSON.stringify(jsonObject),
+            type: "POST",
+            contentType: "application/json",
+            dataType: "json",
+
+            success: function (resultado) {
+                $('#Id').val(id);
+                $('#ModalLabel').text('Agregar promoción a  ' + resultado.Producto.Nombre);
+                $('#precioPublico').val(resultado.Producto.PrecioPublico);
+            },
+            error: function (resultado) {
+                alert("Error funcion listar compartir por ID ");
+            }
+        });
+
+        
+        $('#ModalNuevo').modal('show');
+
+
+    }
+    function Operar(Id) {
+        let miInput = document.getElementById("preciohidden");
+        miInput.style.display = "block";
+
+        let precioInicial = document.getElementById("precioPublico").value;
+
+        let resultado = precioInicial - (precioInicial * Id);
+
+        resultado = resultado.toFixed(2);
+
+        $('#precioDescuento').val(resultado);
+    }
+
+    function GuardarPromo() {
+        var obj = {};
+        obj['Id'] = $('#Id').val();
+        obj['FechaInicio'] = $('#Fecha_Inicio').val();
+        obj['FechaFin'] = $('#Fecha_Fin').val();
+        obj['Precio'] = $('#precioDescuento').val();
+
+        var jsonObject = {
+            "producto": obj
+        };
+        console.log(obj);
+        $.ajax({
+            url: "@Url.Action("AgregarOferta", "Productos")",
+            data: JSON.stringify(jsonObject),
+            type: "POST",
+            contentType: "application/json",
+            dataType: "json",
+
+            success: function (resultado) {
+                swal({
+                    title: 'CRM Retail',
+                    text: 'Promoción Guardada',
+                    buttons: {
+                        confirm: {
+                            className: 'btn btn-success'
+                        }
+                    },
+                })
+            },
+            error: function (resultado) {
+                alert("Error funcion listar compartir por ID ");
+            }
+        });
+
+
+
+    }
+</script>
+

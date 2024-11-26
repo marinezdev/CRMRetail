@@ -1,0 +1,384 @@
+﻿
+@{
+    ViewBag.Title = "Modificar";
+}
+
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#IndexVentas').addClass("nav-item active submenu");
+
+    });
+
+
+
+</script>
+
+
+<div class="page-inner">
+    <div class="page-header">
+        <h4 class="page-title">Detalle de la Venta</h4>
+    </div>
+    <div class="row">
+
+        <div id="Espera" style="display:none; width:69px;height:90px;position:absolute;top:20%;left:50%;padding:2px;z-index:1000">
+            <img src="../assets/img/spinner.gif" width="64" height="64" /><br />Cargando...
+        </div>
+    </div>
+
+    
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-12 text-right">
+
+                <a href="/Ventas/Index" class="btn btn-primary">Todas las Ventas</a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    
+
+    <div class="card">
+
+        <div class="card-body text-">
+
+            <div class="row">
+
+                <div class="col-md-12 col-lg-12">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input disabled class="form-check-input" type="checkbox" id="checkboxActivo" value="">
+                            <span class="form-check-sign">Activo</span>
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-4">
+                    <label for="clienteNombre" class="placeholder">Nombre:</label>
+
+                    <div class="form-group form-floating-label">
+                        <input disabled autocomplete="off,new-password" id="clienteNombre" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="clienteRFC" class="placeholder">RFC:</label>
+
+                    <div class="form-group form-floating-label">
+                        <input disabled autocomplete="off,new-password" id="clienteRFC" class="form-control" />
+                    </div>
+
+                </div>
+
+                <div class="col-md-4">
+                    <label for="clienteFecha" class="placeholder">Fecha:</label>
+
+                    <div class="form-group form-floating-label">
+                        <input disabled autocomplete="off,new-password" id="clienteFecha" class="form-control" />
+                    </div>
+
+                </div>
+
+            </div>
+
+            @*<div class="row">
+
+                    <div class="col-md-12">
+
+                        <div class="form-group form-floating-label">
+                            <input id="clienteDFiscal" class="form-control input-solid" />
+                            <label for="clienteDFiscal" class="placeholder">Dirección Fiscal:</label>
+                        </div>
+
+                    </div>
+
+
+                </div>*@
+
+            <div class="row">
+
+                <div class="col-md-12">
+                    <label for="clienteDEntrega" class="placeholder">Dirección Entrega:</label>
+
+                    <div class="form-group form-floating-label">
+                        <input disabled autocomplete="off,new-password" id="clienteDEntrega" class="form-control" />
+                    </div>
+
+                </div>
+
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-4">
+                    <label for="Vendedor" class="placeholder">Vendedor</label>
+
+                    <div class="form-group form-floating-label">
+                        <select disabled class="form-control" id="Vendedor" name="Vendedor">
+                            <option value=""></option>
+                            @foreach (var item1 in CRMRetail.Datos.Catalogos.SeleccionarVendedores())
+                            {
+                                <option value="@item1.Id">@item1.Nombre</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="Tipo" class="placeholder">Forma de Pago</label>
+
+                    <div class="form-group form-floating-label">
+                        <select disabled class="form-control" id="Tipo" name="Tipo" onchange="ObtenerTarjetas();">
+                            <option value=""></option>
+                            @foreach (var item2 in CRMRetail.Datos.Catalogos.Seleccionar("TipoVenta"))
+                            {
+                                <option value="@item2.Id">@item2.Nombre</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="Tipo" class="placeholder">Tipo de Entrega</label>
+
+                    <div class="form-group form-floating-label">
+
+                        <select disabled class="form-control" id="TipoEntrega" name="TipoEntrega" onchange="AgregarFechaEntrega();">
+                            <option value=""></option>
+                            @foreach (var item3 in CRMRetail.Datos.Catalogos.Seleccionar("TipoEntrega"))
+                            {
+                                <option value="@item3.Id">@item3.Nombre</option>
+                            }
+                        </select>
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-xl-12 col-md-12">
+            <div class="card table-card">
+                <div class="card-header">
+                    <h5>Productos Vendidos</h5>
+                    <div class="card-header-right">
+
+                    </div>
+                </div>
+                <div class="card-block p-15" style="display: block;">
+                    <div class="table-responsive">
+
+                        <table id="tabla01" class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th class="text-center">cantidad</th>
+                                    <th class="text-center">precio</th>
+                                    <th class="text-center">Fecha</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in ViewBag.Productos)
+                                {
+
+                                    <tr>
+                                        <td><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;<a>@item.Producto.Nombre</a></td>
+                                        <td class="text-center">@item.VentaProducto.Cantidad</td>
+                                        <td class="text-center">$@item.VentaProducto.Precio</td>
+                                        <td class="text-center">@item.VentaProducto.FechaRegistro</td>
+                                    </tr>
+
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+    <script src="~/assets/js/plugin/select2/select2.full.min.js"></script>
+    <script src="~/assets/js/plugin/datatables/datatables.min.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+
+            $('#basic').select2({
+                theme: "bootstrap"
+            });
+
+            $('#basic2').select2({
+                theme: "bootstrap"
+            });
+
+            var idventa = GetURLParameter("Id");
+
+            ObtenerDetalleCliente(idventa);
+
+
+            $('#tabla01').DataTable({
+                "searching": true,
+                "paging": true,
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                info: true,
+            });
+        });
+
+        function GetURLParameter(sParam) {
+            var sPageURL = window.location.search.substring(1);
+            var sURLVariables = sPageURL.split('&');
+            for (var i = 0; i < sURLVariables.length; i++) {
+                var sParameterName = sURLVariables[i].split('=');
+                if (sParameterName[0] == sParam) {
+                    return sParameterName[1];
+                }
+            }
+        }
+
+        //Detalle del cliente
+
+        function ObtenerDetalleCliente(idventa) {
+
+            var obj = {};
+            obj['Id'] = idventa;
+            var jsonObject = {
+                "Venta": obj
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("VentaDetalleCliente", "Ventas")",
+                data: JSON.stringify(jsonObject),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: Resultado,
+                error: Errores
+            });
+        }
+
+        function Resultado(data) {
+
+
+            if (data.Cliente.Id >= 0) {
+
+                $("#clienteNombre").val(data.Cliente.Nombre);
+                $("#clienteRFC").val(data.Cliente.RFC);
+                $("#clienteDEntrega").val(data.Cliente.Calle);
+
+                var efecha = new Date(parseInt(data.Venta.FechaRegistro.substr(6)));
+                var mes = (efecha.getMonth() + 1) < 10 ? '0' + (efecha.getMonth() + 1) : (efecha.getMonth() + 1);
+                $("#clienteFecha").val(efecha.getDate() + '/' + mes + '/' + efecha.getFullYear());
+
+                $('#Vendedor option[value="' + data.Venta.IdUsuario + '"]').attr("selected", true);         //Vendedor
+                $('#Tipo option[value="' + data.Venta.IdFormaPago + '"]').attr("selected", true);           //Forma de pago
+                $('#TipoEntrega option[value="' + data.Venta.IdTipoEntrega + '"]').attr("selected", true);  //Tipo de entrega
+
+                if (data.Venta.Activo == 1) {
+                    $('#checkboxActivo').prop('checked', true);
+                } else {
+                    $('#checkboxActivo').prop('checked', false);
+                }
+
+            } else {
+                $.notify({
+                    //icon: 'fa fa-paw',
+                    message: 'Cliente no encontrado'
+                }, {
+                    type: 'danger',
+                    allow_dismiss: false,
+                    animate: {
+                        enter: 'animated rollIn',
+                        exit: 'animated rollOut'
+                    }
+                });
+            }
+        }
+
+        function Errores(data) {
+            $.notify({
+                title: 'Cliente no buscado, intente mas tarde',
+            }, {
+                type: 'danger',
+                time: 1000,
+            });
+        }
+
+        //Detalle de los productos comprados
+
+        function ObtenerDetalleProductos(idventa) {
+
+            var obj = {};
+            obj['Id'] = idventa;
+            var jsonObject = {
+                "VentaProductos": obj
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("VentaProductoSeleccionar", "Ventas")",
+                data: JSON.stringify(jsonObject),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: ResultadoProductos,
+                error: ErroresProductos
+            });
+        }
+
+        function ResultadoProductos(data) {
+
+            if (data.VentaProductos.Id > 0) {
+
+                alert(data);
+                console.log(data);
+
+            } else {
+                $.notify({
+                    //icon: 'fa fa-paw',
+                    message: 'Producto no encontrado'
+                }, {
+                    type: 'danger',
+                    allow_dismiss: false,
+                    animate: {
+                        enter: 'animated rollIn',
+                        exit: 'animated rollOut'
+                    }
+                });
+            }
+
+        }
+
+        function ErroresProductos(data) {
+            $.notify({
+                title: 'Productos no buscados, intente mas tarde',
+            }, {
+                type: 'danger',
+                time: 1000,
+            });
+        }
+
+
+
+    </script>

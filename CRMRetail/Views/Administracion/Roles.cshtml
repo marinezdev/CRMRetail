@@ -1,0 +1,411 @@
+﻿
+@{
+    ViewBag.Title = "Roles";
+}
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#IndexAdmin').addClass("nav-item active submenu");
+        $('#o3').addClass('active show');
+
+        $('#tabla01').DataTable({
+            "searching": true,
+            "paging": true,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+            },
+            info: false,
+        });
+
+    });
+
+    function GuardarNuevo() {
+        $('#ModalNuevo').modal('hide');
+        $.ajax({
+            url: "/Administracion/RolAgregar/",
+            data: {
+                nombre: $('#nNombre').val(),
+                pagina: $('#nPagina').val(),
+                controlador: $('#nControlador').val()
+            },
+            type: "GET",
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+                $('#ModalNuevo').modal('hide');
+
+                if (data === 1) {
+
+                    swal({
+                        title: 'CRM Retail',
+                        text: 'Se guardó el registro',
+                        buttons: {
+                            confirm: {
+                                className: 'btn btn-success'
+                            }
+                        },
+                    }).then(
+                        function () {
+                            $('#nNombre').val('');
+                            $('#nPagina').val('');
+                            $('#nControlador').val('');
+                            location.href = '';
+                        }
+                    );
+                }
+                else {
+                    swal({
+                        text: "No se guardó el registro, revise.",
+                        type: 'warning'
+                    });
+                }
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('jqXHR:');
+                console.log(jqXHR);
+                console.log('textStatus:');
+                console.log(textStatus);
+                console.log('errorThrown:');
+                console.log(errorThrown);
+            }
+        });
+    }
+
+    function ModalModificar(id) {
+        //Seleccionar por id
+        $.ajax({
+            url: "/Administracion/RolSeleccionarPorId/",
+            data: { id: id },
+            type: "GET",
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+
+                $('#ModalModificar').modal('show');
+
+                $('#mNombre').val(data.Nombre);
+                $('#mPagina').val(data.Pagina);
+                $('#mControlador').val(data.Controlador);
+
+                if (data.Activo) {                          // Para un checkbox
+                    $("#mActivo").prop('checked', true);
+                }
+                else {
+                    $("#mActivo").prop('checked', false);
+                }
+
+                $('#mId').val(data.Id);
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('jqXHR:');
+                console.log(jqXHR);
+                console.log('textStatus:');
+                console.log(textStatus);
+                console.log('errorThrown:');
+                console.log(errorThrown);
+            }
+        });
+    }
+
+    function GuardarModificado() {
+        //Guardar los datos modificados
+        var valorActivo;
+        if ($('#mActivo').is(":checked")) {
+            //alert('Si');
+            valorActivo = 1;
+        }
+        else {
+            //alert('no');
+            valorActivo = 0;
+        }
+        $.ajax({
+            url: "/Administracion/RolModificar/",
+            data: {
+                nombre: $('#mNombre').val(),
+                pagina: $('#mPagina').val(),
+                controlador: $('#mControlador').val(),
+                activo: valorActivo,
+                id: $('#mId').val()
+            },
+            type: "GET",
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+                console.log(data);
+                $('#ModalModificar').modal('hide');
+
+                if (data === 1) {
+
+                    swal({
+                        title: 'CRM Retail',
+                        text: 'Se modificó el registro',
+                        buttons: {
+                            confirm: {
+                                className: 'btn btn-success'
+                            }
+                        },
+                    }).then(
+                        function () {
+                            $('#mNombre').val('');
+                            $('#mPagina').val('');
+                            $('#mControlador').val('');
+                            $("#mActivo").prop('checked', false);
+                            $('#mId').val('');
+                            location.href = '';
+                        }
+                    );
+                }
+                else {
+                    swal({
+                        text: "No se guardó el registro, revise.",
+                        type: 'warning'
+                    });
+                }
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('jqXHR:');
+                console.log(jqXHR);
+                console.log('textStatus:');
+                console.log(textStatus);
+                console.log('errorThrown:');
+                console.log(errorThrown);
+            }
+        });
+    }
+
+
+</script>
+
+<style>
+    table.dataTable thead tr {
+        background-color: #1a2035;
+        color: white
+    }
+
+    .header th {
+        height: 25px;
+        line-height: 2px;
+    }
+</style>
+
+
+<script src="~/assets/js/plugin/datatables/datatables.min.js"></script>
+<link href="~/assets/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+<div class="page-inner">
+    <div class="page-header">
+        <h4 class="page-title">Roles</h4>
+    </div>
+    <div class="row">
+
+        <div id="Espera" style="display:none; width:69px;height:90px;position:absolute;top:20%;left:50%;padding:2px;z-index:1000">
+            <img src="../assets/img/spinner.gif" width="64" height="64" /><br />Cargando...
+        </div>
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-12">
+
+                    @Html.Partial("_MenuAdmin")
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-12 text-right">
+
+                    <button class="btn btn-default" data-toggle="modal" data-target="#ModalNuevo">Nuevo</button>
+
+                </div>
+
+            </div>
+
+            <br />
+
+
+            <div class="row">
+
+
+                <div class="table-responsive">
+                    <table id="tabla01" class="display compact table-striped table-hover" style="width:100%">
+                        <thead class="header">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Pagina</th>
+                                <th>Controlador</th>
+                                <th>Activo</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @if (ViewBag.Roles == null)
+                            {
+                                <tr><td colspan="6" align="center">Sin datos para mostrar</td></tr>
+                            }
+                            @foreach (var items in ViewBag.Roles)
+                            {
+                                var mensaje = items.Activo == true ? "Activo" : "Inactivo";
+                                <tr>
+                                    <td>@items.Nombre </td>
+                                    <td>@items.Pagina</td>
+                                    <td>@items.Controlador</td>
+                                    <td>@mensaje</td>
+                                    <td><a href="#" onclick="ModalModificar(@items.Id);">Detalle</a></td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+<div class="modal fade" id="ModalNuevo" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="ModalLabel">Agregar Nuevo Rol</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+
+
+                <div class="row">
+                    <div class="col-md-12 col-lg-12">
+
+                        <div class="form-group form-inline">
+                            <label for="nNombre" class="col-md-3 col-form-label fc-left">Nombre</label>
+                            <div class="col-md-9 p-0">
+                                <input type="text" class="form-control input-solid" name="nNombre" id="nNombre" placeholder="" required tabindex="1">
+                            </div>
+                        </div>
+
+                        <div class="form-group form-inline">
+                            <label for="nPagina" class="col-md-3 col-form-label fc-left">Página</label>
+                            <div class="col-md-9 p-0">
+                                <input type="text" class="form-control input-solid" name="nPagina" id="nPagina" placeholder="" required tabindex="4">
+                            </div>
+                        </div>
+
+                        <div class="form-group form-inline">
+                            <label for="nControlador" class="col-md-3 col-form-label">Controlador</label>
+                            <div class="col-md-9 p-0">
+                                <input type="text" class="form-control input-solid" id="nControlador" name="nControlador" placeholder="" required tabindex="5">
+                            </div>
+                        </div>
+
+                        <div class="form-check form-inline">
+                            <label for="nActivo" class="col-md-3 col-form-label fc-left">Activo</label>
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" id="nActivo" name="nActivo">
+                                <span class="form-check-sign"></span>
+                            </label>
+                        </div>
+
+
+                    </div>
+                </div>
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success" data-dismiss="modal" onclick="GuardarNuevo();">Guardar</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalModificar" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="ModalLabel">Modificar Rol</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+
+
+                <div class="row">
+                    <div class="col-md-12 col-lg-12">
+
+                        <div class="form-group form-inline">
+                            <label for="mNombre" class="col-md-3 col-form-label fc-left">Nombre</label>
+                            <div class="col-md-9 p-0">
+                                <input type="text" class="form-control input-solid" name="mNombre" id="mNombre" placeholder="" required tabindex="1">
+                            </div>
+                        </div>
+
+                        <div class="form-group form-inline">
+                            <label for="mPagina" class="col-md-3 col-form-label fc-left">Página</label>
+                            <div class="col-md-9 p-0">
+                                <input type="text" class="form-control input-solid" name="mPagina" id="mPagina" placeholder="" required tabindex="4">
+                            </div>
+                        </div>
+
+                        <div class="form-group form-inline">
+                            <label for="mControlador" class="col-md-3 col-form-label">Controlador</label>
+                            <div class="col-md-9 p-0">
+                                <input type="text" class="form-control input-solid" id="mControlador" name="mControlador" placeholder="" required tabindex="5">
+                            </div>
+                        </div>
+
+                        <div class="form-check form-inline">
+                            <label for="mActivo" class="col-md-3 col-form-label fc-left">Activo</label>
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" id="mActivo" name="mActivo">
+                                <span class="form-check-sign"></span>
+                            </label>
+                        </div>
+
+                        <input type="hidden" id="mId" />
+
+
+                    </div>
+                </div>
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success" data-dismiss="modal" onclick="GuardarModificado();">Guardar</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>

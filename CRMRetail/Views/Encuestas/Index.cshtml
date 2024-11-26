@@ -1,0 +1,224 @@
+﻿
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Encuesta</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Importar CSS de Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <!-- Importar jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Importar JavaScript de Bootstrap -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+        .custom-container {
+            max-width: 1000px;
+            height: auto;
+            margin: 0 auto;
+            padding: 20px;
+            margin-top: 25px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
+        }
+
+        .custom-padding {
+            padding-left: 2px;
+            padding-right: 2px;
+        }
+    </style>
+
+</head>
+<body>
+
+    <div class="container custom-container">
+        <div class="text-center">
+            <a><img src="https://i.ibb.co/2dHVrLM/cb589adc50376fda1ebc6e9404b08852-w2500-h1006.png" alt="cb589adc50376fda1ebc6e9404b08852-w2500-h1006" border="0" style="height: 60px; vertical-align:middle; display:flow-root"></a>
+            <h1>Encuesta WEBER</h1>
+            <p>Para poder compartir con más gente como tú nuestros talleres, te agradecemos nos compartas la siguiente información.</p>
+        </div>
+
+        <hr />
+
+        <form>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="nombre" class="control-label">Fecha:</label>
+                        <input type="date" class="form-control" id="fecha" name="fecha" required value="@ViewBag.InfoUsuario.FechaNacimiento">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="nombre" class="control-label">Nombre:</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" required value="@ViewBag.InfoUsuario.Nombre">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="correo" class="control-label">Correo electrónico:</label>
+                        <input type="email" class="form-control" id="correo" name="correo" required value="@ViewBag.InfoUsuario.Correo">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="nombre" class="control-label">Teléfono:</label>
+                        <input type="text" class="form-control" id="telefono" name="telefono" required value="@ViewBag.InfoUsuario.TelefonoMovil">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="cp" class="control-label">C.P:</label>
+                        <input type="number" class="form-control" id="cp" name="cp" required value="@ViewBag.InfoUsuario.CP">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="edad" class="control-label">Edad:</label>
+                        <input type="number" class="form-control" id="edad" name="edad" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row custom-padding">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="q1" class="control-label">
+                            1.¿Cómo te enteraste de este taller?
+                        </label>
+                        <select class="form-control" id="q1" required>
+                            <option value="">Selecciona una opción</option>
+                            @foreach (var item1 in ViewBag.q1)
+                            {
+                                <option value="@item1.Id">@item1.Nombre</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row custom-padding">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="q2" class="control-label">
+                            2.¿Cada cuándo asas?
+                        </label>
+                        <select class="form-control" id="q2" required>
+                            <option value="">Selecciona una opción</option>
+                            @foreach (var item1 in ViewBag.q2)
+                            {
+                                <option value="@item1.Id">@item1.Nombre</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row custom-padding">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="q3" class="control-label">
+                            3.¿Volverías a otro taller con nosotros?
+                        </label>
+                        <select class="form-control" id="q3" required>
+                            <option value="">Selecciona una opción</option>
+                            @foreach (var item1 in ViewBag.q3)
+                            {
+                                <option value="@item1.Id">@item1.Nombre</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row custom-padding">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="q4" class="control-label text-center">4.Si te enteraste por Facebook o instagram, ¿Qué te llamó la atención de nuestra publicación?</label>
+                        <input type="text" class="form-control" id="q4" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row custom-padding">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="q5" class="control-label text-center">5.¿Hay algo que podamos mejorar?</label>
+                        <input type="text" class="form-control" id="q5" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row custom-padding">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="q6" class="control-label text-center">6.Te gustaría que te contactáramos con ofertas exclusivas, eventos y promociones?</label>
+                        <select class="form-control" id="q6" required>
+                            <option value="">Selecciona una opción</option>
+                            <option value="0">No</option>
+                            <option value="1">Si</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <div class="text-center">
+                <h3>¡Gracias por acompañarnos en esta experiencia!</h3>
+
+                <a class="btn btn-primary" onclick="Guardar();">Guardar</a>
+
+                
+            </div>
+        </form>
+
+
+    </div>
+
+
+
+</body>
+</html>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script type="text/javascript">
+
+       function Guardar() {
+        var obj = {};
+        obj['IdVenta'] = @Request.QueryString["Id"];
+        obj['Q1'] = $("#q1 option:selected").val();
+        obj['Q2'] = $("#q2 option:selected").val();
+        obj['Q3'] = $("#q3 option:selected").val();
+
+        obj['Q4t'] = $("#q4").val();
+        obj['Q5t'] = $("#q5").val();
+
+
+        obj['Q6'] = $("#q6 option:selected").val();
+        var jsonObject = {
+            "DEncuesta": obj
+        };
+         $.ajax({
+            type: "POST",
+            url: "@Url.Action("RegistrarEncuesta", "Encuestas")",
+            async: false,
+            data: JSON.stringify(jsonObject),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+             success: function (data) {
+                swal({
+                    title: "Registro exitoso",
+                    text: '',
+                    icon: "success",
+                    button: "Aceptar",
+                }).then((value) => {
+                        window.location.href = '@Url.Action("Login", "Login")';
+                });
+
+
+             }
+        });
+       }
+</script>

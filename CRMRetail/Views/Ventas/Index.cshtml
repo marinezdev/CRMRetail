@@ -1,0 +1,277 @@
+﻿@model List<CRMRetail.Modelos.Ventas>
+@{
+    ViewBag.Title = "Index";
+}
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#IndexVentas').addClass("nav-item active submenu");
+
+        $('#tabla01').DataTable({
+            "searching": true,
+            "paging": true,
+            "ordering": false,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+            },
+            info: true,
+        });
+
+    });
+
+</script>
+
+<script src="~/assets/js/plugin/datatables/datatables.min.js"></script>
+@*<script src="../assets/js/plugin/datatables/sum().js"></script>
+<script src="~/assets/js/plugin/datatables/dataTables.colReorder.min.js"></script>
+<link href="~/assets/css/colReorder.dataTables.min.css" rel="stylesheet" />
+<link href="~/assets/css/jquery.dataTables.min.css" rel="stylesheet" />*@
+
+<style>
+    table.dataTable thead tr {
+        background-color: #1f1e2e;
+        color: white
+    }
+
+    .header th {
+        height: 25px;
+        line-height: 2px;
+    }
+
+    .logo-header[data-background-color="dark"] {
+        background: #000000 !important;
+    }
+
+    .navbar-header[data-background-color="dark"] {
+        background: #000000 !important;
+        /*background: linear-gradient(to right, #4194BC, #70E7AF) !important;*/
+        box-shadow: 4px 4px 10px rgb(69 65 78 / 71%);
+    }
+
+    .sidebar[data-background-color="dark"] {
+        background: #000000 !important;
+    }
+
+    .sidebar .nav.nav-warning > .nav-item.active a i, .sidebar[data-background-color="white"] .nav.nav-warning > .nav-item.active a i {
+        color: #ed1d24 !important;
+    }
+
+    .sidebar .nav.nav-warning > .nav-item.active a:before, .sidebar[data-background-color="white"] .nav.nav-warning > .nav-item.active a:before {
+        background: #ed1d24 !important;
+    }
+
+    .sidebar[data-background-color="dark"] .nav > .nav-item.active > a p {
+        color: #ffffff !important;
+    }
+
+    .sidebar .nav > .nav-item a p, .sidebar[data-background-color="white"] .nav > .nav-item a p {
+        font-size: 14px;
+        margin-bottom: 0px;
+        margin-right: 5px;
+        white-space: nowrap;
+        color: #ffffff;
+    }
+
+    .sidebar[data-background-color="dark"] .nav > .nav-item a {
+        color: #ffffff !important;
+    }
+
+    .sidebar .nav > .nav-item a i, .sidebar[data-background-color="white"] .nav > .nav-item a i {
+        color: #ffffff;
+        margin-right: 15px;
+        width: 25px;
+        text-align: center;
+        vertical-align: middle;
+        float: left;
+        font-size: 18px;
+        line-height: 30px;
+    }
+
+    .sidebar .nav.nav-warning > .nav-item a:hover i, .sidebar .nav.nav-warning > .nav-item a:focus i, .sidebar .nav.nav-warning > .nav-item a[data-toggle=collapse][aria-expanded=true] i, .sidebar[data-background-color="white"] .nav.nav-warning > .nav-item a:hover i, .sidebar[data-background-color="white"] .nav.nav-warning > .nav-item a:focus i, .sidebar[data-background-color="white"] .nav.nav-warning > .nav-item a[data-toggle=collapse][aria-expanded=true] i {
+        color: #ed1d24 !important;
+    }
+
+    .sidebar .nav > .nav-item.submenu, .sidebar[data-background-color="white"] .nav > .nav-item.submenu {
+        background: rgb(58 0 0);
+    }
+
+    .sidebar[data-background-color="dark"] .nav > .nav-item a:hover p, .sidebar[data-background-color="dark"] .nav > .nav-item a:focus p, .sidebar[data-background-color="dark"] .nav > .nav-item a[data-toggle=collapse][aria-expanded=true] p {
+        color: #f5f5f5 !important;
+    }
+
+    .sidebar, .sidebar[data-background-color="white"] {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        /*
+    width: 250px;
+    margin-top: 62px;
+    display: block;
+    z-index: 1000;
+    color: #ffffff;
+    font-weight: 200;
+    background: #ffffff;
+    */
+        -webkit-box-shadow: 4px 4px 10px rgb(69 65 78 / 6%);
+        -moz-box-shadow: 4px 4px 10px rgba(69, 65, 78, 0.06);
+        box-shadow: 4px 4px 10px rgb(69 65 78 / 71%);
+        transition: all .3s;
+    }
+
+    table.dataTable thead tr {
+        background-color: #000000;
+        color: white;
+        font-size: 12px;
+    }
+
+    table.dataTable tr {
+        font-size: 13px;
+    }
+
+    .btn-link:hover {
+        color: #810f13;
+        text-decoration: underline;
+        background-color: transparent;
+        border-color: transparent;
+    }
+
+    .btn-link {
+        font-weight: 400;
+        color: #ed1d24;
+        background-color: transparent;
+    }
+
+    .page-item.active .page-link {
+        z-index: 1;
+        color: #fff;
+        background-color: #de1b22;
+        border-color: #df1b22;
+    }
+
+    .nav-pills.nav-secondary .nav-link.active {
+        background: #ed1d24;
+        border: 1px solid #6861CE;
+    }
+</style>
+
+
+<div class="page-inner">
+
+
+    <div class="page-header">
+        <h4 class="page-title">Ventas</h4>
+        <ul class="breadcrumbs">
+            <li class="nav-home">
+                <a href="#">
+                    <i class="flaticon-home"></i>
+                </a>
+            </li>
+            <li class="separator">
+                <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Venta</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="row">
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Listado de ventas registradas </div>
+                    <div class="card-category">Visualiza la información de una venta al dar clic sobre el icono  <i class="fa fa-eye" aria-hidden="true"></i></div>
+
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table id="tabla01" class="display compact hover table-striped table-hover text-center" style="width:100%;">
+                                <thead class="header">
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Nombre </th>
+                                        <th>Monto </th>
+                                        <th>Sucursal </th>
+                                        <th>Estatus </th>
+                                        <th>Visualizar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        foreach (var dtCliente in ViewBag.Ventas)
+                                        {
+                                            if (@dtCliente.Estatus == "Back Order")
+                                            {
+                                                <tr style="background-color:#ffd800">
+                                                    <td>@dtCliente.FechaRegistro</td>
+                                                    <td>@dtCliente.Nombre</td>
+                                                    <td>$@string.Format("{0:N}", @dtCliente.Monto)</td>
+                                                    <td>@dtCliente.Sucursal</td>
+                                                    <td>@dtCliente.Estatus</td>
+                                                    <td>
+                                                        
+                                                    <button type="button" class="btn btn-icon btn-link" onclick="ConsultaVenta(@dtCliente.Id)">
+                                                        <i class="fa fa-eye"></i>
+                                                    </button>
+                                                     </td>
+                                                </tr>
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td>@dtCliente.FechaRegistro</td>
+                                                    <td>@dtCliente.Nombre</td>
+                                                    <td>$@string.Format("{0:N}", @dtCliente.Monto)</td> 
+                                                    <td>@dtCliente.Sucursal</td>
+                                                    <td>@dtCliente.Estatus</td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-icon btn-link" onclick="ConsultaVenta(@dtCliente.Id)">
+                                                            <i class="fa fa-eye"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            }
+
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <a class="btn btn-default" href="@Url.Action("purchase", "Ventas")">
+                        <span class="btn-label">
+                            <i class="fa fa-shopping-bag"></i>
+                        </span>
+                        Nueva venta
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+    function ConsultaVenta(id) {
+
+        location.href = '/Ventas/Modificar?Id=' + id;
+
+    }
+
+</script>
+
+
+

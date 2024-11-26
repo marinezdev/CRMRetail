@@ -1,0 +1,774 @@
+﻿
+@{
+    ViewBag.Title = "NuevaVenta";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    <link href="~/assets/js/plugin/datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#IndexVentas').addClass("nav-item active submenu");
+
+        $.fn.dataTable.moment("DD/MM/YYYY");
+
+        $('#tabla01').DataTable({
+            "searching": true,
+            "paging": true,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+            },
+            "scrollX": true,
+            info: true,
+        });
+    });
+</script>
+
+<style>
+    .select2-container--bootstrap .select2-selection {
+        background-color: #ffffff;
+        border: 1px solid #ebedf2;
+        border-radius: 4px;
+        color: inherit;
+        font-size: 13px;
+        outline: 0;
+        line-height: 1.5 !important;
+    }
+    .select2-container--bootstrap .select2-search--dropdown .select2-search__field {
+    background-color: #ffffff;
+    border: 1px solid #ebedf2;
+    border-radius: 4px;
+    color: #555;
+    font-size: 13px;
+    padding: 4px 10px;
+}
+    .select2-container--bootstrap .select2-results__option--highlighted[aria-selected] {
+    background-color: #2a88ff;
+    color: #ffffff;
+}
+
+    .flexbox {
+  align-items: center;
+  display: flex;
+  height: 120px;
+  justify-content: center;
+  width: 200px;
+
+  background: #ffffff;
+  color: #333;
+}
+
+    table.dataTable thead tr {
+        background-color: #1f1e2e;
+        color: white
+    }
+
+    .header th {
+        height: 25px;
+        line-height: 2px;
+    }
+
+    table.dataTable thead tr {
+        background-color: #000000;
+        color: white;
+        font-size: 12px;
+    }
+
+    table.dataTable tr {
+        font-size: 13px;
+    }
+    .table td, .table th {
+    /* font-size: 14px; */
+    /* border-top-width: 0px; */
+    /* border-bottom: 1px solid; */
+    border-color: #ebedf2 !important;
+     padding: 0 5px !important;
+     height: 55px; 
+    /* vertical-align: middle !important; */
+}
+</style>
+<div class="page-inner">
+    <div class="page-header">
+        <h4 class="page-title">Ventas</h4>
+        <ul class="breadcrumbs">
+            <li class="nav-home">
+                <a href="#">
+                    <i class="flaticon-home"></i>
+                </a>
+            </li>
+            <li class="separator">
+                <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Venta</a>
+            </li>
+            <li class="separator">
+                <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Nueva</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="row">
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Nueva venta</div>
+                    <div class="card-category">-. </div>
+                </div>
+                <div class="card-body">
+                    <div class="card-category">Cliente </div>
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="form-group">
+                                <label for="largeInput">* Agregar cliente (buscar por nombre, apellidos o RFC):  </label>
+                                <div class="select2-input">
+                                    <select id="basic" name="basic" onchange="ClienteDetalle();" class="form-control" style="width:100%">
+                                        <option value="0">Seleccionar</option>
+                                        @foreach (var item1 in ViewBag.Clientes)
+                                        {
+                                            <option value="@item1.Id">@item1.Nombre (@item1.RFC)</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="card-category">Información de venta  </div>
+                    <div class="row">
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="largeInput">* Fecha de venta   </label>
+                                <input type="date" class="form-control form-control" id="Fecha_Venta">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="defaultSelect">* Vendedor  </label>
+                                <select class="form-control form-control" id="Select_DEstado">
+                                    <option value="0">Seleccionar </option>
+                                    @foreach (var item1 in CRMRetail.Datos.Catalogos.SeleccionarVendedores())
+                                    {
+                                        <option value="@item1.Id">@item1.Nombre</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="defaultSelect">* Sucursal  </label>
+                                <select class="form-control form-control" id="Sucursal" onchange="ValidaSelect('Sucursal')">
+                                    <option value="0">Seleccionar </option>
+                                    @foreach (var item1 in ViewBag.Sucursales)
+                                    {
+                                        <option value="@item1.Id">@item1.Nombre</option>
+                                    }
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label for="defaultSelect">* Forma de pago  </label>
+                                <select class="form-control form-control" id="Select_FormaPago">
+                                    <option value="0">Seleccionar </option>
+                                    @foreach (var item2 in CRMRetail.Datos.Catalogos.Seleccionar("TipoVenta"))
+                                    {
+                                        <option value="@item2.Id">@item2.Nombre</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6">
+                            <div class="form-group" id="Div_Select_Bancos" style="display: none;">
+                                <label for="largeInput">* Banco  </label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-default" type="button">Nuevo</button>
+                                    </div>
+                                    <select class="form-control form-control" id="Select_DEstado">
+                                        <option value="0">Seleccionar </option>
+                                        @foreach (var item4 in CRMRetail.Datos.Catalogos.Seleccionar("TarjetasCredito"))
+                                        {
+                                            <option value="@item4.Id">@item4.Nombre</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label for="defaultSelect">* Tipo de entrega  </label>
+                                <select class="form-control form-control" id="Select_TipoEntrega">
+                                    <option value="0">Seleccionar </option>
+                                    <option value="1">Inmediata </option>
+                                    <option value="2">Programada </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6"  id="Div_Fecha_Entrega" style="display: none;">
+                            <div class="form-group">
+                                <label for="FechaEntrega" class="placeholder">Fecha Entrega:</label>
+                                <input id="FechaEntrega" type="datetime" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="card-category">Productos de venta  </div>
+                    <div class="row">
+                        <div class="col-md-7 col-lg-7">
+                            <div class="form-group">
+                                <label for="largeInput"> Agregar un producto (buscar por nombre, SKU):  </label>
+                                <div class="select2-input">
+                                    <select id="basic2" name="basic2" onchange="ProductoDetalle();" class="form-control" style="width:100%">
+                                        <option value="0">Seleccionar</option>
+                                        @foreach (var item1 in ViewBag.Productos)
+                                        {
+                                            <option value="@item1.Id">@item1.Nombre (@item1.SKU)</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-lg-2">
+                            <div class="form-group">
+                                <label for="largeInput"> Cantidad </label>
+                                <input type="number" class="form-control form-control" id="Cantidad">
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-lg-2 flexbox">
+                            <button class="btn btn-danger" id="BtnRegistrarProducto">
+                                <span class="btn-label">
+                                    <i class="fa fa-shopping-bag"></i>
+                                </span>
+                                Agregar
+                            </button>
+                        </div>
+                    </div>
+                    <hr />
+                    <table class="table table-striped">
+                        <thead class="thead-dark text-center">
+                            <tr>
+                                <th scope="col" width="20%">Producto SKU</th>
+                                <th scope="col" width="15%">Cantidad</th>
+                                <th scope="col" width="20%">Tipo Precio</th>
+                                <th scope="col" width="15%">P. Unitario</th>
+                                <th scope="col" width="10%">P. Total</th>
+                                <th scope="col" width="15%"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row" style="font-size: 12px; padding:0px 0px">
+                                    Ahumador Smokey Mountain 22.5" Negro
+                                    <br /><strong>SKU:</strong> 731001
+                                </th>
+                                <td>
+                                    <div class="col-md-12 col-lg-12">
+                                        <input type="number" class="form-control" id="Cantidad">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="col-md-12 col-lg-12">
+                                        <select class="form-control" id="" style="width:100%">
+                                            <option value="0">Seleccionar </option>
+                                            <option value="0">Distribuidor </option>
+                                            <option value="0">Público </option>
+                                            <option value="0">Demo </option>
+                                            <option value="0">Promoción </option>
+                                            <option value="0">Otro </option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="col-md-12 col-lg-12">
+                                        <input type="text" class="form-control" id="Cantidad">
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    $12,000.00
+                                </td>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-md-2 col-lg-2">
+                                            <button type="button" class="btn btn-icon btn-round btn-default">
+                                                <i class="fa fa-eye"></i>
+                                            </button>
+                                        </div>
+                                        <div class="col-md-6 col-lg-6">
+                                            
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input id="BackOrder" name="BackOrder" class="form-check-input" type="checkbox" onclick="ModificarBackOrder();">
+                                                    <span class="form-check-sign">Back Order</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    @*<button type="button" class="btn btn-icon btn-round btn-default">
+                                        <i class="fa fa-align-left"></i>
+                                    </button>*@
+                                    
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="4" class="text-right"><strong>Total</strong> </td>
+                                <td class="text-center"><strong>$12,000.00</strong></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-default" id="">
+                        <span class="btn-label">
+                            <i class="fa fa-archive"></i>
+                        </span>
+                        Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Cliente.</div>
+                            <div class="card-category">-. </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-category">Información  </div>
+                            <p>
+                                <strong>Nombre: </strong><span id="SC_Nombre"></span>
+                                <br />
+                                <strong>Persona: </strong><span id="SC_Persona"></span>
+                                <br />
+                                <strong><span id="SC_TitleFecha">Fecha:</span> </strong><span id="SC_Fecha"></span>
+                                <br />
+                                <strong>RFC: </strong><span id="SC_RFC"></span>
+                                <br />
+                                <strong><span id="SC_TitleSexo"></span> </strong><span id="SC_Sexo"></span>
+                                <br />
+                                <strong>Tipo de Cliente: </strong><span id="SC_TipoCliente"></span>
+                                <br />
+                                <strong>Origen: </strong><span id="SC_Origen"></span>
+                            </p>
+                            <div class="card-category">Contacto </div>
+                            <p>
+                                <strong>Correo electrónico : </strong><span id="SC_Correo"></span>
+                                <br />
+                                <strong>Teléfono móvil : </strong><span id="SC_Movil"></span>
+                                <br />
+                                <strong>Teléfono local : </strong><span id="SC_Local"></span>
+                                <br />
+                            </p>
+                            <div class="card-category">Dirección  </div>
+                            <p>
+                                <strong>Dirección fiscal: </strong><span id="SC_DireccionFisica"></span>
+                                <br />
+                                <strong>Dirección entrega : </strong><span id="SC_DireccionEntrega"></span>
+
+                            </p>
+                            <div class="col-md-12 col-lg-12">
+                                <button class="btn btn-danger col-md-12 col-lg-12">
+                                    <span class="btn-label">
+                                        <i class="fa fa-plus-circle"></i>
+                                    </span>
+                                    Agregar Dirección
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Producto.</div>
+                            <div class="card-category">-. </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-category">Datos </div>
+                            <p>
+                                <strong>Nombre producto: </strong><span id="SP_Nombre"></span>
+                                <br />
+                                <strong>SKU: </strong><span id="SP_SKU"></span>
+                                <br />
+                                <strong>Categoría: </strong><span id="SP_Categoria"></span>
+                                <br />
+                                <strong>Descripción: </strong><span id="SP_Descripcion"></span>
+                            </p>
+                            <div class="card-category">Imagen producto  </div>
+                            <br />
+                            <div id="DivImg">
+
+                                <img src="~/assets/img/cb589adc50376fda1ebc6e9404b08852.w2500.h1006.png" class="d-block w-100" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        $('#BtnRegistrarProducto').click(function () {
+
+            //$('#basic2').css("border", "2px solid #f44336");
+            $('#Cantidad').css("border", "2px solid #f44336");
+            var IdProducto = $("#basic2 option:selected").val();
+            
+            if (IdProducto > 0) {
+                //$('#basic2').css("border", "1px solid #c2c2c2");
+                if ($('#Cantidad').val() > 0) {
+                    $('#Cantidad').css("border", "1px solid #c2c2c2");
+
+                    $.notify({
+                        message: "Producto Agregado"
+                    }, {
+                        type: 'default',
+                        allow_dismiss: false,
+                        animate: {
+                            enter: 'animated rollIn',
+                            exit: 'animated rollOut'
+                        }
+                    });
+                }
+                else {
+                    $.notify({
+                        message: "Agrega la cantidad de productos."
+                    }, {
+                        type: 'danger',
+                        allow_dismiss: false,
+                        animate: {
+                            enter: 'animated rollIn',
+                            exit: 'animated rollOut'
+                        }
+                    });
+                }
+            } else {
+                $.notify({
+                    message: "Selecciona un producto."
+                }, {
+                    type: 'danger',
+                    allow_dismiss: false,
+                    animate: {
+                        enter: 'animated rollIn',
+                        exit: 'animated rollOut'
+                    }
+                });
+            }
+        });
+    });
+
+    function ValidarProducto() {
+        var respuesta = false;
+        var IdProducto = $("#basic2 option:selected").val();
+
+        if (IdProducto > 0) {
+            if ($('#Cantidad').val() > 0) {
+                respuesta = true;
+            }
+        }
+          
+        return respuesta;
+    }
+
+
+    $(document).ready(function () {
+
+        $('#basic').select2({
+            theme: "bootstrap"
+        });
+
+        $('#basic2').select2({
+            theme: "bootstrap"
+        });
+
+        var now = new Date();
+        var day = ("0" + now.getDate()).slice(-2);
+        var month = ("0" + (now.getMonth() + 1)).slice(-2);
+
+        var today = now.getFullYear() + "-" + (month) + "-" + (day);
+        $("#Fecha_Venta").val(today);
+
+    });
+
+    $(document).on('change', '#Select_FormaPago', function (event) {
+        var Id = $("#Select_FormaPago option:selected").val();
+        
+        if (Id == 2) {
+            
+            $("#Div_Select_Bancos").show();
+        } else {
+            $("#Div_Select_Bancos").css("display", "none");
+        }
+    });
+
+    $(document).on('change', '#Select_TipoEntrega', function (event) {
+        var Id = $("#Select_TipoEntrega option:selected").val();
+        
+        if (Id == 2) {
+            
+            $("#Div_Fecha_Entrega").show();
+        } else {
+            $("#Div_Fecha_Entrega").css("display", "none");
+        }
+    });
+
+</script>
+
+
+<script src="~/assets/js/plugin/select2/select2.full.min.js"></script>
+<script src="../assets/js/plugin/datetimepicker/jquery.datetimepicker.full.js"></script>
+
+<script>
+    $.datetimepicker.setLocale('es');
+
+    $('#Fecha').datetimepicker({
+        timepicker: false,
+        format: 'd/m/Y',
+    });
+
+    $('#FechaEntrega').datetimepicker({
+        format: 'd/m/Y H:i',
+        value: new Date(),
+    });
+
+    $('#HoraEntrega').datetimepicker({
+        datepicker: false,
+        format: 'H:i',
+    });
+
+    function ClienteDetalle() {
+        
+        var IdCliente = $("#basic option:selected").val();
+
+        var obj = {};
+
+        obj['Id'] = IdCliente;
+
+        var jsonObject = {
+            "Cliente": obj
+        };
+
+        // LIMPIA DATOS
+        $("#SClienteNombre").text("");
+        $("#SC_Nombre").text("");
+        $("#SC_Persona").text("");
+        $("#SC_TitleFecha").text("");
+        $("#SC_Fecha").text("");
+        $("#SC_RFC").text("");
+        $("#SC_TitleSexo").text("");
+        $("#SC_Sexo").text("");
+        $("#SC_TipoCliente").text("");
+        $("#SC_Origen").text("");
+        $("#SC_Correo").text("");
+        $("#SC_Movil").text("");
+        $("#SC_Local").text("");
+
+        // DIRECCION
+        $("#SC_DireccionFisica").text("");
+        $("#SC_DireccionEntrega").text("");
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("Cliente_Seleccionar_Id", "Clientes")",
+            data: JSON.stringify(jsonObject),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: Resultado, 
+            error: Errores
+        });
+        
+    }
+
+    function Resultado(data) {
+
+        console.log(data);
+
+        if (data.IdCliente > 0) {
+
+            $("#SClienteNombre").text(data.Nombre);
+            $("#SC_Nombre").text(data.Nombre);
+            if (data.TipoPersona == 1) {
+                $("#SC_Persona").text("Física");
+                $("#SC_TitleFecha").text("Fecha nacimiento:");
+                $("#SC_Fecha").text(data.FechaNacimiento.substring(1, 10));
+                $("#SC_RFC").text(data.RFC);
+                $("#SC_TitleSexo").text("Sexo:");
+                if (data.Sexo == 1) {
+                    $("#SC_Sexo").text("Masculino");
+                } else {
+                    $("#SC_Sexo").text("Femenino");
+                }
+                
+            } else {
+                $("#SC_Persona").text("Moral");
+                $("#SC_TitleFecha").text("Fecha constitución:");
+                $("#SC_Fecha").text(data.FechaConstitucion.substring(1, 10));
+                $("#SC_RFC").text(data.RFC);
+            }
+            $("#SC_TipoCliente").text(data.TipoCliente);
+            $("#SC_Origen").text(data.OrigenCliente);
+            $("#SC_Correo").text(data.Correo);
+            $("#SC_Movil").text(data.TelefonoMovil);
+            $("#SC_Local").text(data.TelefonoLocal);
+
+            var direccion = "";
+            direccion = "<br>" + data.Estado + ", " + data.Poblacion + ", <strong>Col: </strong>" + data.Colonia + ", <strong>CP: </strong>" + data.CP + ", <strong>Calle: </strong> " + data.Calle + ", <strong>NumEx: </strong> " + data.NumExterior;
+            if (data.NumInterior.length > 0) {
+                direccion += ",  <strong>NumInt: </strong> " + data.NumInterior;
+            }
+            if (data.EntreCalles.length > 0) {
+                direccion += ",  <strong>Entre calles: </strong> " + data.EntreCalles;
+            }
+            if (data.Referencias.length > 0) {
+                direccion += ",  <strong>Referencias: </strong> " + data.Referencias;
+            }
+
+
+            $("#SC_DireccionFisica").html(direccion);
+
+            if (data.FiscalEntrega == 0) {
+                var direccion = "";
+                direccion = "<br>" + data.Estado2 + ", " + data.Poblacion2 + ", <strong>Col: </strong>" + data.Colonia2 + ", <strong>CP: </strong>" + data.CP2 + ", <strong>Calle: </strong> " + data.Calle2 + ", <strong>NumEx: </strong> " + data.NumExterior2;
+                if (data.NumInterior2.length > 0) {
+                    direccion += ",  <strong>NumInt: </strong> " + data.NumInterior2;
+                }
+                if (data.EntreCalles2.length > 0) {
+                    direccion += ",  <strong>Entre calles: </strong> " + data.EntreCalles2;
+                }
+                if (data.Referencias2.length > 0) {
+                    direccion += ",  <strong>Referencias: </strong> " + data.Referencias2;
+                }
+                $("#SC_DireccionEntrega").text(direccion);
+
+            } else {
+                $("#SC_DireccionEntrega").text("La dirección fiscal es la misma dirección de entrega");
+            }
+            
+
+        } else {
+            $.notify({
+                //icon: 'fa fa-paw',
+                message: 'Cliente no encontrado'
+            }, {
+                type: 'danger',
+                allow_dismiss: false,
+                animate: {
+                    enter: 'animated rollIn',
+                    exit: 'animated rollOut'
+                }
+            });
+        }
+        
+    }
+
+    function Errores(data) {
+       $.notify({
+        title: 'Cliente no buscado, intente mas tarde',
+        },{
+        type: 'danger',
+            time: 1000,
+        });
+    }
+
+    function ProductoDetalle()
+    {
+        var IdProducto = $("#basic2 option:selected").val();
+
+        var obj = {};
+
+        obj['Id'] = IdProducto;
+
+        var jsonObject = {
+            "Producto": obj
+        };
+
+        // LIMPIA DATOS
+        $("#SP_Nombre").text("");
+        $("#SP_SKU").text("");
+        $("#SP_Categoria").text("");
+        $("#SP_Descripcion").text("");
+        $("#SP_Distribuidor").text("");
+        $("#SP_Publico").text("");
+        $("#SP_Demo").text("");
+        $("#SP_PromocionArticulo").text("");
+        $("#DivImg").html("");
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("Producto_Seleccionar_Id", "Productos")",
+            data: JSON.stringify(jsonObject),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: Resultado2, 
+            error: Errores
+        });
+    }
+
+    function Resultado2(data) {
+
+        console.log(data);
+
+        if (data.Producto.Id > 0) {
+
+            $("#SP_Nombre").text(data.Producto.Nombre);
+            $("#SP_SKU").text(data.Producto.SKU);
+            $("#SP_Categoria").text(data.Producto.Categoria);
+            $("#SP_Descripcion").text(data.Producto.Descripcion);
+            $("#SP_Distribuidor").text(data.Producto.PrecioDistribuidor);
+            $("#SP_Publico").text(data.Producto.PrecioPublico);
+            $("#SP_Demo").text(data.Producto.PrecioDemo);
+
+            if (data.Producto.Precio > 0) {
+                $("#SP_PromocionArticulo").text(data.Producto.Precio);
+            } else {
+                $("#SP_PromocionArticulo").text("Ninguna");
+            }
+
+            $("#DivImg").html("<img src='http://"+ data.ProductoImg.Descripcion + "' class='d-block w-100' />");
+
+    
+            
+
+        } else {
+            $.notify({
+                //icon: 'fa fa-paw',
+                message: 'Producto no encontrado'
+            }, {
+                type: 'danger',
+                allow_dismiss: false,
+                animate: {
+                    enter: 'animated rollIn',
+                    exit: 'animated rollOut'
+                }
+            });
+        }
+        
+    }
+
+    function Errores2(data) {
+       $.notify({
+        title: 'Producto no buscado, intente mas tarde',
+        },{
+        type: 'danger',
+            time: 1000,
+        });
+    }
+
+</script>

@@ -1,0 +1,215 @@
+﻿
+@{
+    ViewBag.Title = "Configuracion";
+}
+
+
+<style>
+    table.dataTable thead tr {
+        background-color: #1a2035;
+        color: white
+    }
+
+    .header th {
+        height: 25px;
+        line-height: 2px;
+    }
+</style>
+
+
+<script src="~/assets/js/plugin/datatables/datatables.min.js"></script>
+<link href="~/assets/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+<div class="page-inner">
+    <div class="page-header">
+        <h4 class="page-title">Sucursales</h4>
+    </div>
+    <div class="row">
+
+        <div id="Espera" style="display:none; width:69px;height:90px;position:absolute;top:20%;left:50%;padding:2px;z-index:1000">
+            <img src="../assets/img/spinner.gif" width="64" height="64" /><br />Cargando...
+        </div>
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-12">
+
+                    @Html.Partial("_MenuAdmin")
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-12 text-right">
+
+                    <button class="btn btn-default" data-toggle="modal" data-target="#ModalNuevo">Nueva</button>
+
+                </div>
+
+            </div>
+
+            <br />
+
+            <div class="row">
+
+
+                <div class="table-responsive">
+                    <table id="tabla01" class="display compact table-striped table-hover" style="width:100%">
+                        <thead class="header">
+                            <tr>
+                                <th>Nombre</th>
+                                @*<th></th>*@
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @if (ViewBag.Configuracion == null)
+                            {
+                                <tr><td colspan="6" align="center">Sin datos para mostrar</td></tr>
+                            }
+                            @foreach (var items in ViewBag.Configuracion)
+                            {
+                                <tr>
+                                    <td>@items.Nombre</td>
+                                    @*<td><a href="#" onclick="ModalModificar();">Detalle</a></td>*@
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<div class="modal fade" id="ModalNuevo" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="ModalLabel">Agregar Nueva Socursal</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+
+
+                <div class="row">
+                    <div class="col-md-12 col-lg-12">
+
+                        <div class="form-group form-inline">
+                            <label for="nNombre" class="col-md-3 col-form-label fc-left">Nombre</label>
+                            <div class="col-md-9 p-0">
+                                <input type="text" class="form-control form-control" name="nNombre" id="nNombre" placeholder="" required tabindex="1">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success" data-dismiss="modal" onclick="GuardarNuevo();">Guardar</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+
+        $('#IndexAdmin').addClass("nav-item active submenu");
+        $('#o4').addClass('active show');
+
+        $('#tabla01').DataTable({
+            "searching": true,
+            "paging": true,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+            },
+            info: false,
+        });
+
+    });
+
+    function GuardarNuevo() {
+        $('#ModalNuevo').modal('hide');
+        $.ajax({
+            url: "/Administracion/SucursalAgregar/",
+            data: {
+                nombre: $('#nNombre').val()
+            },
+            type: "GET",
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+                $('#ModalNuevo').modal('hide');
+
+                if (data === 1) {
+
+                    swal({
+                        title: 'CRM Retail',
+                        text: 'Se guardó el registro',
+                        buttons: {
+                            confirm: {
+                                className: 'btn btn-success'
+                            }
+                        },
+                    }).then(
+                        function () {
+                            $('#nNombre').val('');
+                            location.href = '';
+                        }
+                    );
+                }
+                else {
+                    swal({
+                        text: "La socursal que intenta agregar ya existe, revise.",
+                        icon: 'warning',
+                        buttons: {
+                            confirm: {
+                                className: 'btn btn-warning'
+                            }
+                        }
+                    });
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('jqXHR:');
+                console.log(jqXHR);
+                console.log('textStatus:');
+                console.log(textStatus);
+                console.log('errorThrown:');
+                console.log(errorThrown);
+            }
+        });
+    }
+</script>

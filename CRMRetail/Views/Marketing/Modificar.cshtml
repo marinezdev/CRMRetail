@@ -1,0 +1,373 @@
+﻿@model  CRMRetail.Modelos.Marketing
+@{
+    ViewBag.Title = "Modificar";
+}
+
+<link href="~/assets/js/plugin/datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+
+<script>
+
+        $(document).ready(function () {
+
+        $('#IndexMarketing').addClass("nav-item active submenu");
+        
+
+        $(function () {
+            var msg = '@ViewData["Mensaje"]';
+            if (msg == '1') {
+                swal({
+                    text: 'Se guardó el registro modificado exitosamente.',
+                    icon: 'success',
+                    buttons: {
+                        confirm: {
+                            className: 'btn btn-success'
+                        }
+                    }
+                });
+            }
+            else if (msg == '3') {
+                swal({
+                    text: 'Se guardó el registro modificado exitosamente.',
+                    icon: 'success',
+                    buttons: {
+                        confirm: {
+                            className: 'btn btn-success'
+                        }
+                    }
+                });
+            }
+
+            else if (msg == '1') {
+                swal({
+                    text: 'El RFC del cliente que intenta agregar ya esta asignado en otro, revise los datos.',
+                    icon: 'warning',
+                    buttons: {
+                        confirm: {
+                            className: 'btn btn-warning'
+                        }
+                    }
+                });
+            }
+        });
+
+        
+
+    });
+
+</script>
+
+<div class="page-inner">
+    <div class="page-header">
+        <h4 class="page-title">Modificar Campaña</h4>
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            @Html.Partial("_MenuMarketing")
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <form method="post" action="/Marketing/Modificar">
+
+                <input type="hidden" name="Id" value="@Model.Id" />
+
+                <div class="card">
+
+                    <div class="row">
+
+                        <div class="col-md-4 col-lg-4">
+
+                            <div class="form-group form-floating-label">
+                                <input type="text" class="form-control input-solid" name="Clave" placeholder="Clave Única de Evento" autocomplete="off" value="@Model.Clave">
+                                <label for="Clave" class="placeholder">Clave Evento</label>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4 col-lg-4"></div>
+
+                        <div class="col-md-4 col-lg-4"></div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-4 col-lg-4">
+
+                            <div class="form-group form-floating-label">
+                                <input type="text" class="form-control input-solid" name="Nombre" placeholder="" autocomplete="off" style="width: 450px" value="@Model.Nombre">
+                                <label for="Nombre" class="placeholder">Nombre</label>
+                            </div>
+
+                        </div>
+
+
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-4 col-lg-4">
+
+                            <div class="form-group form-floating-label">
+                                <input type="text" class="form-control input-solid" id="Inicio" name="Inicio" placeholder="" autocomplete="off" value="@Model.Inicio.ToString("dd/MM/yy")">
+                                <label for="Inicio" class="placeholder">Inicio</label>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4 col-lg-4">
+
+                            <div class="form-group form-floating-label">
+                                <input type="text" class="form-control input-solid" id="Fin" name="Fin" placeholder="" maxlength="12" autocomplete="off" value="@Model.Fin.ToString("dd/MM/yy")">
+                                <label for="Fin" class="placeholder">Fin</label>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4 col-lg-4">
+
+                            <div class="form-group form-floating-label">
+                                <input type="text" class="form-control input-solid" id="Envios" name="Envios" placeholder="" maxlength="12" autocomplete="off" value="@Model.Envios.ToString("dd/MM/yy")">
+                                <label for="Envios" class="placeholder">Envío Correo</label>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-4 col-lg-4">
+
+                            <div class="form-group form-floating-label">
+                               <textarea type="text" class="form-control input-solid" cols="92" rows="7" name="Objetivo">@Model.Objetivo</textarea>
+                                <label for="Objetivo" class="placeholder">Descripción</label>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-2 col-lg-2">
+                            <div class="form-group form-inline">
+                                <label class="col-md-2 col-form-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Medio</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-10 col-lg-10">
+
+                            <div class="form-group form-inline text-left">
+
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" name="Correo" value="1" checked="@(1 == Model.Correo)">
+                                        <span class="form-check-sign">Correo</span>
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" name="Facebook" value="1" checked="@(1 == Model.Facebook)">
+                                        <span class="form-check-sign">Facebook</span>
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" name="Linkedin" value="1" checked="@(1 == Model.Linkedin)">
+                                        <span class="form-check-sign">Linkedin</span>
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" name="Llamada" value="1" checked="@(1 == Model.Llamada)">
+                                        <span class="form-check-sign">Llamada Telefónica</span>
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" name="ASAE" value="1" checked="@(1 == Model.PaginaASAE)">
+                                        <span class="form-check-sign">Página</span>
+                                    </label>
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="card">
+
+                    <div class="card-header">
+                        <h4 class="card-title">Datos para la agenda del evento</h4>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="row">
+
+                            <div class="col-md-4 col-lg-4">
+
+                                <div class="form-group form-floating-label">
+                                    <input type="text" class="form-control input-solid" id="InicioEvento" name="InicioEvento" placeholder="" maxlength="12" autocomplete="off" value="@Model.InicioEvento.ToString("dd/MM/yy")">
+                                    <label for="InicioEvento" class="placeholder">Fecha Inicio</label>
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-4 col-lg-4">
+
+                                <div class="form-group form-floating-label">
+                                    <input type="text" class="form-control input-solid" id="HoraInicio" name="HoraInicio" placeholder="" maxlength="12" autocomplete="off" value="@Model.HoraInicio">
+                                    <label for="HoraInicio" class="placeholder">Hora Inicio</label>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-md-4 col-lg-4">
+
+                                <div class="form-group form-floating-label">
+                                    <input type="text" class="form-control input-solid" id="FinEvento" name="FinEvento" placeholder="" maxlength="12" autocomplete="off" value="@Model.FinEvento.ToString("dd/MM/yy")">
+                                    <label for="FinEvento" class="placeholder">Fecha Fin</label>
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-4 col-lg-4">
+
+                                <div class="form-group form-floating-label">
+                                    <input type="text" class="form-control input-solid" id="HoraFin" name="HoraFin" placeholder="" maxlength="12" autocomplete="off" value="@Model.HoraFin">
+                                    <label for="HoraFin" class="placeholder">Hora Fin</label>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="row">
+
+                            <div class="col-md-4 col-lg-4">
+
+                                <div class="form-group form-floating-label">
+                                    <input type="text" class="form-control input-solid" id="Ubicacion" name="Ubicacion" placeholder="CDMX" maxlength="50" autocomplete="off" value="@Model.Ubicacion">
+                                    <label for="Ubicacion" class="placeholder">Ubicación</label>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-md-8 col-lg-8">
+
+                                <div class="form-group form-floating-label">
+                                    <input type="text" class="form-control input-solid" id="Descripcion" name="Descripcion" placeholder="" maxlength="150" autocomplete="off" style="width:450px" value="@Model.Descripcion">
+                                    <label for="Descripcion" class="placeholder">Descripción (breve)</label>
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-8 col-lg-8">
+
+                                <div class="form-group form-inline">
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+                <div class="card-action label-align-center">
+                    <button type="submit" class="btn btn-success">Guardar</button>
+                </div>
+
+            </form>
+
+
+
+        </div>
+
+    </div>
+
+</div>
+
+<scrip src="../assets/js/plugin/datetimepicker/moment.js"></scrip>
+<script src="../assets/js/plugin/datetimepicker/jquery.datetimepicker.full.js"></script>
+
+<script>
+
+    $.datetimepicker.setLocale('es');
+
+    $('#Inicio').datetimepicker({
+        timepicker: false,
+        format: 'd/m/Y',
+    });
+
+    $('#Fin').datetimepicker({
+        timepicker: false,
+        format: 'd/m/Y',
+        formatDate: 'Y/m/d',
+    });
+
+    $('#Envios').datetimepicker({
+        timepicker: false,
+        format: 'd/m/Y',
+        formatDate: 'Y/m/d',
+    });
+
+    $('#InicioEvento').datetimepicker({
+        timepicker: false,
+        format: 'd/m/Y',
+        formatDate: 'Y/m/d',
+    });
+
+    $('#FinEvento').datetimepicker({
+        timepicker: false,
+        format: 'd/m/Y',
+        formatDate: 'Y/m/d',
+    });
+
+    $('#HoraInicio').datetimepicker({
+        datepicker: false,
+        format: 'H:i',
+    });
+
+    $('#HoraFin').datetimepicker({
+        datepicker: false,
+        format: 'H:i',
+    });
+
+</script>
+
+

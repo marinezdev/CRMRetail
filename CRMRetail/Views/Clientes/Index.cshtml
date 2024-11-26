@@ -1,0 +1,536 @@
+﻿@model List<CRMRetail.Modelos.Clientes>
+@{
+    ViewBag.Title = "Index";
+}
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#IndexClientes').addClass("nav-item active submenu");
+
+        $('#tabla01').DataTable({
+            "searching": true,
+            "paging": true,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+            },
+            info: true,
+        });
+
+        //$("#tabla01").delegate("tr", "click", function () {
+        //    var firstCellText = $("td:first", this).text();
+        //    if (firstCellText != "") {
+        //        location.href = '/Clientes/Modificar?id=' + firstCellText;
+        //    }
+        //});
+
+
+
+        $('#basic').select2({
+            theme: "bootstrap"
+        });
+
+    });
+
+
+
+</script>
+
+
+<script src="~/assets/js/plugin/datatables/datatables.min.js"></script>
+@*<link href="~/assets/css/colReorder.dataTables.min.css" rel="stylesheet" />
+<link href="~/assets/css/jquery.dataTables.min.css" rel="stylesheet" />*@
+<link href="~/assets/css/atlantis.css" rel="stylesheet" />
+<style>
+    table.dataTable thead tr {
+        background-color: #1f1e2e;
+        color: white
+    }
+
+    .header th {
+        height: 25px;
+        line-height: 2px;
+    }
+
+    .logo-header[data-background-color="dark"] {
+        background: #000000 !important;
+    }
+
+    .navbar-header[data-background-color="dark"] {
+        background: #000000 !important;
+        /*background: linear-gradient(to right, #4194BC, #70E7AF) !important;*/
+        box-shadow: 4px 4px 10px rgb(69 65 78 / 71%);
+    }
+
+    .sidebar[data-background-color="dark"] {
+        background: #000000 !important;
+    }
+
+    .sidebar .nav.nav-warning > .nav-item.active a i, .sidebar[data-background-color="white"] .nav.nav-warning > .nav-item.active a i {
+        color: #ed1d24 !important;
+    }
+
+    .sidebar .nav.nav-warning > .nav-item.active a:before, .sidebar[data-background-color="white"] .nav.nav-warning > .nav-item.active a:before {
+        background: #ed1d24 !important;
+    }
+
+    .sidebar[data-background-color="dark"] .nav > .nav-item.active > a p {
+        color: #ffffff !important;
+    }
+
+    .sidebar .nav > .nav-item a p, .sidebar[data-background-color="white"] .nav > .nav-item a p {
+        font-size: 14px;
+        margin-bottom: 0px;
+        margin-right: 5px;
+        white-space: nowrap;
+        color: #ffffff;
+    }
+
+    .sidebar[data-background-color="dark"] .nav > .nav-item a {
+        color: #ffffff !important;
+    }
+
+    .sidebar .nav > .nav-item a i, .sidebar[data-background-color="white"] .nav > .nav-item a i {
+        color: #ffffff;
+        margin-right: 15px;
+        width: 25px;
+        text-align: center;
+        vertical-align: middle;
+        float: left;
+        font-size: 18px;
+        line-height: 30px;
+    }
+
+    .sidebar .nav.nav-warning > .nav-item a:hover i, .sidebar .nav.nav-warning > .nav-item a:focus i, .sidebar .nav.nav-warning > .nav-item a[data-toggle=collapse][aria-expanded=true] i, .sidebar[data-background-color="white"] .nav.nav-warning > .nav-item a:hover i, .sidebar[data-background-color="white"] .nav.nav-warning > .nav-item a:focus i, .sidebar[data-background-color="white"] .nav.nav-warning > .nav-item a[data-toggle=collapse][aria-expanded=true] i {
+        color: #ed1d24 !important;
+    }
+
+    .sidebar .nav > .nav-item.submenu, .sidebar[data-background-color="white"] .nav > .nav-item.submenu {
+        background: rgb(58 0 0);
+    }
+
+    .sidebar[data-background-color="dark"] .nav > .nav-item a:hover p, .sidebar[data-background-color="dark"] .nav > .nav-item a:focus p, .sidebar[data-background-color="dark"] .nav > .nav-item a[data-toggle=collapse][aria-expanded=true] p {
+        color: #f5f5f5 !important;
+    }
+
+    .sidebar, .sidebar[data-background-color="white"] {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        /*
+    width: 250px;
+    margin-top: 62px;
+    display: block;
+    z-index: 1000;
+    color: #ffffff;
+    font-weight: 200;
+    background: #ffffff;
+    */
+        -webkit-box-shadow: 4px 4px 10px rgb(69 65 78 / 6%);
+        -moz-box-shadow: 4px 4px 10px rgba(69, 65, 78, 0.06);
+        box-shadow: 4px 4px 10px rgb(69 65 78 / 71%);
+        transition: all .3s;
+    }
+    table.dataTable thead tr {
+        background-color: #000000;
+        color: white;
+        font-size: 12px;
+    }
+    table.dataTable  tr {
+        font-size: 13px;
+    }
+
+    .btn-link:hover {
+    color: #810f13;
+    text-decoration: underline;
+    background-color: transparent;
+    border-color: transparent;
+}
+    .btn-link {
+    font-weight: 400;
+    color: #ed1d24;
+    background-color: transparent;
+}
+
+    .page-item.active .page-link {
+    z-index: 1;
+    color: #fff;
+    background-color: #de1b22;
+    border-color: #df1b22;
+}
+
+    .nav-pills.nav-secondary .nav-link.active {
+    background: #ed1d24;
+    border: 1px solid #6861CE;
+}
+</style>
+
+<div class="page-inner">
+    @*<div class="page-header">
+            <h4 class="page-title">Agregar Nuevo Cliente</h4>
+        </div>*@
+    <div class="row">
+
+        <div id="Espera" style="display:none; width:69px;height:90px;position:absolute;top:20%;left:50%;padding:2px;z-index:1000">
+            <img src="../assets/img/spinner.gif" width="64" height="64" /><br />Cargando...
+        </div>
+    </div>
+
+    <div class="page-header">
+        <h4 class="page-title">Clientes</h4>
+        <ul class="breadcrumbs">
+            <li class="nav-home">
+                <a href="#">
+                    <i class="flaticon-home"></i>
+                </a>
+            </li>
+            <li class="separator">
+                <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Cliente</a>
+            </li>
+            @*<li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>*@
+            @*<li class="nav-item">
+                    <a href="#">Nuevo</a>
+                </li>*@
+        </ul>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Listado de clientes registrados </div>
+                    <div class="card-category">Visualiza la información de un cliente al dar clic sobre el icono  <i class="fa fa-eye" aria-hidden="true"></i></div>
+
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table id="tabla01" class="display compact hover table-striped table-hover text-center" style="width:100%;">
+                                <thead class="header">
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>RFC</th>
+                                        <th>Teléfono móvil </th>
+                                        <th>Correo electrónico</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        foreach (var dtCliente in ViewBag.Clientes)
+                                        {
+                                            <tr>
+                                                <td>@dtCliente.Nombre</td>
+                                                <td>@dtCliente.RFC</td>
+                                                <td>@dtCliente.TelefonoMovil</td>
+                                                <td>@dtCliente.Correo</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-icon btn-link" onclick="ConsultaCliente(@dtCliente.Id); ConsultaVigencia(@dtCliente.Id)">
+                                                        <i class="fa fa-eye"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-md-12 text-right">
+                        <a class="btn btn-link" href="/Clientes/Agregar">
+                            <span class="btn-label">
+                                <i class="fa fa-user-plus"></i>
+                            </span>
+                            Agregar Nuevo Cliente
+                        </a>
+                    </div>
+                    <div class="card-title">Vista previa</div>
+                    <div id="EditarConsultarCliente" class="card-category">Edita información del cliente, consultar más información del cliente  </div>
+                    <p class="text-center">
+                        <strong>Nombre: </strong><span id="SClienteNombre"></span>
+                    </p>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                            <div class="col-5 col-md-4">
+                                <div class="nav flex-column nav-pills nav-secondary nav-pills-no-bd nav-pills-icons" id="v-pills-tab-with-icon" role="tablist" aria-orientation="vertical">
+                                    <a class="nav-link active" id="v-pills-home-tab-icons" data-toggle="pill" href="#v-pills-home-icons" role="tab" aria-controls="v-pills-home-icons" aria-selected="true">
+                                        <i class="flaticon-user-4 "></i>
+                                        Cliente
+                                    </a>
+                                    <a class="nav-link" id="v-pills-profile-tab-icons" data-toggle="pill" href="#v-pills-profile-icons" role="tab" aria-controls="v-pills-profile-icons" aria-selected="false">
+                                        <i class="flaticon-mailbox"></i>
+                                        Contacto
+                                    </a>
+                                    <a class="nav-link" id="v-pills-profile-tab-icons" data-toggle="pill" href="#v-pills-dire-icons" role="tab" aria-controls="v-pills-profile-icons" aria-selected="false">
+                                        <i class="flaticon-home "></i>
+                                        Dirección
+                                    </a>
+                                    <a class="nav-link" id="v-pills-profile-tab-icons" data-toggle="pill" href="#v-pills-notes-icons" role="tab" aria-controls="v-pills-profile-icons" aria-selected="false">
+                                        <i class="flaticon-home "></i>
+                                        Notas
+                                    </a>
+                                    <a class="nav-link" id="v-pills-profile-tab-icons-e" role="tab">
+                                        <i class="flaticon-pencil "></i>
+                                        Editar
+                                    </a>
+
+                                </div>
+                            </div>
+                            <div class="col-7 col-md-8">
+                                <div class="tab-content" id="v-pills-with-icon-tabContent">
+                                    <div class="tab-pane fade show active" id="v-pills-home-icons" role="tabpanel" aria-labelledby="v-pills-home-tab-icons">
+                                        <p>
+                                            <strong>Nombre: </strong><span id="SC_Nombre"></span>
+                                            <br />
+                                            <strong>Persona: </strong><span id="SC_Persona"></span>
+                                            <br />
+                                            <strong>
+                                                <span id="SC_TitleFecha">Fecha:</span>
+                                            </strong><span id="SC_Fecha"></span>
+                                            <br />
+                                            <strong>RFC: </strong><span id="SC_RFC"></span>
+                                            <br />
+                                            <strong><span id="SC_TitleSexo"></span> </strong><span id="SC_Sexo"></span>
+                                            <br />
+                                            <strong>Tipo de Cliente: </strong><span id="SC_TipoCliente"></span>
+                                            <br />
+                                            <strong>Origen: </strong><span id="SC_Origen"></span>
+                                            <br /><br />
+                                            <strong>Miembro desde: </strong><span id="SC_duracion"></span>
+                                            <br />
+                                            <strong>Membresia: </strong><span id="SC_Membresia"></span>
+                                            <br />
+                                        </p>
+                                        <br /><br /><br />
+                                        <div class="justify-content-center" style="text-align:center">
+                                            <img src="~/assets/img/Weber-logo-F99FDDDEB3-seeklogo.com.png" width="70%" />
+                                        </div>
+
+
+                                    </div>
+                                    <div class="tab-pane fade" id="v-pills-profile-icons" role="tabpanel" aria-labelledby="v-pills-profile-tab-icons">
+                                        <p>
+                                            <strong>Correo electrónico : </strong><span id="SC_Correo"></span>
+                                            <br />
+                                            <strong>Teléfono móvil : </strong><span id="SC_Movil"></span>
+                                            <br />
+                                            <strong>Teléfono local : </strong><span id="SC_Local"></span>
+                                            <br />
+                                        </p>
+                                        <br /><br /><br /><br /><br /><br /><br /><br />
+                                        <div class="justify-content-center" style="text-align:center">
+                                            <img src="~/assets/img/Weber-logo-F99FDDDEB3-seeklogo.com.png" width="70%" />
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="v-pills-dire-icons" role="tabpanel" aria-labelledby="v-pills-dire-tab-icons">
+                                        <p>
+                                            <strong>Dirección fiscal: </strong><span id="SC_DireccionFisica"></span>
+                                            <br />
+                                            <strong>Dirección entrega : </strong><span id="SC_DireccionEntrega"></span>
+                                        </p>
+                                        <br /><br /><br /><br /><br /><br /><br />
+                                        <div class="justify-content-center" style="text-align:center">
+                                            <img src="~/assets/img/Weber-logo-F99FDDDEB3-seeklogo.com.png" width="70%" />
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="v-pills-notes-icons" role="tabpanel" aria-labelledby="v-pills-dire-tab-icons">
+                                        <p>
+                                            <strong>Dirección xXXXXXX fiscal: </strong><span id="SC_DireccionFisica"></span>
+                                            <br />
+                                            <strong>Dirección entrega : </strong><span id="SC_DireccionEntrega"></span>
+                                        </p>
+                                        <br /><br /><br /><br /><br /><br /><br />
+                                        <div class="justify-content-center" style="text-align:center">
+                                            <img src="~/assets/img/Weber-logo-F99FDDDEB3-seeklogo.com.png" width="70%" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@*<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>*@
+
+<script>
+    function ConsultaVigencia(id) {
+
+        var obj = {};
+
+        obj['Id'] = id;
+
+        var jsonObject = {
+            "Cliente": obj
+        };
+
+        $("#SC_duracion").text("");
+        $("#SC_Membresia").text("");
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("Membresia", "Clientes")",
+            data: JSON.stringify(jsonObject),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $("#SC_duracion").text(data.FechaConstitucion);
+                $("#SC_Membresia").text(data.Resultado);
+            },
+            error: Errores
+        });
+
+    }
+    function ConsultaCliente(cliente) {
+
+        var obj = {};
+
+        obj['Id'] = cliente;
+
+        var jsonObject = {
+            "Cliente": obj
+        };
+
+        // LIMPIA DATOS
+        $("#SClienteNombre").text("");
+        $("#SC_Nombre").text("");
+        $("#SC_Persona").text("");
+        $("#SC_TitleFecha").text("");
+        $("#SC_Fecha").text("");
+        $("#SC_RFC").text("");
+        $("#SC_TitleSexo").text("");
+        $("#SC_Sexo").text("");
+        $("#SC_TipoCliente").text("");
+        $("#SC_Origen").text("");
+        $("#SC_Correo").text("");
+        $("#SC_Movil").text("");
+        $("#SC_Local").text("");
+
+        // DIRECCION
+        $("#SC_DireccionFisica").text("");
+        $("#SC_DireccionEntrega").text("");
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("Cliente_Seleccionar_Id", "Clientes")",
+            data: JSON.stringify(jsonObject),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: Resultado,
+            error: Errores
+        });
+    }
+
+    function Resultado(data) {
+
+        if (data.IdCliente > 0) {
+
+            $("#SClienteNombre").text(data.Nombre);
+            $("#SC_Nombre").text(data.Nombre);
+            $('#v-pills-profile-tab-icons-e').html('<a href=/Clientes/Modificar?id=' + data.IdCliente +' class="link" style="text-decoration: none"><i id="edit" class="flaticon-pencil"></i>Editar</a>');
+            if (data.TipoPersona == 1) {
+                $("#SC_Persona").text("Física");
+                $("#SC_TitleFecha").text("Fecha nacimiento:");
+                $("#SC_Fecha").text(data.FechaNacimiento);
+                $("#SC_RFC").text(data.RFC);
+                $("#SC_TitleSexo").text("Sexo:");
+                if (data.Sexo == 1) {
+                    $("#SC_Sexo").text("Masculino");
+                } else {
+                    $("#SC_Sexo").text("Femenino");
+                }
+
+            } else {
+                $("#SC_Persona").text("Moral");
+                $("#SC_TitleFecha").text("Fecha constitución:");
+                $("#SC_Fecha").text(data.FechaConstitucion.substring(0, 10));
+                $("#SC_RFC").text(data.RFC);
+            }
+            $("#SC_TipoCliente").text(data.TipoCliente);
+            $("#SC_Origen").text(data.OrigenCliente);
+            $("#SC_Correo").text(data.Correo);
+            $("#SC_Movil").text(data.TelefonoMovil);
+            $("#SC_Local").text(data.TelefonoLocal);
+
+            var direccion = "";
+            direccion = "<br>" + data.Estado + ", " + data.Poblacion + ", <strong>Col: </strong>" + data.Colonia + ", <strong>CP: </strong>" + data.CP + ", <strong>Calle: </strong> " + data.Calle + ", <strong>NumEx: </strong> " + data.NumExterior;
+            if (data.NumInterior.length > 0) {
+                direccion += ",  <strong>NumInt: </strong> " + data.NumInterior;
+            }
+            if (data.EntreCalles.length > 0) {
+                direccion += ",  <strong>Entre calles: </strong> " + data.EntreCalles;
+            }
+            if (data.Referencias.length > 0) {
+                direccion += ",  <strong>Referencias: </strong> " + data.Referencias;
+            }
+
+            $("#SC_DireccionFisica").html(direccion);
+
+            if (data.FiscalEntrega == 1 && data.Flag == 1) {
+                $("#SC_DireccionEntrega").html("La dirección fiscal es la misma dirección de entrega");
+            } else {
+                var direccion = "";
+                direccion = "<br>" + data.Estado2 + ", " + data.Poblacion2 + ", <strong>Col: </strong>" + data.Colonia2 + ", <strong>CP: </strong>" + data.CP2 + ", <strong>Calle: </strong> " + data.Calle2 + ", <strong>NumEx: </strong> " + data.NumExterior2;
+                if (data.NumInterior2.length > 0) {
+                    direccion += ",  <strong>NumInt: </strong> " + data.NumInterior2;
+                }
+                if (data.EntreCalles2.length > 0) {
+                    direccion += ",  <strong>Entre calles: </strong> " + data.EntreCalles2;
+                }
+                if (data.Referencias2.length > 0) {
+                    direccion += ",  <strong>Referencias: </strong> " + data.Referencias2;
+                }
+                $("#SC_DireccionEntrega").html(direccion);
+
+            }
+
+
+        } else {
+            $.notify({
+                //icon: 'fa fa-paw',
+                message: 'Cliente no encontrado'
+            }, {
+                type: 'danger',
+                allow_dismiss: false,
+                animate: {
+                    enter: 'animated rollIn',
+                    exit: 'animated rollOut'
+                }
+            });
+        }
+
+    }
+
+    function Errores(data) {
+       $.notify({
+        title: 'Cliente no buscado, intente más tarde',
+        },{
+        type: 'danger',
+            time: 1000,
+        });
+    }
+
+</script>

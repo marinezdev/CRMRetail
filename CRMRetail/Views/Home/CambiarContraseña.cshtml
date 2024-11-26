@@ -1,0 +1,118 @@
+﻿
+@{
+    ViewBag.Title = "Cambiar Contraseña";
+}
+
+<script>
+
+    $(document).ready(function () {
+        
+        $("#formulario1").validate({
+            rules: {
+                ClaveActual: {
+                    required: true,
+                    minlength: 8
+                },
+                ClaveNueva: {
+                    required: true,
+                    minlength: 8
+                },
+                Repetir: {
+                    required: true,
+                    minlength: 8
+                }
+            },
+            messages: {
+
+                ClaveActual: {
+                    required: "Teclee su contraseña actual"
+                },
+                ClaveNueva: {
+                    required: "Teclee su contraseña nueva",
+                    minlength: "Su nueva contraseña debe tener por lo menos 8 caracteres"
+                },
+                Repetir: {
+                    required: "Repita su contraseña nueva",
+                    minlegth: "Su nueva contraseña debe tener por lo menos 8 caracteres"
+                }
+            }
+        });
+
+    });
+
+</script>
+
+<script src="~/assets/js/plugin/validate/jquery.validate.min.js"></script>
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/localization/messages_es.js"></script>
+
+<div class="page-inner">
+    <div class="page-header">
+        <h4 class="page-title">Cambiar Contraseña</h4>
+    </div>
+    <div class="row">
+
+        <div id="Espera" style="display:none; width:69px;height:90px;position:absolute;top:20%;left:50%;padding:2px;z-index:1000">
+            <img src="../assets/img/spinner.gif" width="64" height="64" /><br />Cargando...
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-12">
+
+            <div class="card">
+
+                <div class="card-body">
+
+                    <div class="form">
+
+                        <form id="formulario1" method="post" action="CambiarContraseña">
+
+                            <div class="col-md-4">
+                                
+                                <div class="form-group form-floating-label">
+                                    <input type="password" class="form-control input-solid" id="ClaveActual" name="ClaveActual" required>
+                                    <label for="ClaveActual" class="placeholder">Contraseña Actual</label>
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-4">
+                                
+                                <div class="form-group form-floating-label">
+                                    <input type="password" class="form-control input-solid" id="ClaveNueva" name="ClaveNueva" maxlength="12" required>
+                                    <label for="ClaveNueva" class="placeholder">Contraseña Nueva</label>
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-4">
+                                
+                                <div class="form-group form-floating-label">
+                                    <input type="password" class="form-control input-solid" id="Repetir" name="Repetir" maxlength="12" required>
+                                    <label for="Repetir" class="placeholder">Repetir Contraseña</label>
+                                </div>
+
+                            </div>
+
+                            <div class="card-action label-align-center">
+                                <button type="submit" class="btn btn-success">Aceptar</button>
+                            </div>
+                        </form>
+
+                    </div>
+
+                    @Html.Raw(ViewData["Mensaje"])
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+

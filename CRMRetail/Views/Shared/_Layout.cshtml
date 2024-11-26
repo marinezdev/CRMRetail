@@ -1,0 +1,365 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Retail</title>
+
+    <!-- Fonts and icons -->
+    <script src="../assets/js/plugin/webfont/webfont.min.js"></script>
+    <script>
+        WebFont.load({
+            google: { "families": ["Lato:300,400,700,900"] },
+            custom: { "families": ["Flaticon", "Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"], urls: ['../assets/css/fonts.min.css'] },
+            active: function () {
+                sessionStorage.fonts = true;
+            }
+        });
+        
+    </script>
+
+    <!--   Core JS Files   -->
+    <script src="../assets/js/core/jquery.3.2.1.min.js"></script>
+    <script src="../assets/js/core/popper.min.js"></script>
+    <script src="../assets/js/core/bootstrap.min.js"></script>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/atlantis.css">
+
+    <style>
+        table.dataTable thead tr {
+            background-color: #1f1e2e;
+            color: white
+        }
+
+        .header th {
+            height: 25px;
+            line-height: 2px;
+        }
+        .logo-header[data-background-color="dark"] {
+            background: #000000 !important;
+        }
+        .navbar-header[data-background-color="dark"] {
+            background: #000000 !important;
+            box-shadow: 4px 4px 10px rgb(69 65 78 / 71%);
+        }
+        .sidebar[data-background-color="dark"] {
+            background: #000000 !important;
+        }
+        
+        .sidebar .nav.nav-warning > .nav-item.active a i, .sidebar[data-background-color="white"] .nav.nav-warning > .nav-item.active a i {
+            color: #ed1d24 !important;
+        }
+        
+        .sidebar .nav.nav-warning > .nav-item.active a:before, .sidebar[data-background-color="white"] .nav.nav-warning > .nav-item.active a:before {
+            background: #ed1d24 !important;
+        }
+        .sidebar[data-background-color="dark"] .nav > .nav-item.active > a p {
+            color: #ffffff !important;
+        }
+        .sidebar .nav > .nav-item a p, .sidebar[data-background-color="white"] .nav > .nav-item a p {
+            font-size: 14px;
+            margin-bottom: 0px;
+            margin-right: 5px;
+            white-space: nowrap;
+            color: #ffffff;
+        }
+        
+        .sidebar[data-background-color="dark"] .nav > .nav-item a {
+            color: #ffffff !important;
+        }
+        .sidebar .nav > .nav-item a i, .sidebar[data-background-color="white"] .nav > .nav-item a i {
+            color: #ffffff;
+            margin-right: 15px;
+            width: 25px;
+            text-align: center;
+            vertical-align: middle;
+            float: left;
+            font-size: 18px;
+            line-height: 30px;
+        }
+        .sidebar .nav.nav-warning > .nav-item a:hover i, .sidebar .nav.nav-warning > .nav-item a:focus i, .sidebar .nav.nav-warning > .nav-item a[data-toggle=collapse][aria-expanded=true] i, .sidebar[data-background-color="white"] .nav.nav-warning > .nav-item a:hover i, .sidebar[data-background-color="white"] .nav.nav-warning > .nav-item a:focus i, .sidebar[data-background-color="white"] .nav.nav-warning > .nav-item a[data-toggle=collapse][aria-expanded=true] i {
+            color: #ed1d24 !important;
+        }
+        .sidebar .nav > .nav-item.submenu, .sidebar[data-background-color="white"] .nav > .nav-item.submenu {
+            background: rgb(58 0 0);
+        }
+        .sidebar[data-background-color="dark"] .nav > .nav-item a:hover p, .sidebar[data-background-color="dark"] .nav > .nav-item a:focus p, .sidebar[data-background-color="dark"] .nav > .nav-item a[data-toggle=collapse][aria-expanded=true] p {
+            color: #f5f5f5 !important;
+        }
+
+        .sidebar, .sidebar[data-background-color="white"] {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            /*
+            width: 250px;
+            margin-top: 62px;
+            display: block;
+            z-index: 1000;
+            color: #ffffff;
+            font-weight: 200;
+            background: #ffffff;
+            */
+            -webkit-box-shadow: 4px 4px 10px rgb(69 65 78 / 6%);
+            -moz-box-shadow: 4px 4px 10px rgba(69, 65, 78, 0.06);
+            box-shadow: 4px 4px 10px rgb(69 65 78 / 71%);
+            transition: all .3s;
+        }
+        table.dataTable thead tr {
+            background-color: #000000;
+            color: white;
+            font-size: 12px;
+        }
+        table.dataTable  tr {
+            font-size: 13px;
+        }
+
+        .btn-link:hover {
+            color: #810f13;
+            text-decoration: underline;
+            background-color: transparent;
+            border-color: transparent;
+        }
+        .btn-link {
+            font-weight: 400;
+            color: #ed1d24;
+            background-color: transparent;
+        }
+
+        .page-item.active .page-link {
+            z-index: 1;
+            color: #fff;
+            background-color: #de1b22;
+            border-color: #df1b22;
+        }
+
+        .nav-pills.nav-secondary .nav-link.active {
+            background: #ed1d24;
+            border: 1px solid #6861CE;
+        }
+    </style>
+
+</head>
+<body>
+
+    <!-- wrapper-->
+    <div id="divPrincipal" class="wrapper">
+
+        <div class="main-header">
+
+            <!-- Logo Header -->
+            <div class="logo-header" data-background-color="dark">
+
+                <a href="#" class="logo">
+                    <img src="../assets/img/logoweber.png" alt="navbar brand" class="navbar-brand" title="Logo" />
+                </a>
+
+                <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon">
+                        <i class="icon-menu"></i>
+                    </span>
+                </button>
+                <button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>
+                <div class="nav-toggle">
+                    <button class="btn btn-toggle toggle-sidebar" id="BtnMenulinea">
+                        <i class="icon-menu"></i>
+                    </button>
+                </div>
+
+            </div>
+            <!-- End Logo Header -->
+            <!-- Navbar Header -->
+            <nav class="navbar navbar-header navbar-expand-lg" data-background-color="dark" custom-color="#1f1e2e">
+                <div class="container-fluid">
+
+                    <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
+
+                        <!-- Notificaciones -->
+                        @if (((Session["Usuario"] as CRMRetail.Modelos.UsuariosRoles).Roles.Id > 1))
+                        {
+                            
+                            <li class="nav-item dropdown hidden-caret">
+                                <a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-calendar" data-toggle="tooltip" data-placement="top" title="Notificaciones de Ordenes Pendientes"></i>
+                                    <a href="/Ventas/OrdenesPendientes"><span id="backorderpendientes" class="notification"></span></a>
+                                </a>
+                            </li>
+                            <!--
+                            <li class="nav-item dropdown hidden-caret">
+                                <a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-bell"></i>
+                                    <span class="notification">4</span>
+                                </a>
+                                <ul class="dropdown-menu notif-box animated fadeIn" aria-labelledby="notifDropdown">
+                                    <li>
+                                        <div class="dropdown-title">Tienes 4 nuevas notificaciones</div>
+                                    </li>
+                                    <li>
+                                        <div class="notif-scroll scrollbar-outer">
+                                            <div class="notif-center">
+                                                <a href="#">
+                                                    <div class="notif-icon notif-primary"> <i class="fa fa-user-plus"></i> </div>
+                                                    <div class="notif-content">
+                                                        <span class="block">
+                                                            New user registered
+                                                        </span>
+                                                        <span class="time">5 minutes ago</span>
+                                                    </div>
+                                                </a>
+                                                <a href="#">
+                                                    <div class="notif-icon notif-success"> <i class="fa fa-comment"></i> </div>
+                                                    <div class="notif-content">
+                                                        <span class="block">
+                                                            Rahmad commented on Admin
+                                                        </span>
+                                                        <span class="time">12 minutes ago</span>
+                                                    </div>
+                                                </a>
+                                                <a href="#">
+                                                    <div class="notif-img">
+                                                        <img src="../assets/img/profile2.jpg" alt="Img Profile">
+                                                    </div>
+                                                    <div class="notif-content">
+                                                        <span class="block">
+                                                            Reza send messages to you
+                                                        </span>
+                                                        <span class="time">12 minutes ago</span>
+                                                    </div>
+                                                </a>
+                                                <a href="#">
+                                                    <div class="notif-icon notif-danger"> <i class="fa fa-heart"></i> </div>
+                                                    <div class="notif-content">
+                                                        <span class="block">
+                                                            Farrah liked Admin
+                                                        </span>
+                                                        <span class="time">17 minutes ago</span>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <a class="see-all" href="javascript:void(0);">Ver todas las notificaciones<i class="fa fa-angle-right"></i> </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            -->
+                        }
+
+                        <li class="nav-item dropdown hidden-caret">
+                            <a class="nav-link dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
+                                <h3><i class="fas fa-user-alt"></i></h3>
+                            </a>
+                            <ul class="dropdown-menu dropdown-user animated fadeIn">
+                                <div class="dropdown-user-scroll scrollbar-outer">
+                                    <li>
+                                        <div class="user-box">
+                                            <div class="u-text fw-bold">@((Session["Usuario"] as CRMRetail.Modelos.UsuariosRoles).Usuarios.Nombre)</div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="/Home/CambiarContraseña">Cambiar Contraseña</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="/Login/Salir">Salir</a>
+                                    </li>
+                                </div>
+                            </ul>
+                        </li>
+
+                        <!-- Notificaciones Fin -->
+
+                    </ul>
+                </div>
+            </nav>
+            <!-- End Navbar -->
+
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar" data-background-color="dark">
+            <div class="sidebar-wrapper scrollbar scrollbar-inner">
+                <div class="sidebar-content">
+                    <ul class="nav nav-warning">
+
+
+                        @Html.Raw(Session["Menu"].ToString())
+
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- End Sidebar -->
+        <!-- Main Panel -->
+        <div class="main-panel">
+            <div class="content">
+
+                @RenderBody()
+
+            </div>
+            <footer class="footer">
+                <div class="container-fluid">
+
+                    <div class="copyright ml-auto">
+                        @@2021 ASAE Consultores
+                    </div>
+                </div>
+            </footer>
+        </div>
+        <!-- End Main Panel -->
+
+    </div>
+    <!-- end wrapper-->
+
+    <script>
+
+        $(document).ready(function () {
+
+            NotificacionesBakcOrderPendientes();
+        });
+
+        function NotificacionesBakcOrderPendientes() {
+            $.ajax({
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                type: 'GET',
+                url: '/Ventas/VentasBackOrderPendientesCuantas',
+                success: function (data) {
+                    console.log(data);
+                    $('#backorderpendientes').text(data);
+
+                },
+                failure: function (response) {
+                    $('#result').html(response);
+                }
+            });
+
+        }
+
+    </script>
+
+    <!-- jQuery UI -->
+    <script src="~/assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+    <script src="~/assets/js/plugin/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
+
+    <!-- JQuery Scrollbar -->
+    <script src="~/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+    <!-- Sweet Alert -->
+    <script src="../assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+    <script src="~/assets/js/bootstrap-notify.js"></script>
+    <!-- Datatables Moment -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+    <script src="http://cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js"></script>
+
+
+
+    <!-- Atlantis JS -->
+    <script src="../assets/js/atlantis2.min.js"></script>
+
+</body>
+</html>

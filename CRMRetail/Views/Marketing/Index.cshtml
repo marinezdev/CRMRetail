@@ -1,0 +1,99 @@
+﻿@model List<CRMRetail.Modelos.Marketing>
+@{
+    ViewBag.Title = "Index";
+}
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#IndexMarketing').addClass("nav-item active submenu");
+
+        $.fn.dataTable.moment("DD/MM/YYYY");
+
+        $('#tabla01').DataTable({
+            "searching": true,
+            "paging": true,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+            },
+            "scrollX": true,
+            info: true,
+        });
+
+    });
+
+
+</script>
+
+<script src="~/assets/js/plugin/datatables/datatables.min.js"></script>
+<script src="../assets/js/plugin/datatables/sum().js"></script>
+<script src="~/assets/js/plugin/datatables/dataTables.colReorder.min.js"></script>
+<link href="~/assets/css/colReorder.dataTables.min.css" rel="stylesheet" />
+<link href="~/assets/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+<div class="page-inner">
+    <div class="page-header">
+        <h4 class="page-title">Marketing</h4>
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <a href="/Marketing/Agregar" class="btn btn-default">Crear</a>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="table-responsive">
+                    <table id="tabla01" class="display compact hover" style="width:100%">
+                        <thead class="header">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Inicio</th>
+                                <th>Fin</th>
+                                <th>Envios</th>
+                                <th>Estado</th>                                
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @if (Model == null)
+                            {
+                                <tr><td colspan="6" align="center">Sin datos para mostrar</td></tr>
+                            }
+                            @foreach (var items in Model)
+                            {
+
+                                <tr>
+                                    <td>@items.Nombre</td>
+                                    <td>@items.Inicio.ToString("dd/MM/yy")</td>
+                                    <td>@items.Fin.ToString("dd/MM/yy")</td>
+                                    <td>@items.Envios.ToString("dd/MM/yy")</td>
+                                    <td>@CRMRetail.Datos.Catalogos.SeleccionarNombrePorId(items.Estado.ToString(), "marketingestados")</td>
+                                    <td align="center"><a href="/Marketing/Modificar?idcampaña=@items.Id"><i class="fas fa-pencil-alt"></i></a></td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>

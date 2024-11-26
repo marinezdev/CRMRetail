@@ -1,0 +1,399 @@
+﻿@model List<CRMRetail.Modelos.Productos>
+@{
+    ViewBag.Title = "Index";
+}
+
+
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#IndexProductos').addClass("nav-item active submenu");
+
+        $('#tabla01').DataTable({
+            "searching": true,
+            "paging": true,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+            },
+            info: true,
+        });
+
+        //$("#tabla01").delegate("tr", "click", function () {
+        //    var firstCellText = $("td:first", this).text();
+        //    if (firstCellText != "") {
+        //        location.href = '/Clientes/Modificar?id=' + firstCellText;
+        //    }
+        //});
+
+
+
+        $('#basic').select2({
+            theme: "bootstrap"
+        });
+
+    });
+
+
+</script>
+
+
+<script src="~/assets/js/plugin/datatables/datatables.min.js"></script>
+@*<link href="~/assets/css/colReorder.dataTables.min.css" rel="stylesheet" />
+    <link href="~/assets/css/jquery.dataTables.min.css" rel="stylesheet" />*@
+<link href="~/assets/css/atlantis.css" rel="stylesheet" />
+<style>
+    table.dataTable thead tr {
+        background-color: #1f1e2e;
+        color: white
+    }
+
+    .header th {
+        height: 25px;
+        line-height: 2px;
+    }
+
+    .logo-header[data-background-color="dark"] {
+        background: #000000 !important;
+    }
+
+    .navbar-header[data-background-color="dark"] {
+        background: #000000 !important;
+        box-shadow: 4px 4px 10px rgb(69 65 78 / 71%);
+    }
+
+    .sidebar[data-background-color="dark"] {
+        background: #000000 !important;
+    }
+
+    .sidebar .nav.nav-warning > .nav-item.active a i, .sidebar[data-background-color="white"] .nav.nav-warning > .nav-item.active a i {
+        color: #ed1d24 !important;
+    }
+
+    .sidebar .nav.nav-warning > .nav-item.active a:before, .sidebar[data-background-color="white"] .nav.nav-warning > .nav-item.active a:before {
+        background: #ed1d24 !important;
+    }
+
+    .sidebar[data-background-color="dark"] .nav > .nav-item.active > a p {
+        color: #ffffff !important;
+    }
+
+    .sidebar .nav > .nav-item a p, .sidebar[data-background-color="white"] .nav > .nav-item a p {
+        font-size: 14px;
+        margin-bottom: 0px;
+        margin-right: 5px;
+        white-space: nowrap;
+        color: #ffffff;
+    }
+
+    .sidebar[data-background-color="dark"] .nav > .nav-item a {
+        color: #ffffff !important;
+    }
+
+    .sidebar .nav > .nav-item a i, .sidebar[data-background-color="white"] .nav > .nav-item a i {
+        color: #ffffff;
+        margin-right: 15px;
+        width: 25px;
+        text-align: center;
+        vertical-align: middle;
+        float: left;
+        font-size: 18px;
+        line-height: 30px;
+    }
+
+    .sidebar .nav.nav-warning > .nav-item a:hover i, .sidebar .nav.nav-warning > .nav-item a:focus i, .sidebar .nav.nav-warning > .nav-item a[data-toggle=collapse][aria-expanded=true] i, .sidebar[data-background-color="white"] .nav.nav-warning > .nav-item a:hover i, .sidebar[data-background-color="white"] .nav.nav-warning > .nav-item a:focus i, .sidebar[data-background-color="white"] .nav.nav-warning > .nav-item a[data-toggle=collapse][aria-expanded=true] i {
+        color: #ed1d24 !important;
+    }
+
+    .sidebar .nav > .nav-item.submenu, .sidebar[data-background-color="white"] .nav > .nav-item.submenu {
+        background: rgb(58 0 0);
+    }
+
+    .sidebar[data-background-color="dark"] .nav > .nav-item a:hover p, .sidebar[data-background-color="dark"] .nav > .nav-item a:focus p, .sidebar[data-background-color="dark"] .nav > .nav-item a[data-toggle=collapse][aria-expanded=true] p {
+        color: #f5f5f5 !important;
+    }
+
+    .sidebar, .sidebar[data-background-color="white"] {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        /*
+    width: 250px;
+    margin-top: 62px;
+    display: block;
+    z-index: 1000;
+    color: #ffffff;
+    font-weight: 200;
+    background: #ffffff;
+    */
+        -webkit-box-shadow: 4px 4px 10px rgb(69 65 78 / 6%);
+        -moz-box-shadow: 4px 4px 10px rgba(69, 65, 78, 0.06);
+        box-shadow: 4px 4px 10px rgb(69 65 78 / 71%);
+        transition: all .3s;
+    }
+
+    table.dataTable thead tr {
+        background-color: #000000;
+        color: white;
+        font-size: 12px;
+    }
+
+    table.dataTable tr {
+        font-size: 13px;
+    }
+
+    .btn-link:hover {
+        color: #810f13;
+        text-decoration: underline;
+        background-color: transparent;
+        border-color: transparent;
+    }
+
+    .btn-link {
+        font-weight: 400;
+        color: #ed1d24;
+        background-color: transparent;
+    }
+
+    .page-item.active .page-link {
+        z-index: 1;
+        color: #fff;
+        background-color: #de1b22;
+        border-color: #df1b22;
+    }
+
+    .nav-pills.nav-secondary .nav-link.active {
+        background: #ed1d24;
+        border: 1px solid #6861CE;
+    }
+
+
+</style>
+
+<div class="page-inner">
+    @*<div class="page-header">
+            <h4 class="page-title">Agregar Nuevo Cliente</h4>
+        </div>*@
+    <div class="row">
+
+        <div id="Espera" style="display:none; width:69px;height:90px;position:absolute;top:20%;left:50%;padding:2px;z-index:1000">
+            <img src="../assets/img/spinner.gif" width="64" height="64" /><br />Cargando...
+        </div>
+    </div>
+
+    <div class="page-header">
+        <h4 class="page-title">Productos</h4>
+        <ul class="breadcrumbs">
+            <li class="nav-home">
+                <a href="#">
+                    <i class="flaticon-home"></i>
+                </a>
+            </li>
+            <li class="separator">
+                <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Producto</a>
+            </li>
+            @*<li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>*@
+            @*<li class="nav-item">
+                    <a href="#">Nuevo</a>
+                </li>*@
+        </ul>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <a class="btn btn-link" href="/Productos/Agregar">
+                        <span class="btn-label">
+                            <i class="fa fa-user-plus"></i>
+                        </span>
+                        Agregar Nuevo Producto
+                    </a>
+                    <div class="card-title">Vista previa.</div>
+                    <div class="card-category">Edita información del producto, consultar más información del producto. </div>
+                </div>
+                <div class="card-body">
+                    <div class="card-category">Datos </div>
+                    <p>
+                        <strong>Nombre producto: </strong><span id="SP_Nombre"></span>
+                        <br />
+                        <strong>SKU: </strong><span id="SP_SKU"></span>
+                        <br />
+                        <strong>Categoría: </strong><span id="SP_Categoria"></span>
+                        <br />
+                        <strong>Descripción: </strong><span id="SP_Descripcion"></span>
+                    </p>
+                    <div class="card-category">Precios $  </div>
+                    <p>
+                        <strong>Distribuidor: </strong><span id="SP_Distribuidor"></span>
+                        <br />
+                        <strong>Público: </strong><span id="SP_Publico"></span>
+                        <br />
+                        <strong>Promoción del articulo: </strong><span id="SP_PromocionArticulo"></span>
+                    </p>
+                    <p><a id="editarProducto">Editar Producto</a></p>
+                    <div class="card-category">Imagen producto  </div>
+                    <br />
+                    <div id="DivImg">
+                        <img src="~/assets/img/cb589adc50376fda1ebc6e9404b08852.w2500.h1006.png" class="d-block w-100" />
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <img src="~/assets/img/Weber-logo-F99FDDDEB3-seeklogo.com.png" width="20%" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Listado de productos registrados. </div>
+                    <div class="card-category">Visualiza la información de un producto al dar clic sobre el icono  <i class="fa fa-eye" aria-hidden="true"></i></div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table id="tabla01" class="display compact hover table-striped table-hover text-center" style="width:100%;">
+                                <thead class="header">
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>SKU</th>
+                                        <th>Categoría </th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        foreach (var dtProducto in ViewBag.Poductos)
+                                        {
+                                            <tr>
+                                                <td>@dtProducto.Nombre</td>
+                                                <td>@dtProducto.SKU</td>
+                                                <td>@dtProducto.Categoria</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-icon btn-link" onclick="ConsultaProducto(@dtProducto.Id)">
+                                                        <i class="fa fa-eye"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function ConsultaProducto(Producto) {
+        var obj = {};
+
+        obj['Id'] = Producto;
+
+        var jsonObject = {
+            "Producto": obj
+        };
+
+        // LIMPIA DATOS
+        $("#SP_Nombre").text("");
+        $("#SP_SKU").text("");
+        $("#SP_Categoria").text("");
+        $("#SP_Descripcion").text("");
+        $("#SP_Distribuidor").text("");
+        $("#SP_Publico").text("");
+        $("#SP_PromocionArticulo").text("");
+        $("#DivImg").html("");
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("Producto_Seleccionar_Id", "Productos")",
+            data: JSON.stringify(jsonObject),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: Resultado, 
+            error: Errores
+        });
+    }
+
+    function Resultado(data) {
+
+        if (data.Producto.Id > 0) {
+
+            $("#SP_Nombre").text(data.Producto.Nombre);
+            $("#SP_SKU").text(data.Producto.SKU);
+            $("#SP_Categoria").text(data.Producto.Categoria);
+            $("#SP_Descripcion").text(data.Producto.Descripcion);
+            $("#SP_Distribuidor").text("$" + data.Producto.PrecioDistribuidor.toLocaleString());
+            $("#SP_Publico").text("$" + data.Producto.PrecioPublico.toLocaleString());
+            
+
+            if (data.Producto.Precio > 0) {
+                $("#SP_PromocionArticulo").text("$" + data.Producto.Precio);
+            } else {
+                $("#SP_PromocionArticulo").text("Ninguna");
+            }
+
+            $('#editarProducto').html('<a href=/Productos/Modificar?Id=' + data.Producto.Id + '>Editar Producto</a>');
+
+            $("#DivImg").html("<img src='http://"+ data.ProductoImg.Descripcion + "' class='d-block w-100' />");
+
+    
+            
+
+        } else {
+            $.notify({
+                //icon: 'fa fa-paw',
+                message: 'Producto no encontrado'
+            }, {
+                type: 'danger',
+                allow_dismiss: false,
+                animate: {
+                    enter: 'animated rollIn',
+                    exit: 'animated rollOut'
+                }
+            });
+        }
+        
+    }
+
+    function Errores(data) {
+       $.notify({
+        title: 'Producto no buscado, intente mas tarde',
+        },{
+        type: 'danger',
+            time: 1000,
+        });
+    }
+
+    function mascara(o,f){  
+		v_obj=o;  
+		v_fun=f;  
+		setTimeout("execmascara()",1);  
+	}  
+	function execmascara(){   
+		v_obj.value=v_fun(v_obj.value);
+	}  
+	function cpf(v){     
+		v=v.replace(/([^0-9\.]+)/g,''); 
+		v=v.replace(/^[\.]/,''); 
+		v=v.replace(/[\.][\.]/g,''); 
+		v=v.replace(/\.(\d)(\d)(\d)/g,'.$1$2'); 
+		v=v.replace(/\.(\d{1,2})\./g,'.$1'); 
+		v = v.toString().split('').reverse().join('').replace(/(\d{3})/g,'$1,');    
+		v = v.split('').reverse().join('').replace(/^[\,]/,''); 
+		return v;  
+    }  
+</script>

@@ -1,0 +1,252 @@
+﻿
+@{
+    ViewBag.Title = "Catalogos";
+}
+
+<script src="~/assets/js/plugin/datatables/datatables.min.js"></script>
+<link href="~/assets/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#IndexCatalogos').addClass("nav-item active submenu");
+
+        $('#tabla01').DataTable({
+            "searching": false,
+            "paging": false,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+            },
+            info: false,
+        });
+
+        var obtenerParametrodeURL = function getUrlParameter(sParam) {
+            var sPageURL = window.location.search.substring(1),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                }
+            }
+        };
+
+        var idd = obtenerParametrodeURL('id');
+        if (idd == 1) {
+            $('#o1').addClass('active show');
+        }
+        else if (idd == 2) {
+            $('#o2').addClass('active show');
+        }
+        else if (idd == 3) {
+            $('#o3').addClass('active show');
+        }
+        else if (idd == 4) {
+            $('#o4').addClass('active show');
+        }
+        else if (idd == 5) {
+            $('#o5').addClass('active show');
+        }
+        else if (idd == 6) {
+            $('#o6').addClass('active show');
+        }
+
+    });
+</script>
+
+<style>
+    table.dataTable thead tr {
+        background-color: #1a2035;
+        color: white
+    }
+
+    .header th {
+        height: 25px;
+        line-height: 2px;
+    }
+</style>
+
+<div class="page-inner">
+    <div class="page-header">
+        <h4 class="page-title">Catálogos</h4>
+    </div>
+    <div class="row">
+
+        <div id="Espera" style="display:none; width:69px;height:90px;position:absolute;top:20%;left:50%;padding:2px;z-index:1000">
+            <img src="../assets/img/spinner.gif" width="64" height="64" /><br />Cargando...
+        </div>
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-12">
+
+                    @Html.Partial("_MenuCatalogos")
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-6">
+
+            <div class="card">
+                <form method="post" action="Catalogos" id="catalogosForm">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <input type="hidden" name="tabla" value="@ViewBag.NombreTabla" />
+                            <label for="nombre">Nombre:</label>
+                            <input type="text" name="nombre" class="form-control" autocomplete="off" required/>
+                        </div>
+                    </div>
+
+                    <div class="card-action">
+                        <button type="submit" class="btn btn-primary" id="agregarBtn">Agregar</button>
+                    </div>
+                </form>
+            </div>
+
+
+        </div>
+
+        <div class="col-md-6">
+
+            <div class="card">
+
+                <div class="card-body">
+                    
+                    <div class="table-responsive">
+                        <table id="tabla01" class="display compact table-striped table-hover" style="width:60%">
+                            <thead class="header">
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th style="text-align: center;">Eliminar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @if (ViewBag.Tabla == null)
+                                {
+                                    <tr><td colspan="3" align="center">Sin datos para mostrar</td></tr>
+                                }
+                                else
+                                {
+                                    foreach (var items in ViewBag.Tabla)
+                                    {
+
+                                        <tr>
+                                            <td>@items.Nombre </td>
+                                            <td style="text-align: center; cursor:pointer">
+                                                <a>
+                                                    <i onclick="Eliminar('@items.Id', '@ViewBag.NombreTabla')" class="fa fa-trash" aria-hidden="true" style="color: red;"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#catalogosForm').submit(function (e) {
+            var idParam = getParameterByName('id', window.location.href);
+            if (!idParam) {
+                e.preventDefault(); // Evita que el formulario se envíe
+                $.notify({
+                    //icon: 'fa fa-paw',
+                    message: 'Selecciona un catálogo'
+                }, {
+                    type: 'danger',
+                    allow_dismiss: false,
+                    animate: {
+                        enter: 'animated rollIn',
+                        exit: 'animated rollOut'
+                    }
+                });
+            }
+        });
+
+        // Función para obtener el valor de un parámetro de la URL
+        function getParameterByName(name, url) {
+            if (!url) {
+                url = window.location.href;
+            }
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+            var results = regex.exec(url);
+            if (!results) {
+                return null;
+            }
+            if (!results[2]) {
+                return '';
+            }
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+    });
+
+    function Eliminar(id, tabla) {
+
+        $.ajax({
+            url: "/Administracion/Eliminar",
+            type: "POST",
+            data: { id: id, tabla: tabla },
+            success: function (data) {
+                swal({
+                    text: 'Se guardó el registro exitosamente 1.',
+                    icon: 'success',
+                    buttons: {
+                        confirm: {
+                            className: 'btn btn-success'
+                        }
+                    }
+                });
+                location.reload(); 
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                swal({
+                    text: 'Se guardó el registro exitosamente 2.',
+                    icon: 'success',
+                    buttons: {
+                        confirm: {
+                            className: 'btn btn-success'
+                        }
+                    }
+                });
+                location.reload(); 
+            }
+
+        });
+    }
+
+</script>

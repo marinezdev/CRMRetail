@@ -1,0 +1,1823 @@
+﻿@model CRMRetail.Modelos.Clientes
+@{
+    ViewBag.Title = "Modificar";
+}
+
+<!-- Sweet Alert -->
+<script src="../assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#IndexClientes').addClass("nav-item active submenu");
+
+        $(function () {
+            var msg = '@ViewData["Mensaje"]';
+            if (msg == '1') {
+                swal({
+                    text: 'Se guardó el registro exitosamente.',
+                    icon: 'success',
+                    buttons: {
+                        confirm: {
+                            className: 'btn btn-success'
+                        }
+                    }
+                });
+            }
+            else if (msg == '3') {
+                swal({
+                    text: 'Se guardó el registro modificado exitosamente.',
+                    icon: 'success',
+                    buttons: {
+                        confirm: {
+                            className: 'btn btn-success'
+                        }
+                    }
+                });
+            }
+
+            var formattedOutput = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2,
+            });
+
+            $('#tabla02').DataTable({
+                "searching": false,
+                "paging": false,
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                info: false,
+                columnDefs: [
+                    {
+                        targets: [2],
+                        className: "text-center",
+                    }, {
+                        targets: [3],
+                        className: "text-right",
+                        render: $.fn.dataTable.render.number(',', '.', 2, '$')
+                    }, {
+                        targets: [4],
+                        className: "text-right",
+                        render: $.fn.dataTable.render.number(',', '.', 2, '$')
+                    }
+                ],
+                "footerCallback": function (row, data, start, end, display) {
+                    var api = this.api(), data;
+
+                    // convirtiendo a entero para encontrar el total
+                    var intVal = function (i) {
+                        return typeof i === 'string' ?
+                            i.replace(/[\$,]/g, '') * 1 :
+                            typeof i === 'number' ?
+                                i : 0;
+                    };
+
+                    $(api.column(1).footer()).html("<strong>Totales:</strong>");
+
+                    // sumando columna importes
+                    var sumTotal = api
+                        .column(2)
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+                    $(api.column(2).footer()).html(sumTotal);
+
+                    // sumando la columna Total * unidad
+                    var monTotal = api
+                        .column(4)
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+                    $(api.column(4).footer()).html(formattedOutput.format(monTotal).replace('₺', '$'));
+
+                },
+
+            });
+
+        });
+
+        $('.input-number').on('input', function () {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+
+        $('.input-number-fecha').on('input', function () {
+            this.value = this.value.replace(/[^0-9/]/g, '');
+        });
+
+    });
+
+    function CargarFechaNacimiento(valor) {
+        //Recorta el RFC y obtiene la fecha de nacimiento
+        if ($('#PersonaRadio').val() == 1) {
+            var fecha = valor.value;
+            var año = valor.value.substring(4, 6);
+            var mes = valor.value.substring(6, 8);
+            var dia = valor.value.substring(8, 10);
+            $('#FNacimiento').val(dia + '/' + mes + '/' + año);
+        }
+    }
+
+    function BorrarFechaNacimiento() {
+        var valor = $('input:radio[name=PersonaRadio]:checked').val()
+        if (valor == 2) {
+            $('#FNacimiento').val('');
+        }
+
+    }
+
+    function ModalDetalle(id) {
+
+        //Seleccionar por id
+        $.ajax({
+            url: "/Ventas/VentaDetalle/",
+            data: { idventa: id },
+            type: "GET",
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+                $('#ModalDetalle').modal('show');
+
+                $('#tabla02').DataTable().clear();
+                for (var i = 0; i < data.length; i++) {
+                    $('#tabla02').dataTable().fnAddData([
+                        data[i].Productos.Nombre,
+                        data[i].Productos.SKU,
+                        data[i].Cantidad,
+                        //data[i].Productos.PrecioPublico,
+                        data[i].Precio,
+                        //data[i].Cantidad * data[i].Productos.PrecioPublico,
+                        data[i].Cantidad * data[i].Precio
+                    ]);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('jqXHR:');
+                console.log(jqXHR);
+                console.log('textStatus:');
+                console.log(textStatus);
+                console.log('errorThrown:');
+                console.log(errorThrown);
+            }
+        });
+    }
+
+    function SinFechaNacimiento(element) {
+        if (element.value === '') {
+            swal({
+                text: 'El campo de Fecha de Nacimiento no puede quedarse vacío.',
+                buttons: {
+                    confirm: {
+                        className: 'btn btn-warning'
+                    }
+                },
+            }).then(
+                function () {
+                    $('#FNacimiento').focus();
+                }
+            );
+        }
+        else if (element.value.length > 8) {
+            swal({
+                text: 'Escriba correctamente la fecha (dd/mm/yy)',
+                buttons: {
+                    confirm: {
+                        className: 'btn btn-warning'
+                    }
+                },
+            }).then(
+                function () {
+                    $('#FNacimiento').focus();
+                }
+            );
+        }
+    }
+
+</script>
+
+<link href="~/assets/css/atlantis.css" rel="stylesheet" />
+<script src="~/assets/js/plugin/datatables/datatables.min.js"></script>
+<script src="../assets/js/plugin/datatables/sum().js"></script>
+<script src="~/assets/js/plugin/datatables/dataTables.colReorder.min.js"></script>
+<link href="~/assets/css/colReorder.dataTables.min.css" rel="stylesheet" />
+<link href="~/assets/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+<div class="page-inner">
+
+    <div class="row">
+
+        <div id="Espera" style="display:none; width:69px;height:90px;position:absolute;top:20%;left:50%;padding:2px;z-index:1000">
+            <img src="../assets/img/spinner.gif" width="64" height="64" /><br />Cargando...
+        </div>
+
+    </div>
+
+    <div class="page-header">
+        <h4 class="page-title">Clientes</h4>
+        <ul class="breadcrumbs">
+            <li class="nav-home">
+                <a href="#">
+                    <i class="flaticon-home"></i>
+                </a>
+            </li>
+            <li class="separator">
+                <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Cliente</a>
+            </li>
+            <li class="separator">
+                <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Modificar</a>
+            </li>
+        </ul>
+    </div>
+
+    <input type="hidden" id="IdCliente" />
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-md-12 text-right">
+                        <a class="btn btn-link" href="/Clientes/Index">
+                            <span class="btn-label">
+                                <i class="fa fa-users"></i>
+                            </span>
+                            Clientes
+                        </a>
+                    </div>
+                    <div class="card-title">Modificar los datos del cliente</div>
+                    <div class="card-category"></div>
+                </div>
+                <div class="card-body">
+                    <div class="card-category">Datos </div>
+                    <div class="row">
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="defaultSelect">* Tipo de Cliente </label>
+                                <select class="form-control form-control" id="Select_Persona">
+                                    <option value="0">Seleccionar </option>
+                                    <option value="1">Persona Física </option>
+                                    <option value="2">Persona Moral </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+
+                            <br /><br />
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" id="checkboxActivo" value="">
+                                    <span class="form-check-sign">Activo</span>
+                                </label>
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+                    <div class="row" id="Fisica_Div1" style="display: none;">
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="largeInput">* Nombre (s)</label>
+                                <input autocomplete="off,new-password" type="text" class="form-control form-control" id="Nombre" onchange="ValidaInput('Nombre')">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="largeInput">* Apellido Paterno </label>
+                                <input autocomplete="off,new-password" type="text" class="form-control form-control" id="Apellido_Paterno" onchange="ValidaInput('Apellido_Paterno')">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="largeInput">* Apellido Materno </label>
+                                <input autocomplete="off,new-password" type="text" class="form-control form-control" id="Apellido_Materno">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" id="Fisica_Div2" style="display: none;">
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="defaultSelect">* Sexo </label>
+                                <select class="form-control form-control" id="Select_Sexo" onchange="ValidaSelect('Select_Sexo')">
+                                    <option value="0">Seleccionar </option>
+                                    <option value="1">Masculino  </option>
+                                    <option value="2">Femenino  </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="largeInput">* Fecha nacimiento  </label>
+                                <input autocomplete="off,new-password" type="text" class="form-control form-control" id="Fecha_Nacimiento">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="largeInput">* Fecha Registro</label>
+                                <input autocomplete="off,new-password" type="text" class="form-control form-control" id="Fecha_Registro">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="largeInput">RFC  </label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-default" type="button">Buscar</button>
+                                    </div>
+                                    <input autocomplete="off,new-password" type="text" class="form-control" onchange="ValidaRFC(this)" maxlength="13" autocomplete="off" placeholder="Ingrese su RFC" aria-label="" aria-describedby="basic-addon1" id="RFC" style="text-transform:uppercase">
+                                </div>
+                                <span style="color:#f44336" id="RFC_Mensaje"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" id="Moral_Div1" style="display: none;">
+                        <div class="col-md-8 col-lg-8">
+                            <div class="form-group">
+                                <label for="largeInput">* Nombre </label>
+                                <input autocomplete="off,new-password" type="text" class="form-control form-control" id="Nombre_Moral" onchange="ValidaInput('Nombre_Moral')">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="largeInput">* Fecha de constitución </label>
+                                <input type="text" class="form-control form-control" id="Fecha_Constitucion">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" id="Moral_Div2" style="display: none;">
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="largeInput">* RFC  </label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-default" type="button">Buscar</button>
+                                    </div>
+                                    <input autocomplete="off,new-password" type="text" class="form-control" onchange="ValidaRFC(this)" placeholder="Ingrese su RFC" maxlength="12" autocomplete="off" aria-label="" aria-describedby="basic-addon1" id="RFC_Moral" style="text-transform:uppercase">
+                                </div>
+                                <span style="color:#f44336" id="RFC_MoralMensaje"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4">
+                            <!-- Mensaje de busqueda por RFC -->
+                        </div>
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="largeInput">* Fecha Registro</label>
+                                <input autocomplete="off,new-password" type="text" class="form-control form-control" id="Fecha_Registro2">
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                    <hr />
+                    <div class="card-category">Contacto </div>
+                    <div class="row">
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="largeInput">* Correo electrónico </label>
+                                <input autocomplete="off,new-password" type="text" class="form-control form-control" id="Correo_Electronico" onchange="ValidaInput('Correo_Electronico')">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="largeInput">* Teléfono móvil </label>
+                                <input autocomplete="off,new-password" type="text" class="form-control form-control input-number" id="Telefono_Movil" maxlength="10" autocomplete="off" onchange="ValidaTelefono()">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="largeInput">Teléfono local  </label>
+                                <input autocomplete="off,new-password" type="text" class="form-control form-control input-number" id="Telefono_Local" maxlength="10" autocomplete="off" onchange="ValidaTelefonoLocal()">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="defaultSelect">* Clasificación  </label>
+                                <select class="form-control form-control" id="Clasificacion" onchange="ValidaSelect('Clasificacion')">
+                                    <option value="0">Seleccionar </option>
+                                    @foreach (var item1 in CRMRetail.Datos.Catalogos.Seleccionar("TipoCliente"))
+                                    {
+
+                                        <option value="@item1.Id">@item1.Nombre</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="defaultSelect">* Origen de Cliente </label>
+                                <select class="form-control form-control" id="Origen_Cliente" onchange="ValidaSelect('Origen_Cliente')">
+                                    <option value="0">Seleccionar </option>
+                                    @foreach (var item2 in CRMRetail.Datos.Catalogos.Seleccionar("OrigenCliente"))
+                                    {
+                                        <option value="@item2.Id">@item2.Nombre</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="defaultSelect">* Sucursal  </label>
+                                <select class="form-control form-control" id="Sucursal" onchange="ValidaSelect('Sucursal')">
+                                    <option value="0">Seleccionar </option>
+                                    @foreach (var item2 in CRMRetail.Datos.Catalogos.Seleccionar("cat_sucursal"))
+                                    {
+                                        <option value="@item2.Id">@item2.Nombre</option>
+                                    }
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr />
+                    <input type="hidden" id="IdDireccion1" value="" />
+                    <div class="card-category">Direcciones  </div>
+                    <div class="card-category">Dirección fiscal  </div>
+                    <div class="row">
+                        <div class="col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="defaultSelect">* Estado </label>
+                                <select class="form-control form-control" id="Select_DEstado">
+                                    <option value="0">Seleccionar </option>
+
+                                    @foreach (var item1 in CRMRetail.Datos.Catalogos.SeleccionarEstado("cat_estados"))
+                                    {
+                                        <option value="@item1.Id">@item1.Estado</option>
+                                    }
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4" id="Busqueda_CP" style="display: none;">
+                            <div class="form-group">
+                                <label for="largeInput"> Buscar por código postal</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-default" type="button" id="BtnBuscar">Buscar</button>
+                                    </div>
+                                    <input autocomplete="off,new-password" type="text" class="form-control input-number" placeholder="" aria-label="" maxlength="5" aria-describedby="basic-addon1" id="CP_Fiscal">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4" id="Select_DivDelegacionMunicipio">
+                            <div class="form-group">
+                                <label for="defaultSelect">* Delegación / Municipio  </label>
+                                <select class="form-control form-control" id="Select_Delegacion_Municipio">
+                                    <option value="0">Seleccionar </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4" id="Select_DivColonia">
+                            <div class="form-group">
+                                <label for="defaultSelect">* Colonia  </label>
+                                <select class="form-control form-control" id="Select_Colonia">
+                                    <option value="0">Seleccionar </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4" id="Select_DivCP">
+                            <div class="form-group">
+                                <label for="defaultSelect">* CP  </label>
+                                <select class="form-control form-control" id="Select_CP">
+                                    <option value="0">Seleccionar </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 col-lg-4" id="Select_DivCalle">
+                            <div class="form-group">
+                                <label for="largeInput">* Calle  </label>
+                                <input autocomplete="off,new-password" type="text" class="form-control form-control" id="Calle" onchange="ValidaInput('Calle')">
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 col-lg-2" id="Select_DivNumExterior">
+                            <div class="form-group">
+                                <label for="largeInput"> Numero exterior  </label>
+                                <input type="text" class="form-control input-number" id="NumeroExterior" onchange="ValidaInput('NumeroExterior')">
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 col-lg-2" id="Select_DivNumInterior">
+                            <div class="form-group">
+                                <label for="largeInput">* Numero interior  </label>
+                                <input autocomplete="off,new-password" type="text" class="form-control input-number" id="NumeroInterior" onchange="ValidaInput('NumeroInterior')">
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-md-4 col-lg-4" id="Select_DivEntreCalles">
+                            <div class="form-group">
+                                <label for="largeInput"> Entre calles  </label>
+                                <input autocomplete="off,new-password" type="text" class="form-control form-control" id="EntreCalles">
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 col-lg-4" id="Select_DivReferencias">
+                            <div class="form-group">
+                                <label for="largeInput"> Referencias  </label>
+                                <input autocomplete="off,new-password" type="text" class="form-control form-control" id="Referencias">
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 col-lg-4" id="Btn_DivBusqueda">
+                            <br /><br />
+                            <button class="btn btn-link" id="BtnBuscarCP">
+                                <span class="btn-label">
+                                    <i class="fa fa-search-plus"></i>
+                                </span>
+                                Nuevo CP
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card-category">La dirección fiscal es la misma dirección de entrega  </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="checkboxEntrega" name="checkboxEntrega" value="">
+                            <span class="form-check-sign">Si</span>
+                        </label>
+                    </div>
+                    <div id="DivDirEntre" style="display: none;">
+                        <hr />
+                        <input type="hidden" id="IdDireccion2" value="" />
+                        <div class="card-category">Dirección entrega  </div>
+                        <div class="row">
+                            <div class="col-md-4 col-lg-4">
+                                <div class="form-group">
+                                    <label for="defaultSelect">* Estado </label>
+                                    <select class="form-control form-control" id="Select_DEstado2">
+                                        <option value="0">Seleccionar </option>
+
+                                        @foreach (var item1 in CRMRetail.Datos.Catalogos.SeleccionarEstado("cat_estados"))
+                                        {
+                                            <option value="@item1.Id">@item1.Estado</option>
+                                        }
+
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-lg-4" id="Busqueda_CP2" style="display: none;">
+                                <div class="form-group">
+                                    <label for="largeInput"> Buscar por código postal   </label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-default" type="button" id="BtnBuscar2">Buscar</button>
+                                        </div>
+                                        <input autocomplete="off,new-password" type="text" class="form-control input-number" placeholder="" aria-label="" maxlength="5" aria-describedby="basic-addon1" id="CP_Fiscal2">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-lg-4" id="Select_DivDelegacionMunicipio2">
+                                <div class="form-group">
+                                    <label for="defaultSelect">* Delegación / Municipio  </label>
+                                    <select class="form-control form-control" id="Select_Delegacion_Municipio2">
+                                        <option value="0">Seleccionar </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-lg-4" id="Select_DivColonia2">
+                                <div class="form-group">
+                                    <label for="defaultSelect">* Colonia  </label>
+                                    <select class="form-control form-control" id="Select_Colonia2">
+                                        <option value="0">Seleccionar </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-lg-4" id="Select_DivCP2">
+                                <div class="form-group">
+                                    <label for="defaultSelect">* CP  </label>
+                                    <select class="form-control form-control" id="Select_CP2">
+                                        <option value="0">Seleccionar </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-lg-4" id="Select_DivCalle2">
+                                <div class="form-group">
+                                    <label for="largeInput">* Calle  </label>
+                                    <input autocomplete="off,new-password" type="text" class="form-control form-control" id="Calle2" onchange="ValidaInput('Calle2')">
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-lg-2" id="Select_DivNumExterior2">
+                                <div class="form-group">
+                                    <label for="largeInput">* Numero exterior  </label>
+                                    <input autocomplete="off,new-password" type="text" class="form-control input-number" id="NumeroExterior2" onchange="ValidaInput('NumeroExterior2')">
+                                </div>
+                            </div>
+
+                            <div class="col-md-2 col-lg-2" id="Select_DivNumInterior2">
+                                <div class="form-group">
+                                    <label for="largeInput"> Numero interior  </label>
+                                    <input autocomplete="off,new-password" type="text" class="form-control input-number" id="NumeroInterior2" onchange="ValidaInput('NumeroInterior2')">
+                                </div>
+                            </div>
+
+
+
+                            <div class="col-md-4 col-lg-4" id="Select_DivEntreCalles2">
+                                <div class="form-group">
+                                    <label for="largeInput"> Entre calles  </label>
+                                    <input autocomplete="off,new-password" type="text" class="form-control form-control" id="EntreCalles2">
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 col-lg-4" id="Select_DivReferencias2">
+                                <div class="form-group">
+                                    <label for="largeInput"> Referencias  </label>
+                                    <input autocomplete="off,new-password" type="text" class="form-control form-control" id="Referencias2">
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 col-lg-4" id="Btn_DivBusqueda2">
+                                <br /><br />
+                                <button class="btn btn-link" id="BtnBuscarCP2">
+                                    <span class="btn-label">
+                                        <i class="fa fa-search-plus"></i>
+                                    </span>
+                                    Nuevo CP
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-default" id="BtnRegistrar">
+                        <span class="btn-label">
+                            <i class="fa fa-archive"></i>
+                        </span>
+                        Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
+<link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+<script src="~/assets/js/CRM.js"></script>
+<script src="~/assets/js/date.format.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#IndexClientes').addClass("nav-item active submenu");
+
+        var idcliente = GetURLParameter("id");
+
+        DetalleCliente(idcliente);
+
+        $('#BtnRegistrar').click(function () {
+            GuardarModificado();
+        });
+
+
+    });
+    $(document).on('change', '#Select_DEstado', function (event) {
+        var IdPoblacion = $("#Select_DEstado option:selected").val();
+
+        if (IdPoblacion > 0) {
+            $("#Busqueda_CP").css("display", "none");
+            $("#Select_DivDelegacionMunicipio").show();
+            $("#Select_DivColonia").show();
+            $("#Select_DivCP").show();
+            $("#Select_DivNumExterior").show();
+            $("#Select_DivNumInterior").show();
+            $("#Select_DivCalle").show();
+            $("#Select_DivEntreCalles").show();
+            $("#Select_DivReferencias").show();
+            $("#Btn_DivBusqueda").show();
+
+            $('#Select_DEstado').css("border", "1px solid #c2c2c2");
+
+            $("#Select_Colonia").empty();
+            $("#Select_CP").empty();
+
+            var option = $(document.createElement('option'));
+            option.text("Seleccionar");
+            option.val(0);
+
+            var option2 = $(document.createElement('option'));
+            option2.text("Seleccionar");
+            option2.val(0);
+
+            $("#Select_Colonia").append(option);
+            $("#Select_CP").append(option2);
+
+
+            var obj = {};
+            obj['Id'] = IdPoblacion;
+
+            var jsonObject = {
+                "Catalogos": obj
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Consulta_DelegacionMunicipio", "Clientes")",
+                data: JSON.stringify(jsonObject),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: resultado,
+                error: errores
+            });
+
+        } else {
+            $("#Busqueda_CP").show();
+            $("#Select_DivDelegacionMunicipio").css("display", "none");
+            $("#Select_DivColonia").css("display", "none");
+            $("#Select_DivCP").css("display", "none");
+            $("#Select_DivNumExterior").css("display", "none");
+            $("#Select_DivNumInterior").css("display", "none");
+            $("#Select_DivCalle").css("display", "none");
+            $("#Select_DivEntreCalles").css("display", "none");
+            $("#Select_DivReferencias").css("display", "none");
+            $("#Btn_DivBusqueda").css("display", "none");
+        }
+
+    });
+
+    function resultado(data) {
+        console.log(data);
+
+        $("#Select_Delegacion_Municipio").empty();
+
+        if (data.length > 0) {
+
+            var option = $(document.createElement('option'));
+            option.text("Seleccionar");
+            option.val(0);
+
+            $("#Select_Delegacion_Municipio").append(option);
+
+            $(data).each(function () {
+                var option = $(document.createElement('option'));
+
+                option.text(this.Nombre);
+                option.val(this.Id);
+
+                $("#Select_Delegacion_Municipio").append(option);
+            });
+        }
+    }
+
+    function errores(data) {
+        $.notify({
+            title: 'Se ha presentado un problema #18595',
+        }, {
+            type: 'danger',
+            time: 1000,
+        });
+    }
+    $(document).on('change', '#Select_Delegacion_Municipio', function (event) {
+        var IdPoblacion = $("#Select_Delegacion_Municipio option:selected").val();
+
+        if (IdPoblacion > 0) {
+
+            $('#Select_Delegacion_Municipio').css("border", "1px solid #c2c2c2");
+
+            $("#Select_CP").empty();
+
+            var option = $(document.createElement('option'));
+            option.text("Seleccionar");
+            option.val(0);
+
+            $("#Select_CP").append(option);
+
+
+
+            var obj = {};
+            obj['Id'] = IdPoblacion;
+
+            var jsonObject = {
+                "Catalogos": obj
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Consulta_Colonias", "Clientes")",
+                data: JSON.stringify(jsonObject),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: resultado2,
+                error: errores
+            });
+
+        }
+    });
+    function resultado2(data) {
+
+        $("#Select_Colonia").empty();
+
+        if (data.length > 0) {
+
+            var option = $(document.createElement('option'));
+            option.text("Seleccionar");
+            option.val(0);
+
+            $("#Select_Colonia").append(option);
+
+            $(data).each(function () {
+                var option = $(document.createElement('option'));
+
+                option.text(this.Nombre);
+                option.val(this.Id);
+
+                $("#Select_Colonia").append(option);
+            });
+        }
+    }
+    function DetalleCliente(id) {
+
+        var obj = {};
+        obj['Id'] = id;
+        var jsonObject = {
+            "Cliente": obj
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("Cliente_Seleccionar_Detalle_Id", "Clientes")",
+            data: JSON.stringify(jsonObject),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: Resultado,
+                error: Errores
+        });
+    }
+
+    function Resultado(data) {
+        
+        $('#Select_Persona option[value="' + data.TipoPersona + '"]').attr("selected", true);
+
+        if (data.Activo == 1) {
+            $('#checkboxActivo').prop('checked', true);
+        } else {
+            $('#checkboxActivo').prop('checked', false);
+        }
+
+
+        if (data.TipoPersona == 1) {
+            $("#Fisica_Div1").show();
+            $("#Fisica_Div2").show();
+
+            $("#Moral_Div1").css("display", "none");
+            $("#Moral_Div2").css("display", "none");
+
+        }
+        else if (data.TipoPersona == 2) {
+            $("#Fisica_Div1").css("display", "none");
+            $("#Fisica_Div2").css("display", "none");
+
+            $("#Moral_Div1").show();
+            $("#Moral_Div2").show();
+
+        } else {
+            $("#Fisica_Div1").css("display", "none");
+            $("#Fisica_Div2").css("display", "none");
+
+            $("#Moral_Div1").css("display", "none");
+            $("#Moral_Div2").css("display", "none");
+        }
+
+        $('#IdCliente').val(data.Id);
+
+        $('#Nombre').val(data.Nombre);
+
+        ///DATOS QUE NO SE CONSIDERARON
+        $('#Nombre_Moral').val(data.Nombre);
+        $('#RFC_Moral').val(data.RFC);
+        $('#Fecha_Constitucion').val(data.FechaConstitucion.substring(0, 10));
+        $('#Fecha_Registro2').val(data.FechaRegistro);
+
+
+        
+
+        $('#Apellido_Paterno').val(data.ApellidoPaterno);
+        $('#Apellido_Materno').val(data.ApellidoMaterno);
+
+
+        $('#Select_Sexo option[value="' + data.Sexo + '"]').attr("selected", true);
+        $('#Fecha_Nacimiento').val(data.FechaNacimiento);
+        $('#Fecha_Registro').val(data.FechaRegistro);
+
+        
+        $('#RFC').val(data.RFC);
+
+        $('#Correo_Electronico').val(data.Correo);
+        $('#Telefono_Movil').val(data.TelefonoMovil);
+        $('#Telefono_Local').val(data.TelefonoLocal);
+
+        $('#Clasificacion option[value="' + data.TipoCliente + '"]').attr("selected", true);
+        $('#Origen_Cliente option[value="' + data.OrigenCliente + '"]').attr("selected", true);
+        $('#Sucursal option[value="' + data.IdSucursal + '"]').attr("selected", true);
+
+        //Direccion 1
+        $('#IdDireccion1').val(data.IdDireccion);
+        $('#Select_DEstado option[value="' + data.IdEstado + '"]').attr("selected", true);
+
+
+        //Delegación/Municipio ****************************************
+        var obj = {};
+        obj['IdEstado'] = data.IdEstado;
+
+        var jsonObject1 = {
+            "Estados": obj
+        };
+
+        ResultadoBusquedaDelegacionMunicipio(jsonObject1,data.IdPoblacion);
+
+        //Fin Delegación/Municipio*************************************
+
+        //Colonia *****************************************************
+
+        var obj = {};
+        obj['IdPoblacion'] = data.IdPoblacion;
+
+        var jsonObject2 = {
+            "Poblaciones": obj
+        };
+
+        ResultadoBusquedaColonia(jsonObject2,data.IdCP);
+
+        //Fin Colonia *************************************************
+
+        //CP **********************************************************
+
+        var obj = {};
+        obj['IdCP'] = data.IdCP;
+
+        var jsonObject3 = {
+            "CP": obj
+        };
+
+        ResultadoBusquedaCP(jsonObject3, data.IdCP);
+
+        //Fin CP ******************************************************
+
+        $('#Calle').val(data.Calle);
+        $('#NumeroExterior').val(data.NumExterior);
+        $('#NumeroInterior').val(data.NumInterior);
+        $('#EntreCalles').val(data.EntreCalles);
+        $('#Referencias').val(data.Referencias);
+
+        if (data.Flag == 0) {
+            $('#DivDirEntre').show();
+        } else if (data.Flag == 1) {
+            $('#checkboxEntrega').prop('checked', true);
+        }
+
+        //Direccion 2
+        $('#IdDireccion2').val(data.IdDireccion2);
+        $('#Select_DEstado2 option[value="' + data.IdEstado2 + '"]').attr("selected", true);
+
+        //Delegación/Municipio2 ****************************************
+        var obj = {};
+        obj['IdEstado'] = data.IdEstado2;
+
+        var jsonObject11 = {
+            "Estados": obj
+        };
+
+        ResultadoBusquedaDelegacionMunicipio2(jsonObject11, data.IdPoblacion2);
+
+        //Fin Delegación/Municipio*************************************
+
+        //Colonia *****************************************************
+
+        var obj = {};
+        obj['IdPoblacion'] = data.IdPoblacion2;
+
+        var jsonObject22 = {
+            "Poblaciones": obj
+        };
+
+        ResultadoBusquedaColonia2(jsonObject22, data.IdCP2);
+
+        //Fin Colonia *************************************************
+
+        //CP **********************************************************
+
+        var obj = {};
+        obj['IdCP'] = data.IdCP2;
+
+        var jsonObject33 = {
+            "CP": obj
+        };
+
+        ResultadoBusquedaCP2(jsonObject33, data.IdCP2);
+
+        //Fin CP ******************************************************
+
+        $('#Calle2').val(data.Calle2);
+        $('#NumeroExterior2').val(data.NumExterior2);
+        $('#NumeroInterior2').val(data.NumInterior2);
+        $('#EntreCalles2').val(data.EntreCalles2);
+        $('#Referencias2').val(data.Referencias2);
+
+    }
+
+    function Errores(data) {
+        $.notify({
+            title: 'Detalle de Cliente no obtenido',
+        }, {
+            type: 'danger',
+            time: 1000,
+        });
+    }
+
+    function GuardarModificado() {
+        //CHECAR ESTO AL CAMBIO DE FECHA NACIMIENTO PODRIA DAR ERROR
+        $("#BtnRegistrar").prop('disabled', true);
+        var obj = {};
+        obj['Cliente.Id'] = $('#IdCliente').val();
+        obj['Cliente.TipoPersona'] = $('#Select_Persona').val();
+
+        if ($('#Select_Persona').val() == 1) {
+            obj['Cliente.Nombre'] = $('#Nombre').val();
+            obj['Cliente.ApellidoPaterno'] = $('#Apellido_Paterno').val();
+            obj['Cliente.ApellidoMaterno'] = $('#Apellido_Materno').val();
+            obj['Cliente.Sexo'] = $('#Select_Sexo').val();
+            obj['Cliente.FechaNacimiento'] = $('#Fecha_Nacimiento').val();
+            obj['Cliente.RFC'] = $('#RFC').val();
+        }
+        else if ($('#Select_Persona').val() == 2) {
+            obj['Cliente.Nombre'] = $('#Nombre_Moral').val();
+            obj['Cliente.FechaConstitucion'] = $('#Fecha_Constitucion').val();
+            obj['Cliente.RFC'] = $('#RFC_Moral').val();
+        }
+
+        obj['Cliente.Correo'] = $('#Correo_Electronico').val();
+        obj['Cliente.TelefonoMovil'] = $('#Telefono_Movil').val();
+        obj['Cliente.TelefonoLocal'] = $('#Telefono_Local').val();
+
+        obj['Cliente.IdTipoCliente'] = $('#Clasificacion').val();
+        obj['Cliente.IdOrigenCliente'] = $('#Origen_Cliente').val();
+        obj['Cliente.IdSucursal'] = $('#Sucursal').val();
+
+        var valorActivo = 0;
+        if ($('#checkboxActivo').is(":checked")) {
+            valorActivo = 1;
+        }
+        else {
+            valorActivo = 0;
+        }
+
+        obj['Cliente.Activo'] = valorActivo;
+
+        //Direccion 1
+
+        obj['Direccion.Id'] = $('#IdDireccion1').val();
+        obj['Direccion.IdCliente'] = $('#IdCliente').val();
+        obj['Direccion.IdEstado'] = $('#Select_DEstado').val();
+        obj['Direccion.IdPoblacion'] = $('#Select_Delegacion_Municipio').val();
+        obj['Direccion.IdColonia'] = $('#Select_Colonia').val();
+        obj['Direccion.IdCP'] = $('#Select_CP').val();
+
+        obj['Direccion.NumExterior'] = $('#NumeroExterior').val();
+        obj['Direccion.NumInterior'] = $('#NumeroInterior').val();
+        obj['Direccion.Calle'] = $('#Calle').val();
+        obj['Direccion.EntreCalles'] = $('#EntreCalles').val();
+        obj['Direccion.Referencias'] = $('#Referencias').val();
+
+        var fiscalEntrega = 0;
+        var flag = 0;
+        if ($('#checkboxEntrega').is(":checked")) {
+            fiscalEntrega = 1;
+            flag = 1;
+        }
+        else {
+            fiscalEntrega = 1;
+            flag = 0;
+        }
+
+        obj['Direccion.FiscalEntrega'] = fiscalEntrega;
+        obj['Direccion.Flag'] = flag;
+
+        //Direccion 2
+
+        obj['Direccion.Id2'] = $('#IdDireccion2').val();;
+        obj['Direccion.IdCliente2'] = $('#IdCliente').val();
+        obj['Direccion.IdEstado2'] = $('#Select_DEstado2').val();
+        obj['Direccion.IdPoblacion2'] = $('#Select_Delegacion_Municipio2').val();
+        obj['Direccion.IdColonia2'] = $('#Select_Colonia2').val();
+        obj['Direccion.IdCP2'] = $('#Select_CP2').val();
+
+        obj['Direccion.NumExterior2'] = $('#NumeroExterior2').val();
+        obj['Direccion.NumInterior2'] = $('#NumeroInterior2').val();
+        obj['Direccion.Calle2'] = $('#Calle2').val();
+        obj['Direccion.EntreCalles2'] = $('#EntreCalles2').val();
+        obj['Direccion.Referencias2'] = $('#Referencias2').val();
+
+        var fiscalEntrega = 0;
+        var flag = 0;
+        if ($('#checkboxEntrega').is(":checked")) {
+            fiscalEntrega = 0;
+            flag = 1;
+        }
+        else {
+            fiscalEntrega = 1;
+            flag = 0;
+        }
+
+        obj['Direccion.FiscalEntrega2'] = fiscalEntrega;
+        obj['Direccion.Flag2'] = flag;
+
+
+        var jsonObject = {
+            "Modelos": obj
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("ModificarDetalle", "Clientes")",
+            data: JSON.stringify(jsonObject),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function () {
+                
+                  swal({
+                            title: "Cliente modificado",
+                            icon: "success",
+                            button: "Aceptar",
+                  }) .then((value) => {
+                            window.location.href = '@Url.Action("Index", "Clientes")';
+                  });
+            }
+        });
+        $("#BtnRegistrar").prop('disabled', false);
+    }
+
+    function GetURLParameter(sParam) {
+        var sPageURL = window.location.search.substring(1);
+        var sURLVariables = sPageURL.split('&');
+        for (var i = 0; i < sURLVariables.length; i++) {
+            var sParameterName = sURLVariables[i].split('=');
+            if (sParameterName[0] == sParam) {
+                return sParameterName[1];
+            }
+        }
+    }
+
+    function ResultadoBusquedaDelegacionMunicipio(data,iddelmun) {
+
+        if (data.Estados.IdEstado > 0) {
+            $("#Btn_DivBusqueda").show();
+
+            var obj = {};
+            obj['Id'] = data.Estados.IdEstado;
+
+            var jsonObject = {
+                "Catalogos": obj
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Consulta_DelegacionMunicipio", "Clientes")",
+                data: JSON.stringify(jsonObject),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+
+                    $("#Select_Delegacion_Municipio").empty();
+
+                    if (result.length > 0) {
+
+                        var option = $(document.createElement('option'));
+                        option.text("Seleccionar");
+                        option.val(0);
+
+                        $("#Select_Delegacion_Municipio").append(option);
+
+                        $(result).each(function () {
+                            var option = $(document.createElement('option'));
+
+                            option.text(this.Nombre);
+                            option.val(this.Id);
+
+                            $("#Select_Delegacion_Municipio").append(option);
+                        });
+                    }
+                    $('#Select_Delegacion_Municipio option[value="' + iddelmun + '"]').attr("selected", true);
+
+
+                }
+            });
+
+        }
+    }
+
+    function ResultadoBusquedaColonia(data,idCP) {
+
+        var obj = {};
+        obj['Id'] = data.Poblaciones.IdPoblacion;
+
+        var jsonObject = {
+            "Catalogos": obj
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("Consulta_Colonias", "Clientes")",
+            data: JSON.stringify(jsonObject),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+
+
+                $("#Select_Colonia").empty();
+
+                if (result.length > 0) {
+
+                    var option = $(document.createElement('option'));
+                    option.text("Seleccionar");
+                    option.val(0);
+
+                    $("#Select_Colonia").append(option);
+
+                    $(result).each(function () {
+                        var option = $(document.createElement('option'));
+
+                        option.text(this.Nombre);
+                        option.val(this.Id);
+
+                        $("#Select_Colonia").append(option);
+                    });
+                }
+                console.log(result);
+
+                $('#Select_Colonia option[value="' + result[0]["Id"] + '"]').attr("selected", true);
+            }
+        });
+    }
+
+    function ResultadoBusquedaCP(data,IdCP) {
+
+        var obj = {};
+        obj['Id'] = data.CP.IdCP;
+
+        var jsonObject = {
+            "Catalogos": obj
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("Consulta_CP", "Clientes")",
+            data: JSON.stringify(jsonObject),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+
+                console.log(result[0].Colonia);
+
+                $("#Select_CP").empty();
+
+                if (result.length > 0) {
+
+                    var option = $(document.createElement('option'));
+                    option.text("Seleccionar");
+                    option.val(0);
+
+                    $("#Select_CP").append(option);
+
+                    $(result).each(function () {
+                        var option = $(document.createElement('option'));
+
+                        option.text(this.Nombre);
+                        option.val(this.Id);
+
+                        $("#Select_CP").append(option);
+                    });
+                }
+
+                $('#Select_CP option[value="' + IdCP + '"]').attr("selected", true);
+            }
+        });
+    }
+
+    function ResultadoBusquedaDelegacionMunicipio2(data,iddelmun) {
+
+        if (data.Estados.IdEstado > 0) {
+            $("#Btn_DivBusqueda").show();
+
+            var obj = {};
+            obj['Id'] = data.Estados.IdEstado;
+
+            var jsonObject = {
+                "Catalogos": obj
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Consulta_DelegacionMunicipio", "Clientes")",
+                data: JSON.stringify(jsonObject),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+
+                    $("#Select_Delegacion_Municipio2").empty();
+
+                    if (result.length > 0) {
+
+                        var option = $(document.createElement('option'));
+                        option.text("Seleccionar");
+                        option.val(0);
+
+                        $("#Select_Delegacion_Municipio2").append(option);
+
+                        $(result).each(function () {
+                            var option = $(document.createElement('option'));
+
+                            option.text(this.Nombre);
+                            option.val(this.Id);
+
+                            $("#Select_Delegacion_Municipio2").append(option);
+                        });
+                    }
+                    $('#Select_Delegacion_Municipio2 option[value="' + iddelmun + '"]').attr("selected", true);
+
+
+                }
+            });
+
+        }
+    }
+
+    function ResultadoBusquedaColonia2(data,idCP) {
+
+        var obj = {};
+        obj['Id'] = data.Poblaciones.IdPoblacion;
+
+        var jsonObject = {
+            "Catalogos": obj
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("Consulta_Colonias", "Clientes")",
+            data: JSON.stringify(jsonObject),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+
+                $("#Select_Colonia2").empty();
+
+                if (result.length > 0) {
+
+                    var option = $(document.createElement('option'));
+                    option.text("Seleccionar");
+                    option.val(0);
+
+                    $("#Select_Colonia2").append(option);
+
+                    $(result).each(function () {
+                        var option = $(document.createElement('option'));
+
+                        option.text(this.Nombre);
+                        option.val(this.Id);
+
+                        $("#Select_Colonia2").append(option);
+                    });
+                }
+
+                $('#Select_Colonia2 option[value="' + idCP + '"]').attr("selected", true);
+            }
+        });
+    }
+
+    function ResultadoBusquedaCP2(data,IdCP) {
+
+        var obj = {};
+        obj['Id'] = data.CP.IdCP;
+
+        var jsonObject = {
+            "Catalogos": obj
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("Consulta_CP", "Clientes")",
+            data: JSON.stringify(jsonObject),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+
+                //console.log(result[0].Colonia);
+
+                $("#Select_CP2").empty();
+
+                if (result.length > 0) {
+
+                    var option = $(document.createElement('option'));
+                    option.text("Seleccionar");
+                    option.val(0);
+
+                    $("#Select_CP2").append(option);
+
+                    $(result).each(function () {
+                        var option = $(document.createElement('option'));
+
+                        option.text(this.Nombre);
+                        option.val(this.Id);
+
+                        $("#Select_CP2").append(option);
+                    });
+                }
+
+                $('#Select_CP2 option[value="' + IdCP + '"]').attr("selected", true);
+            }
+        });
+    }
+
+    $('#BtnBuscarCP').click(function () {
+        $("#Busqueda_CP").show();
+        $("#Select_DivDelegacionMunicipio").css("display", "none");
+        $("#Select_DivColonia").css("display", "none");
+        $("#Select_DivCP").css("display", "none");
+        $("#Select_DivNumExterior").css("display", "none");
+        $("#Select_DivNumInterior").css("display", "none");
+        $("#Select_DivCalle").css("display", "none");
+        $("#Select_DivEntreCalles").css("display", "none");
+        $("#Select_DivReferencias").css("display", "none");
+        $("#Btn_DivBusqueda").css("display", "none");
+    });
+
+    $('#BtnBuscar').click(function () {
+
+        $('#CP_Fiscal').css("border", "2px solid #f44336");
+
+        if ($('#CP_Fiscal').val().length > 0) {
+            $('#CP_Fiscal').css("border", "1px solid #c2c2c2");
+        }
+
+        var CP = $("#CP_Fiscal").val();
+
+        if (CP.length > 0) {
+
+            var obj = {};
+            obj['Nombre'] = CP;
+
+            var jsonObject = {
+                "Catalogos": obj
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("CP_Busqueda", "Clientes")",
+                data: JSON.stringify(jsonObject),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: resultadoBusqueda,
+                error: errores
+            });
+
+
+        } else {
+            $('#CP_Fiscal').css("border", "2px solid #f44336");
+            $.notify({
+                message: "Coloca el código postal que buscas."
+            }, {
+                type: 'danger',
+                allow_dismiss: false,
+                animate: {
+                    enter: 'animated rollIn',
+                    exit: 'animated rollOut'
+                }
+            });
+        }
+    });
+
+    function resultadoBusqueda(data) {
+        if (data.length > 0) {
+
+            console.log(data);
+
+            $('#Select_DEstado option[value="'+ data[0]["IdEstado"] +'"]').attr("selected", true);
+
+
+            var IdPoblacion = $("#Select_DEstado option:selected").val();
+
+            if (IdPoblacion > 0) {
+                $("#Busqueda_CP").css("display", "none");
+                $("#Select_DivDelegacionMunicipio").show();
+                $("#Select_DivColonia").show();
+                $("#Select_DivCP").show();
+                $("#Select_DivNumExterior").show();
+                $("#NumExterior").val('');
+                $("#Select_DivNumInterior").show();
+                $("#NumInterior").val('');
+                $("#Select_DivCalle").show();
+                $("#Calle").val('');
+                $("#Select_DivEntreCalles").show();
+                $("#EntreCalles").val('');
+                $("#Select_DivReferencias").show();
+                $("#Referencias").val('');
+                $("#Btn_DivBusqueda").show();
+
+                var obj = {};
+                obj['Id'] = IdPoblacion;
+
+                var jsonObject = {
+                    "Catalogos": obj
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("Consulta_DelegacionMunicipio", "Clientes")",
+                    data: JSON.stringify(jsonObject),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (result) {
+
+                        $("#Select_Delegacion_Municipio").empty();
+
+                        if (result.length > 0) {
+
+                            var option = $(document.createElement('option'));
+                            option.text("Seleccionar");
+                            option.val(0);
+
+                            $("#Select_Delegacion_Municipio").append(option);
+
+                            $(result).each(function () {
+                                var option = $(document.createElement('option'));
+
+                                option.text(this.Nombre);
+                                option.val(this.Id);
+
+                                $("#Select_Delegacion_Municipio").append(option);
+                            });
+                        }
+                        $('#Select_Delegacion_Municipio option[value="' + data[0]["IdPoblacion"] + '"]').attr("selected", true);
+
+
+                        $("#Select_Colonia").empty();
+
+                        if (data.length > 0) {
+
+                            var option = $(document.createElement('option'));
+                            option.text("Seleccionar");
+                            option.val(0);
+
+                            $("#Select_Colonia").append(option);
+
+                            $(data).each(function () {
+                                var option = $(document.createElement('option'));
+
+                                option.text(this.Colonia);
+                                option.val(this.IdCP);
+
+                                $("#Select_Colonia").append(option);
+                            });
+                        }
+
+                        $('#Select_Colonia option[value="' + data[0]["IdCP"] + '"]').attr("selected", true);
+
+                        $("#Select_CP").empty();
+
+                        var option = $(document.createElement('option'));
+                        option.text(data[0]["CP"]);
+                        option.val(data[0]["IdCP"]);
+
+                        $("#Select_CP").append(option);
+
+                    }
+                });
+
+            } else {
+                $("#Busqueda_CP").show();
+                $("#Select_DivDelegacionMunicipio").css("display", "none");
+                $("#Select_DivColonia").css("display", "none");
+                $("#Select_DivCP").css("display", "none");
+                $("#Select_DivNumExterior").css("display", "none");
+                $("#Select_DivNumInterior").css("display", "none");
+                $("#Select_DivCalle").css("display", "none");
+                $("#Select_DivEntreCalles").css("display", "none");
+                $("#Select_DivReferencias").css("display", "none");
+                $("#Btn_DivBusqueda").css("display", "none");
+            }
+
+        } else {
+            $.notify({
+                message: "Código postal no encontrado."
+            }, {
+                type: 'danger',
+                allow_dismiss: false,
+                animate: {
+                    enter: 'animated rollIn',
+                    exit: 'animated rollOut'
+                }
+            });
+        }
+    }
+
+    $('#BtnBuscar2').click(function () {
+
+        $('#CP_Fiscal2').css("border", "2px solid #f44336");
+
+        if ($('#CP_Fiscal2').val().length > 0) {
+            $('#CP_Fiscal2').css("border", "1px solid #c2c2c2");
+        }
+
+        var CP = $("#CP_Fiscal2").val();
+
+        if (CP.length > 0) {
+
+            var obj = {};
+            obj['Nombre'] = CP;
+
+            var jsonObject = {
+                "Catalogos": obj
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("CP_Busqueda", "Clientes")",
+                data: JSON.stringify(jsonObject),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: resultadoBusqueda2,
+                error: errores
+            });
+
+
+        } else {
+            $('#CP_Fiscal2').css("border", "2px solid #f44336");
+            $.notify({
+                message: "Coloca el código postal que buscas."
+            }, {
+                type: 'danger',
+                allow_dismiss: false,
+                animate: {
+                    enter: 'animated rollIn',
+                    exit: 'animated rollOut'
+                }
+            });
+        }
+    });
+
+    function resultadoBusqueda2(data) {
+        if (data.length > 0) {
+
+            console.log(data);
+
+            $('#Select_DEstado2 option[value="'+ data[0]["IdEstado"] +'"]').attr("selected", true);
+
+
+            var IdPoblacion = $("#Select_DEstado2 option:selected").val();
+
+            if (IdPoblacion > 0) {
+                $("#Busqueda_CP2").css("display", "none");
+                $("#Select_DivDelegacionMunicipio2").show();
+                $("#Select_DivColonia2").show();
+                $("#Select_DivCP2").show();
+                $("#Select_DivNumExterior2").show();
+                $("#NumeroExterior2").val('');
+                $("#Select_DivNumInterior2").show();
+                $("#NumeroInterior2").val('');
+                $("#Select_DivCalle2").show();
+                $("#Calle2").val('');
+                $("#Select_DivEntreCalles2").show();
+                $("#EntreCalles2").val('');
+                $("#Select_DivReferencias2").show();
+                $("#Referencias2").val('');
+                $("#Btn_DivBusqueda2").show();
+
+                var obj = {};
+                obj['Id'] = IdPoblacion;
+
+                var jsonObject = {
+                    "Catalogos": obj
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("Consulta_DelegacionMunicipio", "Clientes")",
+                    data: JSON.stringify(jsonObject),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (result) {
+
+                        $("#Select_Delegacion_Municipio2").empty();
+
+                        if (result.length > 0) {
+
+                            var option = $(document.createElement('option'));
+                            option.text("Seleccionar");
+                            option.val(0);
+
+                            $("#Select_Delegacion_Municipio2").append(option);
+
+                            $(result).each(function () {
+                                var option = $(document.createElement('option'));
+
+                                option.text(this.Nombre);
+                                option.val(this.Id);
+
+                                $("#Select_Delegacion_Municipio2").append(option);
+                            });
+                        }
+                        $('#Select_Delegacion_Municipio2 option[value="' + data[0]["IdPoblacion"] + '"]').attr("selected", true);
+
+
+                        $("#Select_Colonia2").empty();
+
+                        if (data.length > 0) {
+
+                            var option = $(document.createElement('option'));
+                            option.text("Seleccionar");
+                            option.val(0);
+
+                            $("#Select_Colonia2").append(option);
+
+                            $(data).each(function () {
+                                var option = $(document.createElement('option'));
+
+                                option.text(this.Colonia);
+                                option.val(this.IdCP);
+
+                                $("#Select_Colonia2").append(option);
+                            });
+                        }
+
+                        $('#Select_Colonia2 option[value="' + data[0]["IdCP"] + '"]').attr("selected", true);
+
+                        $("#Select_CP2").empty();
+
+                        var option = $(document.createElement('option'));
+                        option.text(data[0]["CP"]);
+                        option.val(data[0]["IdCP"]);
+
+                        $("#Select_CP2").append(option);
+
+                    }
+                });
+
+            } else {
+                $("#Busqueda_CP2").show();
+                $("#Select_DivDelegacionMunicipio2").css("display", "none");
+                $("#Select_DivColonia2").css("display", "none");
+                $("#Select_DivCP2").css("display", "none");
+                $("#Select_DivNumExterior2").css("display", "none");
+                $("#Select_DivNumInterior2").css("display", "none");
+                $("#Select_DivCalle2").css("display", "none");
+                $("#Select_DivEntreCalles2").css("display", "none");
+                $("#Select_DivReferencias2").css("display", "none");
+                $("#Btn_DivBusqueda2").css("display", "none");
+            }
+
+        } else {
+            $.notify({
+                message: "Código postal no encontrado."
+            }, {
+                type: 'danger',
+                allow_dismiss: false,
+                animate: {
+                    enter: 'animated rollIn',
+                    exit: 'animated rollOut'
+                }
+            });
+        }
+    }
+
+    $('#BtnBuscarCP2').click(function () {
+        $("#Busqueda_CP2").show();
+        $("#Select_DivDelegacionMunicipio2").css("display", "none");
+        $("#Select_DivColonia2").css("display", "none");
+        $("#Select_DivCP2").css("display", "none");
+        $("#Select_DivNumExterior2").css("display", "none");
+        $("#Select_DivNumInterior2").css("display", "none");
+        $("#Select_DivCalle2").css("display", "none");
+        $("#Select_DivEntreCalles2").css("display", "none");
+        $("#Select_DivReferencias2").css("display", "none");
+        $("#Btn_DivBusqueda2").css("display", "none");
+    });
+
+    function errores(data) {
+        $.notify({
+            title: 'Se ha presentado un problema #18595',
+        }, {
+            type: 'danger',
+            time: 1000,
+        });
+    }
+
+</script>
